@@ -17,6 +17,7 @@ export default function PageLogin({}: PageLoginProps) {
 
   React.useEffect(() => {
     if (!isMounted()) return
+    setUser(null)
     auth.signOut()
 
     auth.onAuthStateChanged((firebaseUser) => {

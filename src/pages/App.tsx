@@ -28,11 +28,10 @@ function App() {
       history.push(ROUTER_PATH.LOGIN)
     } else {
       setAlertMsg(() => '로그인 되었습니다.')
+      setShowAlert(() => true)
 
       history.push(ROUTER_PATH.DASHBOARD.APP_USE)
     }
-
-    setShowAlert(() => true)
   }, [isMounted, user])
 
   const onHide = () => {
@@ -49,6 +48,7 @@ function App() {
         onHide={onHide}
       />
       <Switch>
+        <Route path="/" exact component={() => <></>} />
         <Route path={ROUTER_PATH.LOGIN} component={PageLogin} />
         <Route
           path={ROUTER_PATH.DASHBOARD.APP_USE}
