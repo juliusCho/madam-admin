@@ -35,7 +35,9 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "lint": "eslint \"src/**/*.{js,ts,tsx}\" --fix"
+    "lint": "eslint \"src/**/*.{js,ts,tsx}\" --fix",
+    "firebase:dev": "firebase serve",
+    "firebase": "firebase deploy --only hosting"
   },
   "eslintConfig": {
     "extends": [
