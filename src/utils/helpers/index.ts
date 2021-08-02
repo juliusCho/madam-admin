@@ -2,8 +2,7 @@ export default {
   convertTextToTailwind(text?: string) {
     if (!text) return ''
 
-    const tc = text.split('.')
-    return `text-${tc[0]}-${tc[1]} font-${tc[0]}-${tc[1]}`
+    return `text-${text} font-${text}`
   },
   convertColorToTailwind(
     type: 'bg' | 'text' | 'border' | 'placeholder',
@@ -20,6 +19,6 @@ export default {
       isButtonOrDisabled
         ? ''
         : `hover:${type}-${tc[0]}-${tc[1]}Hover active:${type}-${tc[0]}-${tc[1]}Active`
-    } ${type === 'border' ? 'border border-solid' : ''}`
+    } ${type === 'border' ? 'border-solid' : ''}`
   },
 }
