@@ -23,8 +23,6 @@ function App() {
     if (!isMounted()) return
 
     if (user === null) {
-      setAlertMsg(() => '로그아웃 되었습니다.')
-
       auth.signOut()
 
       history.push(ROUTER_PATH.LOGIN)
