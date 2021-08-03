@@ -14,7 +14,7 @@ export default function PageDashboardAppUse({
 }: PageDashboardAppUseProps & RouterProps) {
   useTitle(ROUTER_TITLE.DASHBOARD.APP_USE)
 
-  const user = Recoil.useRecoilValue(userGlobalStates.userState)
+  const [user, setUser] = Recoil.useRecoilState(userGlobalStates.userState)
   const setLoading = Recoil.useSetRecoilState(etcGlobalStates.loadingState)
 
   const isMounted = customHooks.useIsMounted()
@@ -38,7 +38,18 @@ export default function PageDashboardAppUse({
 
   return (
     <div>
-      <span>WELCOME, {user?.name}!</span>
+      <span style={{ display: 'block' }}>WELCOME, {user?.name}!</span>
+      <button
+        type="button"
+        onClick={() => setUser(null)}
+        style={{
+          marginTop: '3rem',
+          borderRadius: '9999px',
+          backgroundColor: 'black',
+          color: 'white',
+        }}>
+        로그아웃
+      </button>
     </div>
   )
 }

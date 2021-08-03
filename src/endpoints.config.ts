@@ -8,4 +8,5 @@ export default {
     appId: process.env.REACT_APP_FIREBASE_APP_ID ?? '',
     measurementId: process.env.REACT_APP_MEASUREMENT_ID ?? '',
   },
+  snsKeySecret: process.env.REACT_APP_SNS_KEY_SECRET ?? '',
 }

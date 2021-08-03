@@ -28,8 +28,57 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
   const [alertMsg, setAlertMsg] = React.useState('')
   const [alertType, setAlertType] = React.useState<'info' | 'error'>('info')
 
-  const setUserFromFetching = React.useCallback(async (firebaseUser) => {
-    const fetched = await apiLogin(firebaseUser)
+  // const setUserFromFetching = React.useCallback(async (firebaseUser) => {
+  //   const fetched = await apiLogin(firebaseUser)
+
+  // }, [])
+
+  React.useEffect(() => {
+    if (!isMounted()) return
+    if (history.location.pathname === ROUTER_PATH.LOGIN) {
+      setAlertType(() => 'info')
+
+      setLoading(() => false)
+
+      setUser(() => null)
+    }
+  }, [isMounted, history.location.pathname, ROUTER_PATH.LOGIN, auth])
+
+  // React.useEffect(() => {
+  //   if (!isMounted()) return
+
+  //   auth.onAuthStateChanged((firebaseUser) => {
+  //     if (firebaseUser === null) {
+  //       setUser(null)
+  //       return
+  //     }
+
+  //     setLoading(true)
+  //     setUserFromFetching(firebaseUser)
+  //   })
+  // }, [])
+
+  const signIn = async () => {
+    setAlertType('info')
+
+    const result = await auth
+      .signInWithPopup(new firebase.auth.GoogleAuthProvider())
+      .then((res) => res)
+      .catch((e) => {
+        setAlertType('error')
+        setAlertMsg(e.message)
+        setShowAlert(true)
+        return null
+      })
+
+    if (!result) {
+      setUser(null)
+      return
+    }
+
+    setLoading(true)
+
+    const fetched = await apiLogin(result)
 
     if (!fetched) {
       setShowAlert(false)
@@ -42,44 +91,6 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
     setUser(fetched)
 
     setLoading(false)
-  }, [])
-
-  React.useEffect(() => {
-    if (!isMounted()) return
-    if (history.location.pathname === ROUTER_PATH.LOGIN) {
-      setAlertType(() => 'info')
-
-      setLoading(() => false)
-
-      setUser(() => null)
-      auth.signOut()
-    }
-  }, [isMounted, history.location.pathname, ROUTER_PATH.LOGIN, auth])
-
-  React.useEffect(() => {
-    if (!isMounted()) return
-
-    auth.onAuthStateChanged((firebaseUser) => {
-      if (firebaseUser === null) {
-        setUser(null)
-        return
-      }
-
-      setLoading(true)
-      setUserFromFetching(firebaseUser)
-    })
-  }, [])
-
-  const signIn = async () => {
-    setAlertType('info')
-
-    await auth
-      .signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .catch((e) => {
-        setAlertType('error')
-        setAlertMsg(e.message)
-        setShowAlert(true)
-      })
   }
 
   const onHide = () => {

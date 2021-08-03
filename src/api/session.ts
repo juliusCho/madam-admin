@@ -1,14 +1,22 @@
 import firebase from 'firebase/app'
 import { AdminType } from '../types'
+import helpers from '../utils/helpers'
 // import axios from 'axios'
 
 export const apiLogin = async (
-  firebaseUser: firebase.User,
+  firebaseUser: firebase.auth.UserCredential,
 ): Promise<AdminType | null> => {
-  const { email, displayName } = firebaseUser
-  if (!email) return null
+  // const { profile, credential } = firebaseUser
+  // @ts-ignore
+  const { id, email, name } = firebaseUser.additionalUserInfo?.profile
 
-  const key = await firebaseUser.getIdToken()
+  if (!id || !email) return null
+
+  const key = helpers.encode(id)
+  console.log('=============로그인 Attempt 유저 정보============')
+  console.log('email: ', email)
+  console.log('key: ', key)
+  console.log('name: ', name || email)
 
   if (email !== process.env.REACT_APP_TEST_EMAIL) {
     return null
@@ -17,6 +25,6 @@ export const apiLogin = async (
   return {
     email,
     key,
-    name: displayName || email,
+    name: name || email,
   }
 }
