@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+@import url('//cdn.jsdelivr.net/xeicon/2/xeicon.min.css');
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: 'xeicon';
+  src: url('./assets/fonts/xeicon.eot?3ka2yj');
+  src: url('./assets/fonts/xeicon.eot?3ka2yj#iefix') format('embedded-opentype'),
+    url('./assets/fonts/xeicon.woff2?3ka2yj') format('woff2'),
+    url('./assets/fonts/xeicon.ttf?3ka2yj') format('truetype'),
+    url('./assets/fonts/xeicon.woff?3ka2yj') format('woff'),
+    url('./assets/fonts/xeicon.svg?3ka2yj#xeicon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

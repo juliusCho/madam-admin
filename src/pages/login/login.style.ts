@@ -7,6 +7,11 @@ const PageLoginStyle = {
     w-screen
     h-screen
   `,
+  error: `
+    text-textMedium
+    font-textMedium
+    text-main-red
+  `,
 }
 
 export default PageLoginStyle

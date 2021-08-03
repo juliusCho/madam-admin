@@ -1,8 +1,9 @@
 import React from 'react'
 import { Route, Switch, useHistory } from 'react-router-dom'
 import Recoil from 'recoil'
-import { Alert } from '../components/modals/alert'
+import { Loading } from '../components/etc/loading'
 import auth from '../firebaseSetup'
+import etcGlobalStates from '../recoil/etc'
 import userGlobalStates from '../recoil/user'
 import { ROUTER_PATH } from '../types'
 import customHooks from '../utils/hooks'
@@ -11,9 +12,7 @@ import { PageLogin } from './login'
 
 function App() {
   const user = Recoil.useRecoilValue(userGlobalStates.userState)
-
-  const [showAlert, setShowAlert] = React.useState(false)
-  const [alertMsg, setAlertMsg] = React.useState('')
+  const loading = Recoil.useRecoilValue(etcGlobalStates.loadingState)
 
   const isMounted = customHooks.useIsMounted()
 
@@ -27,26 +26,13 @@ function App() {
 
       history.push(ROUTER_PATH.LOGIN)
     } else {
-      setAlertMsg(() => '로그인 되었습니다.')
-      setShowAlert(() => true)
-
       history.push(ROUTER_PATH.DASHBOARD.APP_USE)
     }
   }, [isMounted, user])
 
-  const onHide = () => {
-    setShowAlert(false)
-  }
-
   return (
     <>
-      <Alert
-        show={showAlert}
-        msg={alertMsg}
-        type="info"
-        showTime={1500}
-        onHide={onHide}
-      />
+      <Loading loading={loading} />
       <Switch>
         <Route path="/" exact component={() => <></>} />
         <Route path={ROUTER_PATH.LOGIN} component={PageLogin} />

@@ -1,0 +1,24 @@
+.loading-container {
+  @apply justify-center items-center w-full h-full top-0 left-0 fixed bg-mono-lightGray bg-opacity-60 z-max;
+
+  .icon-spinner-container {
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    animation: spin 2s linear infinite;
+
+    @apply bg-transparent select-none flex justify-center items-center w-8 h-8;
+
+    .spinner {
+      font-size: 2rem;
+
+      @apply text-sub-babyPinkActive;
+    }
+  }
+}
