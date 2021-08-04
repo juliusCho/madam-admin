@@ -26,7 +26,9 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
 
   const [showAlert, setShowAlert] = React.useState(false)
   const [alertMsg, setAlertMsg] = React.useState('')
-  const [alertType, setAlertType] = React.useState<'info' | 'error'>('info')
+  const [alertType, setAlertType] = React.useState<
+    'success' | 'error' | 'warning'
+  >('success')
 
   // const setUserFromFetching = React.useCallback(async (firebaseUser) => {
   //   const fetched = await apiLogin(firebaseUser)
@@ -36,7 +38,7 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
   React.useEffect(() => {
     if (!isMounted()) return
     if (history.location.pathname === ROUTER_PATH.LOGIN) {
-      setAlertType(() => 'info')
+      setAlertType(() => 'success')
 
       setLoading(() => false)
 
@@ -44,22 +46,15 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
     }
   }, [isMounted, history.location.pathname, ROUTER_PATH.LOGIN, auth])
 
-  // React.useEffect(() => {
-  //   if (!isMounted()) return
-
-  //   auth.onAuthStateChanged((firebaseUser) => {
-  //     if (firebaseUser === null) {
-  //       setUser(null)
-  //       return
-  //     }
-
-  //     setLoading(true)
-  //     setUserFromFetching(firebaseUser)
-  //   })
-  // }, [])
-
   const signIn = async () => {
-    setAlertType('info')
+    if (window.navigator.userAgent.includes('KAKAOTALK')) {
+      setAlertType('warning')
+      setAlertMsg('카카오톡 내에서는 구글 로그인이 불가능합니다.')
+      setShowAlert(true)
+      return
+    }
+
+    setAlertType('success')
 
     const result = await auth
       .signInWithPopup(new firebase.auth.GoogleAuthProvider())
