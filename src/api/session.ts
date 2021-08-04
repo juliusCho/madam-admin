@@ -18,10 +18,6 @@ export const apiLogin = async (
   console.log('key: ', key)
   console.log('name: ', name || email)
 
-  if (email !== process.env.REACT_APP_TEST_EMAIL) {
-    return null
-  }
-
   return {
     email,
     key,
