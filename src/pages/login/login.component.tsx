@@ -30,11 +30,6 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
     'success' | 'error' | 'warning'
   >('success')
 
-  // const setUserFromFetching = React.useCallback(async (firebaseUser) => {
-  //   const fetched = await apiLogin(firebaseUser)
-
-  // }, [])
-
   React.useEffect(() => {
     if (!isMounted()) return
     if (history.location.pathname === ROUTER_PATH.LOGIN) {
