@@ -1,0 +1,111 @@
+openapi: 3.0.0
+tags:
+  - name: admin-auth
+    description: 관리자 인증
+  - name: madam-data
+    description: Madam 앱 데이터 requests & responses
+info:
+  description: Madam 앱 관리자용 클라이언트에 필요한 API 스펙 1차 정의.
+  version: 1.0.0
+  title: Madam Admin Client Requests API
+  license:
+    name: UNLICENSED
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Admin:
+      type: object
+      properties:
+        email:
+          type: string
+          description: 사용자 이메일
+          example: madam@example.com
+        key:
+          type: string
+          description: 암호화 된 Google Firebase Auth Credential ID
+          example: key
+        name:
+          type: string
+          description: Google Firebase 인증에서 가져온 표시되는 사용자 명칭
+          example: Madam
+paths:
+  /login:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - admin-auth
+      summary: 관리자 로그인
+      description: Google Firebase 인증 이메일과 암호화된 Auth Credential ID을 DB에서 인증하고 로그인 처리한다
+      requestBody:
+        description: Google Firebase 인증 이메일 / 암호화된 Auth Credential ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: madam@example.com
+                key:
+                  type: string
+                  example: key
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                format: Admin
+                example:
+                  email: madam@example.com
+                  key: key
+                  name: Madam
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Params
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /name:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - admin-auth
+      summary: 관리자 명 변경
+      description: 관리자 사용자명 변경
+      requestBody:
+        description: Google Firebase 인증 이메일 / 암호화된 Auth Credential ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: madam@example.com
+                key:
+                  type: string
+                  example: key
+                name:
+                  type: string
+                  example: MadamNew
+      responses:
+        200:
+          description: success
+        400:
+          description: Invalid Request Params
+        403:
+          description: No Authority
+        500:
+          description: Server Error
