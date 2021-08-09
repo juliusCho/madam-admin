@@ -1,9 +1,19 @@
 openapi: 3.0.0
 tags:
-  - name: admin-auth
+  - name: Admin Auth
     description: 관리자 인증
-  - name: madam-data
-    description: Madam 앱 데이터 requests & responses
+  - name: Dashboard
+    description: 통계 차트
+  - name: System Variable
+    description: 시스템 환경 변수값 관리
+  - name: Charm Plan
+    description: 매력 포인트 플랜 관리
+  - name: Help Desk
+    description: 헬프 데스크 관리
+  - name: Q&A
+    description: 문의글&답변 관리
+  - name: User
+    description: 유저관리
 info:
   description: Madam 앱 관리자용 클라이언트에 필요한 API 스펙 1차 정의.
   version: 1.0.0
@@ -22,6 +32,7 @@ components:
       properties:
         email:
           type: string
+          format: email
           description: 사용자 이메일
           example: madam@example.com
         key:
@@ -32,13 +43,125 @@ components:
           type: string
           description: Google Firebase 인증에서 가져온 표시되는 사용자 명칭
           example: Madam
+    SystemVariable:
+      type: object
+      properties:
+        type:
+          type: string
+          description: '구분값 (예: DB / POINT_CALC / ...)'
+          example: POINT_CALC
+        key:
+          type: string
+          description: 환경변수 명칭(내부 키)
+          example: CALC_1
+        value:
+          type: string
+          description: 값
+          example: '10'
+        use:
+          type: boolean
+          description: 사용여부
+          example: true
+        modifierEmail:
+          type: string
+          format: email
+          description: 최종 수정 관리자 이메일
+          example: madam@example.com
+        createdAt:
+          type: string
+          format: date-time
+          description: 생성일시
+          example: 2021-08-09T21:59:00.000Z
+        modifiedAt:
+          type: string
+          format: date-time
+          description: 생성일시
+          example: 2021-08-09T21:59:00.000Z
+    CharmPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 고유 키
+          example: 1
+        name:
+          type: string
+          description: 플랜 명칭
+          example: Charm 10
+        description:
+          type: string
+          description: 플랜 설명
+          example: 매력 포인트 +10
+        dollar:
+          type: integer
+          format: int32
+          description: 플랜 가격(USD)
+          example: 10.00
+        charm:
+          type: integer
+          format: int32
+          description: 포인트
+          example: 10
+        order:
+          type: integer
+          format: int32
+          description: 표출 순서
+          example: 1
+        purchasedCount:
+          type: integer
+          format: int32
+          description: 구매 횟수
+          example: 100000
+        createdAt:
+          type: string
+          format: date-time
+          description: 생성일시
+          example: 2021-08-09T21:59:00.000Z
+        modifiedAt:
+          type: string
+          format: date-time
+          description: 생성일시
+          example: 2021-08-09T21:59:00.000Z
+        modifierEmail:
+          type: string
+          format: email
+          description: 최종 수정 관리자 이메일
+    Guide:
+      type: object
+      properties:
+        key:
+          type: string
+          description: 고유 키
+          example: APP_BASE_KR
+        icon:
+          type: string
+          description: 아이콘 경로/명
+          example: xi-close
+        content:
+          type: string
+          description: 글 내용
+          example: |
+            # 헬프데스크
+              1. 이것은 헬프데스크입니다
+        display:
+          type: boolean
+          description: 글 표시여부
+          example: true
+        modifiedAt:
+          type: string
+          format: date-time
+          description: 생성일시
+          example: 2021-08-09T21:59:00.000Z
+        modifierEmail:
+          type: string
+          format: email
+          description: 최종 수정 관리자 이메일
 paths:
   /login:
     post:
-      security:
-        - bearerAuth: []
       tags:
-        - admin-auth
+        - Admin Auth
       summary: 관리자 로그인
       description: Google Firebase 인증 이메일과 암호화된 Auth Credential ID을 DB에서 인증하고 로그인 처리한다
       requestBody:
@@ -51,13 +174,14 @@ paths:
               properties:
                 email:
                   type: string
+                  format: email
                   example: madam@example.com
                 key:
                   type: string
                   example: key
       responses:
         200:
-          description: success
+          description: Success
           content:
             application/json:
               schema:
@@ -75,12 +199,37 @@ paths:
           description: No Authority
         500:
           description: Server Error
+  /logout:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Admin Auth
+      summary: 관리자 로그아웃
+      description: 로그인 시 발행된 토큰 만료처리
+      requestBody:
+        description: 로그인 시 발행된 토큰
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+              example: token
+      responses:
+        200:
+          description: Success
+        400:
+          description: Invalid Request Params
+        403:
+          description: No Authority
+        500:
+          description: Server Error
   /name:
     put:
       security:
         - bearerAuth: []
       tags:
-        - admin-auth
+        - Admin Auth
       summary: 관리자 명 변경
       description: 관리자 사용자명 변경
       requestBody:
@@ -93,6 +242,7 @@ paths:
               properties:
                 email:
                   type: string
+                  format: email
                   example: madam@example.com
                 key:
                   type: string
@@ -102,9 +252,527 @@ paths:
                   example: MadamNew
       responses:
         200:
-          description: success
+          description: Success
         400:
           description: Invalid Request Params
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /system-variables:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - System Variable
+      summary: 시스템 환경 변수 목록 조회
+      description: 시스템 환경 변수 목록 조회
+      parameters:
+        - in: query
+          name: pageSize
+          description: 조회 항목 개수
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 10
+        - in: query
+          name: pageNumber
+          description: 조회 페이지 번호
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 1
+        - in: query
+          name: key
+          description: 변수 명칭
+          required: false
+          schema:
+            type: string
+            example: CALC_1
+        - in: query
+          name: type
+          description: 변수 구분값
+          required: false
+          schema:
+            type: string
+            example: POINT_CALC
+        - in: query
+          name: use
+          description: 사용여부
+          required: false
+          schema:
+            type: boolean
+            example: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  format: SystemVariable
+                example:
+                  - type: POINT_CALC
+                    key: CALC_1
+                    value: '10'
+                    use: true
+                    modifierEmail: madam@example.com
+                    createdAt: 2021-08-09T21:59:00.000Z
+                    modifiedAt: 2021-08-09T21:59:00.000Z
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - System Variable
+      summary: 시스템 환경변수 생성
+      description: 시스템 환경변수 신규 생성
+      parameters:
+        - in: path
+          name: type
+          description: 변수 구반값
+          required: true
+          schema:
+            type: string
+            example: POINT_CALC
+        - in: path
+          name: key
+          description: 변수 명
+          required: true
+          schema:
+            type: string
+            example: CALC_1
+      requestBody:
+        description: 시스템 환경변수 데이터 값
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+                  example: '10'
+                use:
+                  type: boolean
+                  example: true
+                modifierEmail:
+                  type: string
+                  format: email
+                  example: madam@example.com
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                format: SystemVariable
+                example:
+                  type: POINT_CALC
+                  key: CALC_1
+                  value: '10'
+                  use: true
+                  modifierEmail: madam@example.com
+                  createdAt: 2021-08-09T21:59:00.000Z
+                  modifiedAt: 2021-08-09T21:59:00.000Z
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - System Variable
+      summary: 시스템 환경변수 수정
+      description: 시스템 환경변수 수정
+      parameters:
+        - in: path
+          name: type
+          description: 변수 구반값
+          required: true
+          schema:
+            type: string
+            example: POINT_CALC
+        - in: path
+          name: key
+          description: 변수 명
+          required: true
+          schema:
+            type: string
+            example: CALC_1
+      requestBody:
+        description: 시스템 환경변수 데이터 값
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+                  example: '10'
+                use:
+                  type: boolean
+                  example: true
+                modifierEmail:
+                  type: string
+                  format: email
+                  example: madam@example.com
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                format: SystemVariable
+                example:
+                  type: POINT_CALC
+                  key: CALC_1
+                  value: '10'
+                  use: true
+                  modifierEmail: madam@example.com
+                  createdAt: 2021-08-09T21:59:00.000Z
+                  modifiedAt: 2021-08-09T21:59:00.000Z
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - System Variable
+      summary: 시스템 환경변수 삭제
+      description: 시스템 환경변수 삭제
+      parameters:
+        - in: path
+          name: type
+          description: 변수 구반값
+          required: true
+          schema:
+            type: string
+            example: POINT_CALC
+        - in: path
+          name: key
+          description: 변수 명
+          required: true
+          schema:
+            type: string
+            example: CALC_1
+      responses:
+        200:
+          description: Success
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /charm-plans:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Charm Plan
+      summary: 포인트 플랜 목록 조회
+      description: 포인트 플랜 목록 조회
+      parameters:
+        - in: query
+          name: pageSize
+          description: 조회 항목 개수
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 10
+        - in: query
+          name: pageNumber
+          description: 조회 페이지 번호
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 1
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  format: CharmPlan
+                example:
+                  - id: 1
+                    name: Charm 10
+                    description: 매력 포인트 +10
+                    dollar: 10.00
+                    charm: 10
+                    order: 1
+                    purchasedCount: 100000
+                    createdAt: 2021-08-09T21:59:00.000Z
+                    modifiedAt: 2021-08-09T21:59:00.000Z
+                    modifierEmail: madam@example.com
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Charm Plan
+      summary: 포인트 플랜 생성
+      description: 포인트 플랜 신규 생성
+      requestBody:
+        description: 포인트 플랜 데이터 값
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Charm 10
+                description:
+                  type: string
+                  example: 매력 포인트 +10
+                dollar:
+                  type: integer
+                  format: int32
+                  example: 10.00
+                charm:
+                  type: integer
+                  format: int32
+                  example: 10
+                order:
+                  type: integer
+                  format: int32
+                  example: 1
+                modifierEmail:
+                  type: string
+                  format: email
+                  example: madam@example.com
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                format: CharmPlan
+                example:
+                  id: 1
+                  name: Charm 10
+                  description: 매력 포인트 +10
+                  dollar: 10
+                  charm: 10
+                  modifierEmail: madam@example.com
+                  createdAt: 2021-08-09T21:59:00.000Z
+                  modifiedAt: 2021-08-09T21:59:00.000Z
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Charm Plan
+      summary: 포인트 플랜 수정
+      description: 포인트 플랜 수정
+      parameters:
+        - in: path
+          name: id
+          description: 포인트 플랜 고유 키
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      requestBody:
+        description: 포인트 플랜 데이터 값
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Charm 10
+                description:
+                  type: string
+                  example: 매력 포인트 +10
+                dollar:
+                  type: integer
+                  format: int32
+                  example: 10.00
+                charm:
+                  type: integer
+                  format: int32
+                  example: 10
+                order:
+                  type: integer
+                  format: int32
+                  example: 1
+                modifierEmail:
+                  type: string
+                  format: email
+                  example: madam@example.com
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                format: CharmPlan
+                example:
+                  id: 1
+                  name: Charm 10
+                  description: 매력 포인트 +10
+                  dollar: 10
+                  charm: 10
+                  modifierEmail: madam@example.com
+                  createdAt: 2021-08-09T21:59:00.000Z
+                  modifiedAt: 2021-08-09T21:59:00.000Z
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Charm Plan
+      summary: 포인트 플랜 삭제
+      description: 포인트 플랜 삭제
+      parameters:
+        - in: path
+          name: id
+          description: 포인트 플랜 고유 키
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        200:
+          description: Success
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /help-desks:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Help Desk
+      summary: 헬프데스크 조회
+      description: 헬프데스크 글 조회
+      parameters:
+        - in: path
+          name: key
+          description: 헬프데스크 구분 키
+          required: true
+          schema:
+            type: string
+            example: APP_BASE_KR
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                format: Guide
+                example:
+                  key: APP_BASE_KR
+                  icon: xi-close
+                  content: |
+                    # 헬프데스크
+                      1. 이것은 헬프데스크입니다
+                  display: true
+                  modifiedAt: 2021-08-09T21:59:00.000Z
+                  modifierEmail: madam@example.com
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Help Desk
+      summary: 헬프데스크 생성/수정
+      description: 헬프데스크 신규 생성 또는 수정
+      requestBody:
+        description: 헬프데스크 데이터 값
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                key:
+                  type: string
+                  example: APP_BASE_KR
+                icon:
+                  type: string
+                  example: xi-close
+                content:
+                  type: string
+                  example: |
+                    # 헬프데스크
+                      1. 이것은 헬프데스크입니다
+                display:
+                  type: boolean
+                  example: true
+                modifierEmail:
+                  type: string
+                  format: email
+                  example: madam@example.com
+      responses:
+        200:
+          description: Success
+        400:
+          description: Invalid Request Param
         403:
           description: No Authority
         500:
