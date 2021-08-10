@@ -79,12 +79,12 @@ components:
           type: string
           format: date-time
           description: 생성일시
-          example: 2021-08-09T21:59:00.000Z
+          example: '2021-08-09T21:59:00.000Z'
         modifiedAt:
           type: string
           format: date-time
           description: 생성일시
-          example: 2021-08-09T21:59:00.000Z
+          example: '2021-08-09T21:59:00.000Z'
     CharmPlan:
       type: object
       properties:
@@ -125,12 +125,12 @@ components:
           type: string
           format: date-time
           description: 생성일시
-          example: 2021-08-09T21:59:00.000Z
+          example: '2021-08-09T21:59:00.000Z'
         modifiedAt:
           type: string
           format: date-time
           description: 생성일시
-          example: 2021-08-09T21:59:00.000Z
+          example: '2021-08-09T21:59:00.000Z'
         modifierName:
           type: string
           description: 최종 수정 관리자 명
@@ -173,7 +173,7 @@ components:
           type: string
           format: date-time
           description: 생성일시
-          example: 2021-08-09T21:59:00.000Z
+          example: '2021-08-09T21:59:00.000Z'
         modifierName:
           type: string
           description: 최종 수정 관리자 명
@@ -213,12 +213,12 @@ components:
           type: string
           format: date-time
           description: 문의글 최종 수정일시
-          example: 2021-08-09T21:59:00.000Z
+          example: '2021-08-09T21:59:00.000Z'
         answeredAt:
           type: string
           format: date-time
           description: 답변 최종 수정일시
-          example: 2021-08-09T21:59:00.000Z
+          example: '2021-08-09T21:59:00.000Z'
     InquiryDetail:
       type: object
       properties:
@@ -265,12 +265,12 @@ components:
           type: string
           format: date-time
           description: 문의글 최종 수정일시
-          example: 2021-08-09T21:59:00.000Z
+          example: '2021-08-09T21:59:00.000Z'
         answeredAt:
           type: string
           format: date-time
           description: 답변 최종 수정일시
-          example: 2021-08-09T21:59:00.000Z
+          example: '2021-08-09T21:59:00.000Z'
     InquiryAnswer:
       type: object
       properties:
@@ -325,7 +325,7 @@ components:
           type: string
           format: date-time
           description: 최종 수정일시
-          example: 2021-08-09T21:59:00.000Z
+          example: '2021-08-09T21:59:00.000Z'
         modifierName:
           type: string
           description: 최종 수정 관리자 명
@@ -354,7 +354,7 @@ components:
           type: string
           format: date-time
           description: 최종 수정일시
-          example: 2021-08-09T21:59:00.000Z
+          example: '2021-08-09T21:59:00.000Z'
         modifierName:
           type: string
           description: 최종 수정 관리자 명
@@ -523,8 +523,8 @@ paths:
                     value: '10'
                     use: true
                     modifierName: Julius
-                    createdAt: 2021-08-09T21:59:00.000Z
-                    modifiedAt: 2021-08-09T21:59:00.000Z
+                    createdAt: '2021-08-09T21:59:00.000Z'
+                    modifiedAt: '2021-08-09T21:59:00.000Z'
         204:
           description: No Content
         400:
@@ -588,8 +588,8 @@ paths:
                   value: '10'
                   use: true
                   modifierName: Julius
-                  createdAt: 2021-08-09T21:59:00.000Z
-                  modifiedAt: 2021-08-09T21:59:00.000Z
+                  createdAt: '2021-08-09T21:59:00.000Z'
+                  modifiedAt: '2021-08-09T21:59:00.000Z'
         400:
           description: Invalid Request Param
         403:
@@ -650,8 +650,8 @@ paths:
                   value: '10'
                   use: true
                   modifierName: Julius
-                  createdAt: 2021-08-09T21:59:00.000Z
-                  modifiedAt: 2021-08-09T21:59:00.000Z
+                  createdAt: '2021-08-09T21:59:00.000Z'
+                  modifiedAt: '2021-08-09T21:59:00.000Z'
         400:
           description: Invalid Request Param
         403:
@@ -734,8 +734,8 @@ paths:
                     charm: 10
                     order: 1
                     purchasedCount: 100000
-                    createdAt: 2021-08-09T21:59:00.000Z
-                    modifiedAt: 2021-08-09T21:59:00.000Z
+                    createdAt: '2021-08-09T21:59:00.000Z'
+                    modifiedAt: '2021-08-09T21:59:00.000Z'
                     modifierName: Julius
         204:
           description: No Content
@@ -797,8 +797,8 @@ paths:
                   dollar: 10
                   charm: 10
                   modifierName: Julius
-                  createdAt: 2021-08-09T21:59:00.000Z
-                  modifiedAt: 2021-08-09T21:59:00.000Z
+                  createdAt: '2021-08-09T21:59:00.000Z'
+                  modifiedAt: '2021-08-09T21:59:00.000Z'
         400:
           description: Invalid Request Param
         403:
@@ -867,8 +867,8 @@ paths:
                   dollar: 10
                   charm: 10
                   modifierName: Julius
-                  createdAt: 2021-08-09T21:59:00.000Z
-                  modifiedAt: 2021-08-09T21:59:00.000Z
+                  createdAt: '2021-08-09T21:59:00.000Z'
+                  modifiedAt: '2021-08-09T21:59:00.000Z'
         400:
           description: Invalid Request Param
         403:
@@ -1002,7 +1002,7 @@ paths:
                     # 헬프데스크
                       1. 이것은 헬프데스크입니다
                   display: true
-                  modifiedAt: 2021-08-09T21:59:00.000Z
+                  modifiedAt: '2021-08-09T21:59:00.000Z'
                   modifierName: Julius
         204:
           description: No Content
@@ -1086,8 +1086,8 @@ paths:
                     title: 문의글
                     answered: true
                     answeredManagerName: Julius
-                    createdAt: 2021-08-09T21:59:00.000Z
-                    answeredAt: 2021-08-09T21:59:00.000Z
+                    createdAt: '2021-08-09T21:59:00.000Z'
+                    answeredAt: '2021-08-09T21:59:00.000Z'
         204:
           description: No Content
         400:
@@ -1133,8 +1133,8 @@ paths:
                   answeredManagerName: Julius
                   answer: |
                     # 감사합니다!
-                  createdAt: 2021-08-09T21:59:00.000Z
-                  answeredAt: 2021-08-09T21:59:00.000Z
+                  createdAt: '2021-08-09T21:59:00.000Z'
+                  answeredAt: '2021-08-09T21:59:00.000Z'
                   answerModifiedAt: null
         204:
           description: No Content
@@ -1193,8 +1193,8 @@ paths:
                   answeredManagerName: Julius
                   answer: |
                     # 감사합니다!
-                  createdAt: 2021-08-09T21:59:00.000Z
-                  answeredAt: 2021-08-09T21:59:00.000Z
+                  createdAt: '2021-08-09T21:59:00.000Z'
+                  answeredAt: '2021-08-09T21:59:00.000Z'
                   answerModifiedAt: null
         400:
           description: Invalid Request Param
@@ -1251,8 +1251,8 @@ paths:
                   answeredManagerName: Julius
                   answer: |
                     # 감사합니다!
-                  createdAt: 2021-08-09T21:59:00.000Z
-                  answeredAt: 2021-08-09T21:59:00.000Z
+                  createdAt: '2021-08-09T21:59:00.000Z'
+                  answeredAt: '2021-08-09T21:59:00.000Z'
                   answerModifiedAt: null
         400:
           description: Invalid Request Param
@@ -1349,7 +1349,7 @@ paths:
                     titleEn: MBTI
                     type: SELECT
                     inputLength: null
-                    modifiedAt: 2021-08-09T21:59:00.000Z
+                    modifiedAt: '2021-08-09T21:59:00.000Z'
                     modifierName: Julius
         204:
           description: No Content
@@ -1412,7 +1412,7 @@ paths:
                   titleEn: MBTI
                   type: SELECT
                   inputLength: null
-                  modifiedAt: 2021-08-09T21:59:00.000Z
+                  modifiedAt: '2021-08-09T21:59:00.000Z'
                   modifierName: Julius
         400:
           description: Invalid Request Param
@@ -1483,7 +1483,7 @@ paths:
                   titleEn: MBTI
                   type: SELECT
                   inputLength: null
-                  modifiedAt: 2021-08-09T21:59:00.000Z
+                  modifiedAt: '2021-08-09T21:59:00.000Z'
                   modifierName: Julius
         400:
           description: Invalid Request Param
@@ -1586,7 +1586,7 @@ paths:
                     key: ISTJ
                     value: ISTJ
                     use: true
-                    modifiedAt: 2021-08-09T21:59:00.000Z
+                    modifiedAt: '2021-08-09T21:59:00.000Z'
                     modifierName: Julius
         204:
           description: No Content
@@ -1637,6 +1637,7 @@ paths:
                   key: ISTJ
                   value: ISTJ
                   use: true
+                  modifiedAt: '2021-08-09T21:59:00.000Z'
                   modifierName: Julius
         400:
           description: Invalid Request Param
@@ -1692,6 +1693,7 @@ paths:
                   key: ISTJ
                   value: ISTJ
                   use: true
+                  modifiedAt: '2021-08-09T21:59:00.000Z'
                   modifierName: Julius
         400:
           description: Invalid Request Param
