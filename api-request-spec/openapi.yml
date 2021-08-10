@@ -734,9 +734,9 @@ paths:
                     charm: 10
                     order: 1
                     purchasedCount: 100000
+                    modifierName: Julius
                     createdAt: '2021-08-09T21:59:00.000Z'
                     modifiedAt: '2021-08-09T21:59:00.000Z'
-                    modifierName: Julius
         204:
           description: No Content
         400:
