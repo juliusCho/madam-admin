@@ -796,6 +796,7 @@ paths:
                   description: 매력 포인트 +10
                   dollar: 10
                   charm: 10
+                  purchasedCount: 0
                   modifierName: Julius
                   createdAt: '2021-08-09T21:59:00.000Z'
                   modifiedAt: '2021-08-09T21:59:00.000Z'
@@ -866,6 +867,7 @@ paths:
                   description: 매력 포인트 +10
                   dollar: 10
                   charm: 10
+                  purchasedCount: 100000
                   modifierName: Julius
                   createdAt: '2021-08-09T21:59:00.000Z'
                   modifiedAt: '2021-08-09T21:59:00.000Z'
