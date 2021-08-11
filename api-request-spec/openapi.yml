@@ -1,9 +1,18 @@
-openapi: 3.0.0
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: Madam Admin Client Requests API
+  description: Madam 앱 관리자용 클라이언트에 필요한 API 스펙 1차 정의.
+  contact:
+    name: Julius
+    email: johncrist2000@gmail.com
+  license:
+    name: UNLICENSED
 tags:
   - name: Admin Auth
     description: 관리자 인증
   - name: Dashboard
-    description: 통계 차트
+    description: 통계&차트
   - name: System Variable
     description: 시스템 환경 변수값 관리
   - name: Charm Plan
@@ -13,21 +22,17 @@ tags:
   - name: Q&A
     description: 문의글&답변 관리
   - name: Profile Extra Item
-    description: 프로필 추가 항목
+    description: 프로필 추가 항목 관리
   - name: User Block
-    description: 신고/차단
+    description: 신고/차단 건 관리
   - name: User Interest
-    description: 관심사/싫어요
+    description: 관심사/싫어요 항목 관리
   - name: User Photo
-    description: 유저 사진
+    description: 유저 사진 관리
   - name: User Profile
-    description: 유저 프로필
-info:
-  description: Madam 앱 관리자용 클라이언트에 필요한 API 스펙 1차 정의.
-  version: 1.0.0
-  title: Madam Admin Client Requests API
-  license:
-    name: UNLICENSED
+    description: 유저 프로필 관리
+  - name: Notify Violation
+    description: 유저 경고 처리
 components:
   securitySchemes:
     bearerAuth:
@@ -37,6 +42,7 @@ components:
   schemas:
     Admin:
       type: object
+      description: 관리자 클라이언트 데이터
       properties:
         email:
           type: string
@@ -53,6 +59,7 @@ components:
           example: Madam
     SystemVariable:
       type: object
+      description: 시스템 환경변수 클라이언트 데이터
       properties:
         type:
           type: string
@@ -87,6 +94,7 @@ components:
           example: '2021-08-09T21:59:00.000Z'
     CharmPlan:
       type: object
+      description: 포인트 플랜 클라이언트 데이터
       properties:
         id:
           type: integer
@@ -102,10 +110,9 @@ components:
           description: 플랜 설명
           example: 매력 포인트 +10
         dollar:
-          type: integer
-          format: int32
+          type: string
           description: 플랜 가격(USD)
-          example: 10.00
+          example: '10.00'
         charm:
           type: integer
           format: int32
@@ -137,6 +144,7 @@ components:
           example: Julius
     Guide:
       type: object
+      description: 헬프데스크 클라이언트 데이터
       properties:
         key:
           type: string
@@ -179,6 +187,7 @@ components:
           description: 최종 수정 관리자 명
     Inquiry:
       type: object
+      description: 문의글 클라이언트 데이터
       properties:
         id:
           type: integer
@@ -221,6 +230,7 @@ components:
           example: '2021-08-09T21:59:00.000Z'
     InquiryDetail:
       type: object
+      description: 문의글 상세 클라이언트 데이터
       properties:
         id:
           type: integer
@@ -271,26 +281,9 @@ components:
           format: date-time
           description: 답변 최종 수정일시
           example: '2021-08-09T21:59:00.000Z'
-    InquiryAnswer:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: 문의글 고유 키
-          example: 1
-        content:
-          type: string
-          description: 답변 내용
-          example: |
-            # 감사합니다!
-        modifierEmail:
-          type: string
-          format: email
-          description: 답변 관리자 이메일
-          example: madam@example.com
     ProfileExtraItem:
       type: object
+      description: 유저 프로필 추가 항목 클라이언트 데이터
       properties:
         id:
           type: integer
@@ -332,6 +325,7 @@ components:
           example: Julius
     ProfileSelectItem:
       type: object
+      description: SELECT 타입인 유저 프로필 추가 항목용 선택요소 클라이언트 데이터
       properties:
         id:
           type: integer
@@ -359,6 +353,157 @@ components:
           type: string
           description: 최종 수정 관리자 명
           example: Julius
+    UserBlock:
+      type: object
+      description: 차단/신고 클라이언트 데이터
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 차단/신고 고유 키
+          example: 1
+        requesterNickname:
+          type: string
+          description: 차단/신고 요청자 닉네임
+          example: 신고자
+        targetNickname:
+          type: string
+          description: 차단/신고 대상자 닉네임
+          example: 유저
+        type:
+          type: string
+          enum:
+            - PHOTO
+            - PROFILE
+            - CHAT
+            - ETC
+          description: 차단/신고 사유 유형
+          example: PHOTO
+        blockReason:
+          type: string
+          description: 차단/신고 사유
+          example: 사진이 이상함
+        approved:
+          type: string
+          enum:
+            - NONE
+            - APPROVE
+            - DISMISS
+          description: 차단/신고 승인 상태
+          example: APPROVE
+        createdAt:
+          type: string
+          format: date-time
+          description: 차단/신고 일시
+          example: '2021-08-09T21:59:00.000Z'
+        approvedAt:
+          type: string
+          format: date-time
+          description: 차단/신고 일시
+          example: '2021-08-09T21:59:00.000Z'
+        approverManagerName:
+          type: string
+          description: 승인 관리자 닉네임
+          example: Julius
+    ProfileInterestItem:
+      type: object
+      description: 관심사/싫어요 클라이언트 데이터
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 관심사/싫어요 고유 키
+          example: 1
+        itemKr:
+          type: string
+          description: 관심사/싫어요 항목 한글
+          example: 사랑
+        itemEn:
+          type: string
+          description: 관심사/싫어요 항목 영문
+          example: Love
+        isLike:
+          type: boolean
+          description: 관심사/싫어요 구분(true == 관심사)
+          example: true
+        modifiedAt:
+          type: string
+          format: date-time
+          description: 최종 수정일시
+          example: '2021-08-09T21:59:00.000Z'
+        modifierName:
+          type: string
+          description: 최종 수정 관리자 명
+          example: Julius
+    ProfileInterestItemRequest:
+      type: object
+      description: 관심사/싫어요 사용자 요청 클라이언트 데이터
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 관심사/싫어요 요청 고유 키
+          example: 1
+        item:
+          type: string
+          description: 요청 관심사/싫어요 항목
+          example: Hate
+        isLike:
+          type: boolean
+          description: 관심사/싫어요 구분(true == 관심사)
+          example: false
+        requestCount:
+          type: integer
+          format: int32
+          description: 요청자 수
+          example: 1
+    ProfilePhoto:
+      type: object
+      description: 사용자 사진 클라이언트 데이터
+      properties:
+        key:
+          type: string
+          description: 사용자 고유 키
+          example: UID
+        nickname:
+          type: string
+          description: 사용자 닉네임
+          example: Madam
+        order:
+          type: integer
+          format: int32
+          description: 표출 순서
+          example: 1
+        src:
+          type: string
+          description: 사진 경로
+          example: 'https://madam-photo/photo.png'
+        validated:
+          type: boolean
+          description: 승인 여부
+          example: true
+        type:
+          type: string
+          enum:
+            - DEFAULT
+            - THUMBNAIL
+            - MAIN
+          description: 사진 타입
+          example: DEFAULT
+        createdAt:
+          type: string
+          format: date-time
+          description: 등록 일시
+          example: '2021-08-09T21:59:00.000Z'
+        modifiedAt:
+          type: string
+          format: date-time
+          description: 최종 수정일시
+          example: '2021-08-09T21:59:00.000Z'
+        modifierName:
+          type: string
+          description: 최종 수정 관리자 명
+          example: Julius
 paths:
   /login:
     post:
@@ -373,13 +518,18 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - email
+                - key
               properties:
                 email:
                   type: string
                   format: email
+                  description: Google Firebase 인증 이메일
                   example: madam@example.com
                 key:
                   type: string
+                  description: 암호화된 Google Firebase Auth Credential ID
                   example: key
       responses:
         200:
@@ -387,12 +537,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                format: Admin
-                example:
-                  email: madam@example.com
-                  key: key
-                  name: Madam
+                $ref: '#/components/schemas/Admin'
         204:
           description: No Content
         400:
@@ -420,6 +565,8 @@ paths:
       responses:
         200:
           description: Success
+        204:
+          description: No Content
         400:
           description: Invalid Request Params
         403:
@@ -440,21 +587,29 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              required:
+                - email
+                - key
+                - name
               properties:
                 email:
                   type: string
                   format: email
+                  description: 사용자 이메일
                   example: madam@example.com
                 key:
                   type: string
+                  description: 암호화 된 Google Firebase Auth Credential ID
                   example: key
                 name:
                   type: string
-                  example: MadamNew
+                  description: Google Firebase 인증에서 가져온 표시되는 사용자 명칭
+                  example: Madam
       responses:
         200:
           description: Success
+        204:
+          description: No Content
         400:
           description: Invalid Request Params
         403:
@@ -515,16 +670,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  format: SystemVariable
-                example:
-                  - type: POINT_CALC
-                    key: CALC_1
-                    value: '10'
-                    use: true
-                    modifierName: Julius
-                    createdAt: '2021-08-09T21:59:00.000Z'
-                    modifiedAt: '2021-08-09T21:59:00.000Z'
+                  $ref: '#/components/schemas/SystemVariable'
         204:
           description: No Content
         400:
@@ -544,7 +690,7 @@ paths:
       parameters:
         - in: path
           name: type
-          description: 변수 구반값
+          description: 변수 구분값
           required: true
           schema:
             type: string
@@ -563,16 +709,18 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - value
+                - modifierEmail
               properties:
                 value:
                   type: string
+                  description: 환경변수 값
                   example: '10'
-                use:
-                  type: boolean
-                  example: true
                 modifierEmail:
                   type: string
                   format: email
+                  description: 생성 관리자 이메일
                   example: madam@example.com
       responses:
         200:
@@ -580,16 +728,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                format: SystemVariable
-                example:
-                  type: POINT_CALC
-                  key: CALC_1
-                  value: '10'
-                  use: true
-                  modifierName: Julius
-                  createdAt: '2021-08-09T21:59:00.000Z'
-                  modifiedAt: '2021-08-09T21:59:00.000Z'
+                $ref: '#/components/schemas/SystemVariable'
         400:
           description: Invalid Request Param
         403:
@@ -625,16 +764,23 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - value
+                - use
+                - modifierEmail
               properties:
                 value:
                   type: string
+                  description: 환경변수 값
                   example: '10'
                 use:
                   type: boolean
+                  description: 사용여부
                   example: true
                 modifierEmail:
                   type: string
                   format: email
+                  description: 수정 관리자 이메일
                   example: madam@example.com
       responses:
         200:
@@ -642,16 +788,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                format: SystemVariable
-                example:
-                  type: POINT_CALC
-                  key: CALC_1
-                  value: '10'
-                  use: true
-                  modifierName: Julius
-                  createdAt: '2021-08-09T21:59:00.000Z'
-                  modifiedAt: '2021-08-09T21:59:00.000Z'
+                $ref: '#/components/schemas/SystemVariable'
+        204:
+          description: No Content
         400:
           description: Invalid Request Param
         403:
@@ -724,19 +863,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  format: CharmPlan
-                example:
-                  - id: 1
-                    name: Charm 10
-                    description: 매력 포인트 +10
-                    dollar: 10.00
-                    charm: 10
-                    order: 1
-                    purchasedCount: 100000
-                    modifierName: Julius
-                    createdAt: '2021-08-09T21:59:00.000Z'
-                    modifiedAt: '2021-08-09T21:59:00.000Z'
+                  $ref: '#/components/schemas/CharmPlan'
         204:
           description: No Content
         400:
@@ -759,28 +886,38 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - name
+                - dollar
+                - charm
+                - modifierEmail
               properties:
                 name:
                   type: string
+                  description: 플랜 명칭
                   example: Charm 10
                 description:
                   type: string
+                  description: 플랜 설명
                   example: 매력 포인트 +10
                 dollar:
-                  type: integer
-                  format: int32
-                  example: 10.00
+                  type: string
+                  description: 플랜 가격(USD)
+                  example: '10.00'
                 charm:
                   type: integer
                   format: int32
+                  description: 포인트
                   example: 10
                 order:
                   type: integer
                   format: int32
+                  description: 표출 순서
                   example: 1
                 modifierEmail:
                   type: string
                   format: email
+                  description: 생성 관리자 이메일
                   example: madam@example.com
       responses:
         200:
@@ -788,18 +925,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                format: CharmPlan
-                example:
-                  id: 1
-                  name: Charm 10
-                  description: 매력 포인트 +10
-                  dollar: 10
-                  charm: 10
-                  purchasedCount: 0
-                  modifierName: Julius
-                  createdAt: '2021-08-09T21:59:00.000Z'
-                  modifiedAt: '2021-08-09T21:59:00.000Z'
+                $ref: '#/components/schemas/CharmPlan'
         400:
           description: Invalid Request Param
         403:
@@ -830,28 +956,38 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - name
+                - dollar
+                - charm
+                - modifierEmail
               properties:
                 name:
                   type: string
+                  description: 플랜 명칭
                   example: Charm 10
                 description:
                   type: string
+                  description: 플랜 설명
                   example: 매력 포인트 +10
                 dollar:
-                  type: integer
-                  format: int32
-                  example: 10.00
+                  type: string
+                  description: 플랜 가격(USD)
+                  example: '10.00'
                 charm:
                   type: integer
                   format: int32
+                  description: 포인트
                   example: 10
                 order:
                   type: integer
                   format: int32
+                  description: 표출 순서
                   example: 1
                 modifierEmail:
                   type: string
                   format: email
+                  description: 생성 관리자 이메일
                   example: madam@example.com
       responses:
         200:
@@ -859,18 +995,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                format: CharmPlan
-                example:
-                  id: 1
-                  name: Charm 10
-                  description: 매력 포인트 +10
-                  dollar: 10
-                  charm: 10
-                  purchasedCount: 100000
-                  modifierName: Julius
-                  createdAt: '2021-08-09T21:59:00.000Z'
-                  modifiedAt: '2021-08-09T21:59:00.000Z'
+                $ref: '#/components/schemas/CharmPlan'
+        204:
+          description: No Content
         400:
           description: Invalid Request Param
         403:
@@ -919,6 +1046,11 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - key
+                - content
+                - display
+                - modifierEmail
               properties:
                 key:
                   type: string
@@ -935,21 +1067,26 @@ paths:
                     - BEST_MADAM_EN
                     - TEAM_KR
                     - TEAM_EN
+                  description: 고유 키
                   example: APP_BASE_KR
                 icon:
                   type: string
+                  description: 아이콘 경로/명
                   example: xi-close
                 content:
                   type: string
+                  description: 글 내용
                   example: |
                     # 헬프데스크
                       1. 이것은 헬프데스크입니다
                 display:
                   type: boolean
+                  description: 글 표시여부
                   example: true
                 modifierEmail:
                   type: string
                   format: email
+                  description: 생성/수정 관리자 이메일
                   example: madam@example.com
       responses:
         200:
@@ -971,7 +1108,7 @@ paths:
       parameters:
         - in: path
           name: key
-          description: 헬프데스크 구분 키
+          description: 헬프데스크 구분(고유) 키
           required: true
           schema:
             type: string
@@ -995,17 +1132,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                format: Guide
-                example:
-                  key: APP_BASE_KR
-                  icon: xi-close
-                  content: |
-                    # 헬프데스크
-                      1. 이것은 헬프데스크입니다
-                  display: true
-                  modifiedAt: '2021-08-09T21:59:00.000Z'
-                  modifierName: Julius
+                $ref: '#/components/schemas/Guide'
         204:
           description: No Content
         400:
@@ -1079,17 +1206,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  format: Inquiry
-                example:
-                  - id: 1
-                    nickname: Madam
-                    type: INQUIRY
-                    title: 문의글
-                    answered: true
-                    answeredManagerName: Julius
-                    createdAt: '2021-08-09T21:59:00.000Z'
-                    answeredAt: '2021-08-09T21:59:00.000Z'
+                  $ref: '#/components/schemas/Inquiry'
         204:
           description: No Content
         400:
@@ -1121,23 +1238,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                format: InquiryDetail
-                example:
-                  id: 1
-                  nickname: Madam
-                  type: INQUIRY
-                  title: 문의글
-                  content: |
-                    # Madam앱이 좋은이유
-                      - 최고니깐
-                  answered: true
-                  answeredManagerName: Julius
-                  answer: |
-                    # 감사합니다!
-                  createdAt: '2021-08-09T21:59:00.000Z'
-                  answeredAt: '2021-08-09T21:59:00.000Z'
-                  answerModifiedAt: null
+                $ref: '#/components/schemas/InquiryDetail'
         204:
           description: No Content
         400:
@@ -1152,7 +1253,9 @@ paths:
       tags:
         - Q&A
       summary: 문의글 답변 신규
-      description: 문의글에 대한 답변 신규 생성(이메일 발신 필요)
+      description: |
+        - 문의글에 대한 답변 신규 생성
+        - 이메일 발신 필요
       parameters:
         - in: path
           name: id
@@ -1169,35 +1272,35 @@ paths:
           application/json:
             schema:
               type: object
-              format: InquiryAnswer
-              example:
-                id: 1
-                content: |
-                  # 감사합니다!
-                modifierEmail: madam@example.com
+              required:
+                - id
+                - content
+                - modifierEmail
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                  description: 문의글 고유 키
+                  example: 1
+                content:
+                  type: string
+                  description: 답변 내용
+                  example: |
+                    # 감사합니다!
+                modifierEmail:
+                  type: string
+                  format: email
+                  description: 답변 관리자 이메일
+                  example: madam@example.com
       responses:
         200:
           description: Success
           content:
             application/json:
               schema:
-                type: object
-                format: InquiryDetail
-                example:
-                  id: 1
-                  nickname: Madam
-                  type: INQUIRY
-                  title: 문의글
-                  content: |
-                    # Madam앱이 좋은이유
-                      - 최고니깐
-                  answered: true
-                  answeredManagerName: Julius
-                  answer: |
-                    # 감사합니다!
-                  createdAt: '2021-08-09T21:59:00.000Z'
-                  answeredAt: '2021-08-09T21:59:00.000Z'
-                  answerModifiedAt: null
+                $ref: '#/components/schemas/InquiryDetail'
+        204:
+          description: No Content
         400:
           description: Invalid Request Param
         403:
@@ -1210,7 +1313,9 @@ paths:
       tags:
         - Q&A
       summary: 문의글 답변 수정
-      description: 기존에 답변을 단 문의글의 답변 수정(이메일 발신 필요)
+      description: |
+        - 기존에 답변을 단 문의글의 답변 수정
+        - 이메일 재발신 필요
       parameters:
         - in: path
           name: id
@@ -1227,35 +1332,35 @@ paths:
           application/json:
             schema:
               type: object
-              format: InquiryAnswer
-              example:
-                id: 1
-                content: |
-                  # 감사합니다!
-                modifierEmail: madam@example.com
+              required:
+                - id
+                - content
+                - modifierEmail
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                  description: 문의글 고유 키
+                  example: 1
+                content:
+                  type: string
+                  description: 답변 내용
+                  example: |
+                    # 감사합니다!
+                modifierEmail:
+                  type: string
+                  format: email
+                  description: 답변 관리자 이메일
+                  example: madam@example.com
       responses:
         200:
           description: Success
           content:
             application/json:
               schema:
-                type: object
-                format: InquiryDetail
-                example:
-                  id: 1
-                  nickname: Madam
-                  type: INQUIRY
-                  title: 문의글
-                  content: |
-                    # Madam앱이 좋은이유
-                      - 최고니깐
-                  answered: true
-                  answeredManagerName: Julius
-                  answer: |
-                    # 감사합니다!
-                  createdAt: '2021-08-09T21:59:00.000Z'
-                  answeredAt: '2021-08-09T21:59:00.000Z'
-                  answerModifiedAt: null
+                $ref: '#/components/schemas/InquiryDetail'
+        204:
+          description: No Content
         400:
           description: Invalid Request Param
         403:
@@ -1343,16 +1448,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  format: ProfileExtraItem
-                example:
-                  - id: 1
-                    titleKr: MBTI
-                    titleEn: MBTI
-                    type: SELECT
-                    inputLength: null
-                    modifiedAt: '2021-08-09T21:59:00.000Z'
-                    modifierName: Julius
+                  $ref: '#/components/schemas/ProfileExtraItem'
         204:
           description: No Content
         400:
@@ -1375,12 +1471,19 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - titleKr
+                - titleEn
+                - type
+                - modifierEmail
               properties:
                 titleKr:
                   type: string
+                  description: 프로필 추가 항목 한글 명칭
                   example: MBTI
                 titleEn:
                   type: string
+                  description: 프로필 추가 항목 영문 명칭
                   example: MBTI
                 type:
                   type: string
@@ -1391,14 +1494,17 @@ paths:
                     - SELECT
                     - MULTI_SELECT
                     - RADIO
+                  description: 타입
                   example: SELECT
                 inputLength:
                   type: integer
                   format: int32
+                  description: 타입이 TEXT / TEXT_AREA일 시, 최대 입력 가능 글자수. MULT_SELECT일 시, 최대 선택 가능 항목 수
                   example: null
                 modifierEmail:
                   type: string
                   format: email
+                  description: 생성 관리자 이메일
                   example: madam@example.com
       responses:
         200:
@@ -1406,16 +1512,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                format: ProfileExtraItem
-                example:
-                  id: 1
-                  titleKr: MBTI
-                  titleEn: MBTI
-                  type: SELECT
-                  inputLength: null
-                  modifiedAt: '2021-08-09T21:59:00.000Z'
-                  modifierName: Julius
+                $ref: '#/components/schemas/ProfileExtraItem'
         400:
           description: Invalid Request Param
         403:
@@ -1429,7 +1526,9 @@ paths:
       tags:
         - Profile Extra Item
       summary: 유저 프로필 추가 관리 항목 수정
-      description: 유저 프로필 추가 관리 항목 수정 (SELECT 타입인 프로필 추가 항목을 위한 선택 요소에 영향)
+      description: |
+        - 유저 프로필 추가 관리 항목 수정 
+          <br />(SELECT 타입인 프로필 추가 항목을 위한 선택 요소에 영향)
       parameters:
         - in: path
           name: id
@@ -1446,12 +1545,19 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - titleKr
+                - titleEn
+                - type
+                - modifierEmail
               properties:
                 titleKr:
                   type: string
+                  description: 프로필 추가 항목 한글 명칭
                   example: MBTI
                 titleEn:
                   type: string
+                  description: 프로필 추가 항목 영문 명칭
                   example: MBTI
                 type:
                   type: string
@@ -1462,14 +1568,17 @@ paths:
                     - SELECT
                     - MULTI_SELECT
                     - RADIO
+                  description: 타입
                   example: SELECT
                 inputLength:
                   type: integer
                   format: int32
+                  description: 타입이 TEXT / TEXT_AREA일 시, 최대 입력 가능 글자수. MULT_SELECT일 시, 최대 선택 가능 항목 수
                   example: null
                 modifierEmail:
                   type: string
                   format: email
+                  description: 생성 관리자 이메일
                   example: madam@example.com
       responses:
         200:
@@ -1477,16 +1586,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                format: ProfileExtraItem
-                example:
-                  id: 1
-                  titleKr: MBTI
-                  titleEn: MBTI
-                  type: SELECT
-                  inputLength: null
-                  modifiedAt: '2021-08-09T21:59:00.000Z'
-                  modifierName: Julius
+                $ref: '#/components/schemas/ProfileExtraItem'
+        204:
+          description: No Content
         400:
           description: Invalid Request Param
         403:
@@ -1499,7 +1601,9 @@ paths:
       tags:
         - Profile Extra Item
       summary: 유저 프로필 추가 관리 항목 삭제
-      description: 유저 프로필 추가 관리 항목 삭제 (SELECT 타입인 프로필 추가 항목을 위한 선택 요소도 함께 삭제)
+      description: |
+        - 유저 프로필 추가 관리 항목 삭제 
+          <br />(SELECT 타입인 프로필 추가 항목을 위한 선택 요소도 함께 삭제)
       parameters:
         - in: path
           name: id
@@ -1581,15 +1685,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  format: ProfileSelectItem
-                example:
-                  - id: 1
-                    key: ISTJ
-                    value: ISTJ
-                    use: true
-                    modifiedAt: '2021-08-09T21:59:00.000Z'
-                    modifierName: Julius
+                  $ref: '#/components/schemas/ProfileSelectItem'
         204:
           description: No Content
         400:
@@ -1621,26 +1717,38 @@ paths:
           application/json:
             schema:
               type: object
-              example:
-                key: ISTJ
-                value: ISTJ
-                use: true
-                modifierEmail: madam@example.com
+              required:
+                - key
+                - value
+                - use
+                - modifierEmail
+              properties:
+                key:
+                  type: string
+                  description: 선택 요소 고유 키
+                  example: ISTJ
+                value:
+                  type: string
+                  description: 선택 요소 값
+                  example: ISTJ
+                use:
+                  type: boolean
+                  description: 사용여부
+                  example: true
+                modifierEmail:
+                  type: string
+                  format: email
+                  description: 생성 관리자 이메일
+                  example: madam@example.com
       responses:
         200:
           description: Success
           content:
             application/json:
               schema:
-                type: object
-                format: ProfileSelectItem
-                example:
-                  id: 1
-                  key: ISTJ
-                  value: ISTJ
-                  use: true
-                  modifiedAt: '2021-08-09T21:59:00.000Z'
-                  modifierName: Julius
+                $ref: '#/components/schemas/ProfileSelectItem'
+        204:
+          description: No Content
         400:
           description: Invalid Request Param
         403:
@@ -1678,25 +1786,33 @@ paths:
           application/json:
             schema:
               type: object
-              example:
-                value: ISTJ
-                use: true
-                modifierEmail: madam@example.com
+              required:
+                - value
+                - use
+                - modifierEmail
+              properties:
+                value:
+                  type: string
+                  description: 선택 요소 값
+                  example: ISTJ
+                use:
+                  type: boolean
+                  description: 사용여부
+                  example: true
+                modifierEmail:
+                  type: string
+                  format: email
+                  description: 생성 관리자 이메일
+                  example: madam@example.com
       responses:
         200:
           description: Success
           content:
             application/json:
               schema:
-                type: object
-                format: ProfileSelectItem
-                example:
-                  id: 1
-                  key: ISTJ
-                  value: ISTJ
-                  use: true
-                  modifiedAt: '2021-08-09T21:59:00.000Z'
-                  modifierName: Julius
+                $ref: '#/components/schemas/ProfileSelectItem'
+        204:
+          description: No Content
         400:
           description: Invalid Request Param
         403:
@@ -1726,6 +1842,658 @@ paths:
           schema:
             type: string
             example: ISTJ
+      responses:
+        200:
+          description: Success
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /user-block:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Block
+      summary: 신고/차단 목록 조회
+      description: 신고/차단 목록 조회
+      parameters:
+        - in: query
+          name: pageSize
+          description: 조회 항목 개수
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 10
+        - in: query
+          name: pageNumber
+          description: 조회 페이지 번호
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 1
+        - in: query
+          name: type
+          description: 차단/신고 사유 유형
+          required: false
+          schema:
+            type: string
+            enum:
+              - PHOTO
+              - PROFILE
+              - CHAT
+              - ETC
+            example: PHOTO
+        - in: query
+          name: requesterNickname
+          description: 차단/신고 요청자 닉네임
+          required: false
+          schema:
+            type: string
+            example: 신고자
+        - in: query
+          name: targetNickname
+          description: 차단/신고 대상자 닉네임
+          required: false
+          schema:
+            type: string
+            example: 유저
+        - in: query
+          name: approved
+          description: 차단/신고 승인 상태
+          required: false
+          schema:
+            type: string
+            enum:
+              - NONE
+              - APPROVE
+              - DISMISS
+            example: APPROVE
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserBlock'
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /user-block/:id:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Block
+      summary: 차단/신고 건 처리
+      description: |
+        # 차단/신고 건 처리
+          1. 승인/기각. 승인 시, 해당 대상자에게 경고 이메일 발송. 
+          1. 해당 대상자가 이미 기존 2건의 승인된 차단/신고 건이 있을 시, 해당 대상자 유저 데이터의 개정 상태를 BAN으로 변경 후, 활동정지에 대한 이메일 발송 추가 필요
+      parameters:
+        - in: path
+          name: id
+          description: 차단/신고 고유 키
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      requestBody:
+        description: 차단/신고 승인 데이터
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - approved
+                - approverEmail
+              properties:
+                approved:
+                  type: string
+                  enum:
+                    - NONE
+                    - APPROVE
+                    - DISMISS
+                  description: 차단/신고 승인 상태
+                  example: APPROVE
+                approverEmail:
+                  type: string
+                  format: email
+                  description: 차단/신고 승인 관리자 이메일
+                  example: madam@example.com
+      responses:
+        200:
+          description: Success
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Block
+      summary: 차단/신고 건 삭제
+      description: 차단/신고 건 삭제
+      parameters:
+        - in: path
+          name: id
+          description: 차단/신고 고유 키
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        200:
+          description: Success
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /notify-violation/:targetKey:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Notify Violation
+      summary: 유저 차단/신고 처리
+      description: |
+        # 관리자가 직접 유저를 차단/신고 처리하는 기능. 
+          1. 해당 차단/신고 데이터는 자동으로 승인 상태로 생성. 
+          1. 처리후에 해당 대상자에게 경고 이메일 발송. 
+          1. 해당 대상자가 이미 기존 2건의 승인된 차단/신고 건이 있을 시, 해당 대상자 유저 데이터의 개정 상태를 BAN으로 변경 후, 활동정지에 대한 이메일 발송 추가 필요
+      parameters:
+        - in: path
+          name: targetKey
+          description: 차단/신고 대상자 유저 고유 키
+          required: true
+          schema:
+            type: string
+            example: UID
+      requestBody:
+        description: 차단/신고 승인 데이터
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+                - blockReason
+                - approverEmail
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - PHOTO
+                    - PROFILE
+                    - ETC
+                  description: 차단/신고 사유 유형
+                  example: ETC
+                blockReason:
+                  type: string
+                  description: 차단/신고 사유
+                  example: |
+                    # 욕설이 섞인 관심사 추가 요청
+                      - 쾌적한 앱 사용을 저해하는 활동으로 간주되어 부득이하게 경고를 드립니다.
+                approverEmail:
+                  type: string
+                  format: email
+                  description: 차단/신고(및 승인) 관리자 이메일
+                  example: madam@example.com
+      responses:
+        200:
+          description: Success
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /user-interest:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Interest
+      summary: 관심사/싫어요 항목 목록 조회
+      description: 관심사/싫어요 항목 목록 조회
+      parameters:
+        - in: query
+          name: isLike
+          description: 관심사/싫어요 구분(true == 관심사)
+          required: true
+          schema:
+            type: boolean
+            example: true
+        - in: query
+          name: pageSize
+          description: 조회 항목 개수
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 10
+        - in: query
+          name: pageNumber
+          description: 조회 페이지 번호
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 1
+        - in: query
+          name: item
+          description: 관심사/싫어요 항목 (한글, 영문 모두 LIKE 검색)
+          required: false
+          schema:
+            type: string
+            example: Love
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfileInterestItem'
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Interest
+      summary: 관심사/싫어요 신규 생성
+      description: 관심사/싫어요 신규 생성
+      requestBody:
+        description: 관심사/싫어요 데이터
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - itemKr
+                - itemEn
+                - isLike
+                - modifierEmail
+              properties:
+                itemKr:
+                  type: string
+                  description: 관심사/싫어요 항목 한글
+                  example: 사랑
+                itemEn:
+                  type: string
+                  description: 관심사/싫어요 항목 영문
+                  example: Love
+                isLike:
+                  type: boolean
+                  description: 관심사/싫어요 구분(true == 관심사)
+                  example: true
+                modifierEmail:
+                  type: string
+                  format: email
+                  description: 생성 관리자 이메일
+                  example: madam@example.com
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileInterestItem'
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /user-interest/:id:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Interest
+      summary: 관심사/싫어요 수정
+      description: 관심사/싫어요 수정
+      parameters:
+        - in: path
+          name: id
+          description: 관심사/싫어요 고유 키
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      requestBody:
+        description: 관심사/싫어요 데이터
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - itemKr
+                - itemEn
+                - modifierEmail
+              properties:
+                itemKr:
+                  type: string
+                  description: 관심사/싫어요 항목 한글
+                  example: 사랑
+                itemEn:
+                  type: string
+                  description: 관심사/싫어요 항목 영문
+                  example: Love
+                modifierEmail:
+                  type: string
+                  format: email
+                  description: 생성 관리자 이메일
+                  example: madam@example.com
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileInterestItem'
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Interest
+      summary: 관심사/싫어요 삭제
+      description: 관심사/싫어요 삭제
+      parameters:
+        - in: path
+          name: id
+          description: 관심사/싫어요 고유 키
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        200:
+          description: Success
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /user-interest-request:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Interest
+      summary: 관심사/싫어요 사용자 요청 목록 조회
+      description: 관심사/싫어요 요청 목록 조회
+      parameters:
+        - in: query
+          name: isLike
+          description: 관심사/싫어요 구분(true == 관심사)
+          required: true
+          schema:
+            type: boolean
+            example: true
+        - in: query
+          name: pageSize
+          description: 조회 항목 개수
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 10
+        - in: query
+          name: pageNumber
+          description: 조회 페이지 번호
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 1
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfileInterestItemRequest'
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /user-interest-request/:id:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Interest
+      summary: 관심사/싫어요 사용자 요청 반영 처리
+      description: |
+        # 관심사/싫어요 사용자 요청 반영 처리
+          1. 사용자 요청 데이터 내 요청 유저들의 관심사/싫어요 목록에, request로 받는 관심사/싫어요 항목 고유 키 적용
+            <br />만일 해당 사용자 관심사/싫어요 목록에 같은 항목(id)이 존재한다면, 추가 불필요
+          1. 사용자 요청 데이터 삭제
+      parameters:
+        - in: path
+          name: id
+          description: 관심사/싫어요 사용자 요청 고유 키
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      requestBody:
+        description: 관심사/싫어요 항목 고유 키
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: integer
+              format: int64
+              example: 1
+      responses:
+        200:
+          description: Success
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Interest
+      summary: 관심사/싫어요 사용자 요청 삭제
+      description: 관심사/싫어요 사용자 요청 삭제
+      parameters:
+        - in: path
+          name: id
+          description: 관심사/싫어요 사용자 요청 고유 키
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        200:
+          description: Success
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /user-photo:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Photo
+      summary: 사용자 사진 목록 조회
+      description: 사용자 사진 목록 조회 (삭제된 건 제외)
+      parameters:
+        - in: query
+          name: pageSize
+          description: 조회 항목 개수
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 10
+        - in: query
+          name: pageNumber
+          description: 조회 페이지 번호
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 1
+        - in: query
+          name: type
+          description: 사진 타입
+          required: false
+          schema:
+            type: string
+            enum:
+              - DEFAULT
+              - THUMBNAIL
+              - MAIN
+            example: DEFAULT
+        - in: query
+          name: nickname
+          description: 사용자 닉네임 (LIKE 검색)
+          required: false
+          schema:
+            type: string
+            example: Madam
+        - in: query
+          name: validated
+          description: 승인 여부
+          required: false
+          schema:
+            type: boolean
+            example: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfilePhoto'
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /user-photo/:key:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Photo
+      summary: 사용자 사진 승인/기각 처리
+      description: |
+        # 사용자 사진 승인/기각 처리
+          - 승인 시, validated = true
+          - 기각 시, deleted = true
+      parameters:
+        - in: path
+          name: key
+          description: 사용자 고유 키
+          required: true
+          schema:
+            type: string
+            example: UID
+      requestBody:
+        description: 사진 승인/기각 처리 데이터
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - validated
+                - deleted
+                - modifierEmail
+              properties:
+                validated:
+                  type: boolean
+                  description: 승인 여부
+                  example: true
+                deleted:
+                  type: boolean
+                  description: 기각(삭제) 여부
+                  example: false
+                modifierEmail:
+                  type: string
+                  format: email
+                  description: 처리 관리자 이메일
+                  example: madam@example.com
       responses:
         200:
           description: Success
