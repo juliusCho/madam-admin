@@ -49,10 +49,10 @@ components:
           format: email
           description: 사용자 이메일
           example: madam@example.com
-        key:
+        uid:
           type: string
           description: 암호화 된 Google Firebase Auth Credential ID
-          example: key
+          example: uid
         name:
           type: string
           description: Google Firebase 인증에서 가져온 표시되는 사용자 명칭
@@ -77,7 +77,7 @@ components:
           type: boolean
           description: 사용여부
           example: true
-        modifierName:
+        adminName:
           type: string
           format: email
           description: 최종 수정 관리자 명
@@ -138,7 +138,7 @@ components:
           format: date-time
           description: 생성일시
           example: '2021-08-09T21:59:00.000Z'
-        modifierName:
+        adminName:
           type: string
           description: 최종 수정 관리자 명
           example: Julius
@@ -182,7 +182,7 @@ components:
           format: date-time
           description: 생성일시
           example: '2021-08-09T21:59:00.000Z'
-        modifierName:
+        adminName:
           type: string
           description: 최종 수정 관리자 명
     Inquiry:
@@ -194,10 +194,10 @@ components:
           format: int64
           description: 문의글 고유 키
           example: 1
-        nickname:
+        email:
           type: string
-          description: 문의글 작성자 닉네임
-          example: Madam
+          description: 문의글 작성자 이메일
+          example: question@gmail.com
         type:
           type: string
           description: 문의 유형
@@ -214,7 +214,7 @@ components:
           type: boolean
           description: 답변 여부
           example: true
-        answeredManagerName:
+        adminName:
           type: string
           description: 답변 관리자 명
           example: Julius
@@ -237,10 +237,10 @@ components:
           format: int64
           description: 문의글 고유 키
           example: 1
-        nickname:
+        email:
           type: string
-          description: 문의글 작성자 닉네임
-          example: Madam
+          description: 문의글 작성자 이메일
+          example: question@gmail.com
         type:
           type: string
           description: 문의 유형
@@ -263,7 +263,7 @@ components:
           type: boolean
           description: 답변 여부
           example: true
-        answeredManagerName:
+        adminName:
           type: string
           description: 답변 관리자 명
           example: Julius
@@ -319,7 +319,7 @@ components:
           format: date-time
           description: 최종 수정일시
           example: '2021-08-09T21:59:00.000Z'
-        modifierName:
+        adminName:
           type: string
           description: 최종 수정 관리자 명
           example: Julius
@@ -327,7 +327,7 @@ components:
       type: object
       description: SELECT 타입인 유저 프로필 추가 항목용 선택요소 클라이언트 데이터
       properties:
-        id:
+        profileExtraItemId:
           type: integer
           format: int64
           description: 프로필 추가 항목 고유 키
@@ -349,7 +349,7 @@ components:
           format: date-time
           description: 최종 수정일시
           example: '2021-08-09T21:59:00.000Z'
-        modifierName:
+        adminName:
           type: string
           description: 최종 수정 관리자 명
           example: Julius
@@ -362,13 +362,13 @@ components:
           format: int64
           description: 차단/신고 고유 키
           example: 1
-        requesterNickname:
+        requestUserEmail:
           type: string
-          description: 차단/신고 요청자 닉네임
+          description: 차단/신고 요청자 이메일
           example: 신고자
-        targetNickname:
+        targetUserEmail:
           type: string
-          description: 차단/신고 대상자 닉네임
+          description: 차단/신고 대상자 이메일
           example: 유저
         type:
           type: string
@@ -401,7 +401,7 @@ components:
           format: date-time
           description: 차단/신고 일시
           example: '2021-08-09T21:59:00.000Z'
-        approverManagerName:
+        adminEmail:
           type: string
           description: 승인 관리자 닉네임
           example: Julius
@@ -431,7 +431,7 @@ components:
           format: date-time
           description: 최종 수정일시
           example: '2021-08-09T21:59:00.000Z'
-        modifierName:
+        adminName:
           type: string
           description: 최종 수정 관리자 명
           example: Julius
@@ -455,19 +455,19 @@ components:
         requestCount:
           type: integer
           format: int32
-          description: 요청자 수
+          description: 요청 수
           example: 1
     ProfilePhoto:
       type: object
       description: 사용자 사진 클라이언트 데이터
       properties:
-        key:
+        profileUid:
           type: string
-          description: 사용자 고유 키
+          description: 프로필 고유 키
           example: UID
         nickname:
           type: string
-          description: 사용자 닉네임
+          description: 프로필 닉네임
           example: Madam
         order:
           type: integer
@@ -500,10 +500,50 @@ components:
           format: date-time
           description: 최종 수정일시
           example: '2021-08-09T21:59:00.000Z'
-        modifierName:
+        adminName:
           type: string
           description: 최종 수정 관리자 명
           example: Julius
+    Profile:
+      type: object
+      description: 사용자 프로필 클라이언트 데이터
+      properties:
+        uid:
+          type: string
+          description: 프로필 고유 키
+          example: UID
+        userStatus:
+          type: string
+          enum:
+            - REST
+            - ACTIVE
+            - BAN
+            - QUIT
+            - INACTIVE
+          example: ACTIVE
+        nickname:
+          type: string
+          description: 프로필 닉네임
+          example: Madam
+        profileExtraItemId:
+          type: integer
+          format: int64
+          description: 유저 프로필 추가 선택항목 고유 키
+          example: 1
+        profileExtraItemTitle:
+          type: string
+          description: 유저 프로필 추가 선택항목 한글 명칭
+          example: 자기소개
+        profileExtraItemValue:
+          type: string
+          description: 유저 프로필 추가 선택항목 입력 값
+          example: |
+            나는 천재입니다.
+        modifiedAt:
+          type: string
+          format: date-time
+          description: 최종 수정일시
+          example: '2021-08-09T21:59:00.000Z'
 paths:
   /login:
     post:
@@ -520,17 +560,17 @@ paths:
               type: object
               required:
                 - email
-                - key
+                - uid
               properties:
                 email:
                   type: string
                   format: email
                   description: Google Firebase 인증 이메일
                   example: madam@example.com
-                key:
+                uid:
                   type: string
                   description: 암호화된 Google Firebase Auth Credential ID
-                  example: key
+                  example: UID
       responses:
         200:
           description: Success
@@ -589,7 +629,7 @@ paths:
             schema:
               required:
                 - email
-                - key
+                - uid
                 - name
               properties:
                 email:
@@ -597,10 +637,10 @@ paths:
                   format: email
                   description: 사용자 이메일
                   example: madam@example.com
-                key:
+                uid:
                   type: string
                   description: 암호화 된 Google Firebase Auth Credential ID
-                  example: key
+                  example: UID
                 name:
                   type: string
                   description: Google Firebase 인증에서 가져온 표시되는 사용자 명칭
@@ -711,13 +751,13 @@ paths:
               type: object
               required:
                 - value
-                - modifierEmail
+                - adminEmail
               properties:
                 value:
                   type: string
                   description: 환경변수 값
                   example: '10'
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 생성 관리자 이메일
@@ -767,7 +807,7 @@ paths:
               required:
                 - value
                 - use
-                - modifierEmail
+                - adminEmail
               properties:
                 value:
                   type: string
@@ -777,7 +817,7 @@ paths:
                   type: boolean
                   description: 사용여부
                   example: true
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 수정 관리자 이메일
@@ -890,7 +930,7 @@ paths:
                 - name
                 - dollar
                 - charm
-                - modifierEmail
+                - adminEmail
               properties:
                 name:
                   type: string
@@ -914,7 +954,7 @@ paths:
                   format: int32
                   description: 표출 순서
                   example: 1
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 생성 관리자 이메일
@@ -960,7 +1000,7 @@ paths:
                 - name
                 - dollar
                 - charm
-                - modifierEmail
+                - adminEmail
               properties:
                 name:
                   type: string
@@ -984,7 +1024,7 @@ paths:
                   format: int32
                   description: 표출 순서
                   example: 1
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 생성 관리자 이메일
@@ -1050,7 +1090,7 @@ paths:
                 - key
                 - content
                 - display
-                - modifierEmail
+                - adminEmail
               properties:
                 key:
                   type: string
@@ -1083,7 +1123,7 @@ paths:
                   type: boolean
                   description: 글 표시여부
                   example: true
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 생성/수정 관리자 이메일
@@ -1141,7 +1181,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /qna:
+  /qnas:
     get:
       security:
         - bearerAuth: []
@@ -1185,12 +1225,12 @@ paths:
               - ETC
             example: INQUIRY
         - in: query
-          name: nickname
-          description: 작성자 닉네임 (LIKE 검색)
+          name: email
+          description: 작성자 이메일 (LIKE 검색)
           required: false
           schema:
             type: string
-            example: Madam
+            example: question@gmail.com
         - in: query
           name: answered
           description: 답변여부
@@ -1215,7 +1255,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /qna/:id:
+  /qnas/:id:
     get:
       security:
         - bearerAuth: []
@@ -1275,7 +1315,7 @@ paths:
               required:
                 - id
                 - content
-                - modifierEmail
+                - adminEmail
               properties:
                 id:
                   type: integer
@@ -1287,7 +1327,7 @@ paths:
                   description: 답변 내용
                   example: |
                     # 감사합니다!
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 답변 관리자 이메일
@@ -1335,7 +1375,7 @@ paths:
               required:
                 - id
                 - content
-                - modifierEmail
+                - adminEmail
               properties:
                 id:
                   type: integer
@@ -1347,7 +1387,7 @@ paths:
                   description: 답변 내용
                   example: |
                     # 감사합니다!
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 답변 관리자 이메일
@@ -1394,7 +1434,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /profile-extra:
+  /profile-extras:
     get:
       security:
         - bearerAuth: []
@@ -1475,7 +1515,7 @@ paths:
                 - titleKr
                 - titleEn
                 - type
-                - modifierEmail
+                - adminEmail
               properties:
                 titleKr:
                   type: string
@@ -1501,7 +1541,7 @@ paths:
                   format: int32
                   description: 타입이 TEXT / TEXT_AREA일 시, 최대 입력 가능 글자수. MULT_SELECT일 시, 최대 선택 가능 항목 수
                   example: null
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 생성 관리자 이메일
@@ -1519,7 +1559,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /profile-extra/:id:
+  /profile-extras/:id:
     put:
       security:
         - bearerAuth: []
@@ -1549,7 +1589,7 @@ paths:
                 - titleKr
                 - titleEn
                 - type
-                - modifierEmail
+                - adminEmail
               properties:
                 titleKr:
                   type: string
@@ -1575,7 +1615,7 @@ paths:
                   format: int32
                   description: 타입이 TEXT / TEXT_AREA일 시, 최대 입력 가능 글자수. MULT_SELECT일 시, 최대 선택 가능 항목 수
                   example: null
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 생성 관리자 이메일
@@ -1624,6 +1664,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
+  /profile-extras/:profileExtraItemId:
     get:
       security:
         - bearerAuth: []
@@ -1633,7 +1674,7 @@ paths:
       description: SELECT 타입의 유저 프로필 추가 관리 항목에 대한 선택 요소 목록 조회
       parameters:
         - in: path
-          name: id
+          name: profileExtraItemId
           description: 유저 프로필 추가 관리 항목 고유 키
           required: true
           schema:
@@ -1703,7 +1744,7 @@ paths:
       description: SELECT 타입의 유저 프로필 추가 관리 항목에 대한 선택 요소 신규 생성
       parameters:
         - in: path
-          name: id
+          name: profileExtraItemId
           description: 유저 프로필 추가 관리 항목 고유 키
           required: true
           schema:
@@ -1721,7 +1762,7 @@ paths:
                 - key
                 - value
                 - use
-                - modifierEmail
+                - adminEmail
               properties:
                 key:
                   type: string
@@ -1735,7 +1776,7 @@ paths:
                   type: boolean
                   description: 사용여부
                   example: true
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 생성 관리자 이메일
@@ -1755,7 +1796,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /profile-extra/:id/:key:
+  /profile-extras/:profileExtraItemId/:key:
     put:
       security:
         - bearerAuth: []
@@ -1765,7 +1806,7 @@ paths:
       description: SELECT 타입의 유저 프로필 추가 관리 항목에 대한 선택 요소 수정
       parameters:
         - in: path
-          name: id
+          name: profileExtraItemId
           description: 유저 프로필 추가 관리 항목 고유 키
           required: true
           schema:
@@ -1789,7 +1830,7 @@ paths:
               required:
                 - value
                 - use
-                - modifierEmail
+                - adminEmail
               properties:
                 value:
                   type: string
@@ -1799,7 +1840,7 @@ paths:
                   type: boolean
                   description: 사용여부
                   example: true
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 생성 관리자 이메일
@@ -1828,7 +1869,7 @@ paths:
       description: SELECT 타입의 유저 프로필 추가 관리 항목에 대한 선택 요소 삭제
       parameters:
         - in: path
-          name: id
+          name: profileExtraItemId
           description: 유저 프로필 추가 관리 항목 고유 키
           required: true
           schema:
@@ -1853,7 +1894,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /user-block:
+  /user-blocks:
     get:
       security:
         - bearerAuth: []
@@ -1891,15 +1932,15 @@ paths:
               - ETC
             example: PHOTO
         - in: query
-          name: requesterNickname
-          description: 차단/신고 요청자 닉네임
+          name: requestUserEmail
+          description: 차단/신고 요청자 이메일
           required: false
           schema:
             type: string
             example: 신고자
         - in: query
-          name: targetNickname
-          description: 차단/신고 대상자 닉네임
+          name: targetUserEmail
+          description: 차단/신고 대상자 이메일
           required: false
           schema:
             type: string
@@ -1932,7 +1973,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /user-block/:id:
+  /user-blocks/:id:
     put:
       security:
         - bearerAuth: []
@@ -2014,7 +2055,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /notify-violation/:targetKey:
+  /notify-violation/:targetUserUid:
     put:
       security:
         - bearerAuth: []
@@ -2028,7 +2069,7 @@ paths:
           1. 해당 대상자가 이미 기존 2건의 승인된 차단/신고 건이 있을 시, 해당 대상자 유저 데이터의 개정 상태를 BAN으로 변경 후, 활동정지에 대한 이메일 발송 추가 필요
       parameters:
         - in: path
-          name: targetKey
+          name: targetUserUid
           description: 차단/신고 대상자 유저 고유 키
           required: true
           schema:
@@ -2044,7 +2085,7 @@ paths:
               required:
                 - type
                 - blockReason
-                - approverEmail
+                - adminEmail
               properties:
                 type:
                   type: string
@@ -2060,7 +2101,7 @@ paths:
                   example: |
                     # 욕설이 섞인 관심사 추가 요청
                       - 쾌적한 앱 사용을 저해하는 활동으로 간주되어 부득이하게 경고를 드립니다.
-                approverEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 차단/신고(및 승인) 관리자 이메일
@@ -2076,7 +2117,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /user-interest:
+  /user-interests:
     get:
       security:
         - bearerAuth: []
@@ -2150,7 +2191,7 @@ paths:
                 - itemKr
                 - itemEn
                 - isLike
-                - modifierEmail
+                - adminEmail
               properties:
                 itemKr:
                   type: string
@@ -2164,7 +2205,7 @@ paths:
                   type: boolean
                   description: 관심사/싫어요 구분(true == 관심사)
                   example: true
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 생성 관리자 이메일
@@ -2182,7 +2223,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /user-interest/:id:
+  /user-interests/:id:
     put:
       security:
         - bearerAuth: []
@@ -2209,7 +2250,7 @@ paths:
               required:
                 - itemKr
                 - itemEn
-                - modifierEmail
+                - adminEmail
               properties:
                 itemKr:
                   type: string
@@ -2219,7 +2260,7 @@ paths:
                   type: string
                   description: 관심사/싫어요 항목 영문
                   example: Love
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 생성 관리자 이메일
@@ -2266,7 +2307,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /user-interest-request:
+  /user-interest-requests:
     get:
       security:
         - bearerAuth: []
@@ -2315,7 +2356,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /user-interest-request/:id:
+  /user-interest-requests/:id:
     post:
       security:
         - bearerAuth: []
@@ -2324,8 +2365,8 @@ paths:
       summary: 관심사/싫어요 사용자 요청 반영 처리
       description: |
         # 관심사/싫어요 사용자 요청 반영 처리
-          1. 사용자 요청 데이터 내 요청 유저들의 관심사/싫어요 목록에, request로 받는 관심사/싫어요 항목 고유 키 적용
-            <br />만일 해당 사용자 관심사/싫어요 목록에 같은 항목(id)이 존재한다면, 추가 불필요
+          1. 사용자 요청 데이터 내 `requestProfileUids`(프로필 고유 키 목록["," 구분])로 가져온 프로필 내 관심사/싫어요 컬럼 값 목록에, 해당 API의 request로 받는 관심사/싫어요 항목 고유 키 적용
+            <br />만일 해당 사용자 프로필 엔티티의 관심사/싫어요 값 목록에 같은 항목(id)이 존재한다면, 추가 불필요
           1. 사용자 요청 데이터 삭제
       parameters:
         - in: path
@@ -2383,7 +2424,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /user-photo:
+  /user-photos:
     get:
       security:
         - bearerAuth: []
@@ -2421,7 +2462,7 @@ paths:
             example: DEFAULT
         - in: query
           name: nickname
-          description: 사용자 닉네임 (LIKE 검색)
+          description: 프로필 닉네임 (LIKE 검색)
           required: false
           schema:
             type: string
@@ -2450,7 +2491,7 @@ paths:
           description: No Authority
         500:
           description: Server Error
-  /user-photo/:key:
+  /user-photos/:uid:
     put:
       security:
         - bearerAuth: []
@@ -2463,8 +2504,8 @@ paths:
           - 기각 시, deleted = true
       parameters:
         - in: path
-          name: key
-          description: 사용자 고유 키
+          name: uid
+          description: 프로필 고유 키
           required: true
           schema:
             type: string
@@ -2479,7 +2520,7 @@ paths:
               required:
                 - validated
                 - deleted
-                - modifierEmail
+                - adminEmail
               properties:
                 validated:
                   type: boolean
@@ -2489,11 +2530,149 @@ paths:
                   type: boolean
                   description: 기각(삭제) 여부
                   example: false
-                modifierEmail:
+                adminEmail:
                   type: string
                   format: email
                   description: 처리 관리자 이메일
                   example: madam@example.com
+      responses:
+        200:
+          description: Success
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /user-profiles:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Profile
+      summary: 사용자 프로필 목록 조회
+      description: |
+        - 프로필 추가 선택항목 중, 타입이 TEXT / TEXT_AREA인 항목들을 프로필 별 항목별로 목록으로 조회
+        - 항목의 값이 NULL 또는 공백인 데이터 제외
+      parameters:
+        - in: query
+          name: pageSize
+          description: 조회 항목 개수
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 10
+        - in: query
+          name: pageNumber
+          description: 조회 페이지 번호
+          required: true
+          schema:
+            type: integer
+            format: int32
+            example: 1
+        - in: query
+          name: nickname
+          description: 프로필 닉네임
+          required: false
+          schema:
+            type: string
+            example: Madam
+        - in: query
+          name: profileExtraItemId
+          description: 유저 프로필 추가 선택항목 고유 키(타입이 TEXT / TEXT_AREA인 항목만)
+          required: false
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - in: query
+          name: profileExtraItemValue
+          description: 프로필 추가 선택항목의 사용자 입력 값(LIKE 검색)
+          required: false
+          schema:
+            type: string
+            example: |
+              나는 천재입니다.
+        - in: query
+          name: userStatus
+          description: 사용자 계정 상태
+          required: false
+          schema:
+            type: string
+            enum:
+              - REST
+              - ACTIVE
+              - BAN
+              - QUIT
+              - INACTIVE
+            example: ACTIVE
+        - in: query
+          name: modifiedAtFrom
+          description: 최종 수정일시 범위 시작 시간
+          required: false
+          schema:
+            type: string
+            format: date-time
+            example: '2021-08-09T21:59:00.000Z'
+        - in: query
+          name: modifiedAtTo
+          description: 최종 수정일시 범위 종료 시간
+          required: false
+          schema:
+            type: string
+            format: date-time
+            example: '2021-08-09T21:59:00.000Z'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        204:
+          description: No Content
+        400:
+          description: Invalid Request Param
+        403:
+          description: No Authority
+        500:
+          description: Server Error
+  /user-profiles/:uid/:profileExtraItemId:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - User Profile
+      summary: 유저 프로필 선택항목 입력 값 삭제 처리
+      description: 유저 프로필 선택항목 중, 타입이 TEXT / TEXT_AREA 인 항목에 입력한 값을 공백으로 치환 처리
+      parameters:
+        - in: path
+          name: uid
+          description: 프로필 고유 키
+          required: true
+          schema:
+            type: string
+            example: UID
+        - in: path
+          name: profileExtraItemId
+          description: 유저 프로필 선택항목 고유 키
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      requestBody:
+        description: 삭제 처리 관리자 이메일
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+              description: 삭제 처리 관리자 이메일
+              example: madam@example.com
       responses:
         200:
           description: Success
