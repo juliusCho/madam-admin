@@ -12,15 +12,15 @@ export const apiLogin = async (
 
   if (!id || !email) return null
 
-  const key = helpers.encode(id)
+  const uid = helpers.encode(id)
   console.log('=============로그인 Attempt 유저 정보============')
   console.log('email: ', email)
-  console.log('key: ', key)
+  console.log('uid: ', uid)
   console.log('name: ', name || email)
 
   return {
     email,
-    key,
+    uid,
     name: name || email,
   }
 }

@@ -7,7 +7,7 @@ export enum UserStatus {
 }
 
 export type UserType = {
-  key: string
+  uid: string
   email?: string
   phone?: string
   password?: string
