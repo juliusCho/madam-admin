@@ -2,9 +2,16 @@ import React from 'react'
 import { RouterProps } from 'react-router'
 import { useTitle } from 'react-use'
 import Recoil from 'recoil'
+import { LayoutHeader } from '../../../components/layouts/header'
+import { LayoutTab } from '../../../components/layouts/tab'
 import etcGlobalStates from '../../../recoil/etc'
 import userGlobalStates from '../../../recoil/user'
-import { ROUTER_PATH, ROUTER_TITLE } from '../../../types'
+import {
+  firstDepthTab,
+  ROUTER_PATH,
+  ROUTER_TITLE,
+  secondDepthTab,
+} from '../../../types'
 import customHooks from '../../../utils/hooks'
 
 export interface PageDashboardAppUseProps {}
@@ -37,19 +44,21 @@ export default function PageDashboardAppUse({
   }, [isMounted, user, history.push, ROUTER_PATH.LOGIN])
 
   return (
-    <div>
-      <span style={{ display: 'block' }}>WELCOME, {user?.name}!</span>
-      <button
-        type="button"
-        onClick={() => setUser(null)}
-        style={{
-          marginTop: '3rem',
-          borderRadius: '9999px',
-          backgroundColor: 'black',
-          color: 'white',
-        }}>
-        로그아웃
-      </button>
-    </div>
+    <>
+      <LayoutHeader />
+      <LayoutTab
+        tabs={firstDepthTab(ROUTER_PATH.DASHBOARD.APP_USE)}
+        backgroundColor="mono.pale"
+        fontSize="titleBig"
+        selectedTextColor="sub.darkPurple">
+        <LayoutTab
+          tabs={secondDepthTab(ROUTER_PATH.DASHBOARD.APP_USE).DASHBOARD}
+          backgroundColor="mono.white"
+          selectedColor="mono.paleWhite"
+          innerColor="mono.paleWhite">
+          <div />
+        </LayoutTab>
+      </LayoutTab>
+    </>
   )
 }
