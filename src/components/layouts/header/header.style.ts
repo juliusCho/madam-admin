@@ -1,6 +1,7 @@
 const LayoutHeaderStyle = {
   container: `
-    h-24
+    h-36
+    py-4
     w-screen
     flex
     justify-between
@@ -16,6 +17,7 @@ const LayoutHeaderStyle = {
   `,
   button: `
     shadow-md
+    h-12
   `,
 }
 

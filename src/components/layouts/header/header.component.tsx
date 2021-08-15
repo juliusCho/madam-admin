@@ -22,6 +22,7 @@ function LayoutHeader({}: LayoutHeaderProps) {
         <ButtonRoundWithIcon
           active
           icon="border-color"
+          iconSize="0.85rem"
           onClick={onClickChangeName}
           className={LayoutHeaderStyle.button}>
           사용자 명 변경

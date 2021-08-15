@@ -13,12 +13,12 @@ interface ListStyleProps {
 const tabStyle = `
   p-3
   mx-1
-  border-mono-darkGray
-  border-t
-  border-l
-  border-r
+  border-t-2
+  border-l-2
+  border-r-2
+  border-mono-gray
   rounded-t-lg
-  shadow-lg
+  relative
 `
 
 const LayoutTabStyle = {
@@ -32,34 +32,45 @@ const LayoutTabStyle = {
     flex
     justify-center
     items-center
-    border-dotted
-    border-b
-    border-mono-darkGray
-    rounded-md
+    border-b-2
+    border-solid
+    border-mono-gray
+    list-none
   `,
   unselectedTabTitle({ fontSize }: StyleProps) {
     return `
       ${tabStyle}
-      bg-mono-gray
-      text-mono-darkGray
       cursor-pointer
+      shadow-2xl
       shadow-inner
       ${helpers.convertTextToTailwind(fontSize)}
+      ${helpers.convertColorToTailwind('bg', 'mono.pale', false)}
+      ${helpers.convertColorToTailwind('text', 'mono.gray', false)}
     `
   },
   selectedTabTitle({ fontSize, selectedColor, selectedTextColor }: StyleProps) {
     return `
       ${tabStyle}
-      cursor-default
       ${helpers.convertTextToTailwind(fontSize)}
-      ${helpers.convertColorToTailwind('bg', selectedColor, false)}
-      ${helpers.convertColorToTailwind('text', selectedTextColor, false)}
+      ${helpers.convertColorToTailwind('bg', selectedColor, true)}
+      ${helpers.convertColorToTailwind('text', selectedTextColor, true)}
+    `
+  },
+  selectedTabUnderline({ selectedColor }: StyleProps) {
+    return `
+      absolute
+      left-0
+      h-1
+      w-full
+      ${helpers.convertColorToTailwind('bg', selectedColor, true)}
     `
   },
   tabPanel({ selectedColor }: StyleProps) {
     return `
-      h-4
-      ${helpers.convertColorToTailwind('bg', selectedColor, false)}
+      pt-4
+      w-full
+      h-screen
+      ${helpers.convertColorToTailwind('bg', selectedColor, true)}
     `
   },
 }

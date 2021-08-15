@@ -45,18 +45,36 @@ function LayoutTab({
               }
             }}
             selected={tab.selected}
-            selectedClassName={LayoutTabStyle.selectedTabTitle({
-              fontSize,
-              selectedColor,
-              selectedTextColor,
-            })}
-            className={LayoutTabStyle.unselectedTabTitle({ fontSize })}>
+            selectedClassName={
+              tab.selected
+                ? `${LayoutTabStyle.selectedTabTitle({
+                    fontSize,
+                    selectedColor,
+                    selectedTextColor,
+                  })}`
+                : ''
+            }
+            className={
+              !tab.selected
+                ? LayoutTabStyle.unselectedTabTitle({ fontSize })
+                : ''
+            }>
             {tab.title}
+            {tab.selected && (
+              <div
+                className={LayoutTabStyle.selectedTabUnderline({
+                  selectedColor,
+                })}
+                style={{ bottom: -2 }}
+              />
+            )}
           </Tab>
         ))}
       </TabList>
-      <div className={LayoutTabStyle.tabPanel({ selectedColor: innerColor })} />
-      <TabPanel>{children}</TabPanel>
+      <TabPanel
+        className={LayoutTabStyle.tabPanel({ selectedColor: innerColor })}>
+        {children}
+      </TabPanel>
       {[...tabs].splice(0, tabs.length - 1).map((tab) => (
         <TabPanel key={tab.route}>
           <></>

@@ -1,11 +1,4 @@
-const convertToTailwindClass = (color: string, disabled?: boolean) => {
-  const tc = color.split('.')
-  return `bg-${tc[0]}-${tc[1]}${
-    disabled
-      ? ''
-      : ` hover:bg-${tc[0]}Hover-${tc[1]} active:bg-${tc[0]}Active-${tc[1]}`
-  }`
-}
+import helpers from '../../../utils/helpers'
 
 interface StyleProps {
   active: boolean
@@ -26,16 +19,23 @@ const ButtonRoundWithIconStyle = {
     let color = ''
 
     if (disabled) {
-      color = `${convertToTailwindClass(
-        colorDisabled || '',
+      color = `${helpers.convertColorToTailwind(
+        'bg',
+        colorDisabled,
         disabled,
       )} cursor-not-allowed text-mono-white`
     } else {
       color = active
-        ? `${convertToTailwindClass(
-            colorActive || '',
+        ? `${helpers.convertColorToTailwind(
+            'bg',
+            colorActive,
+            false,
           )} border-solid border border-mono-gray min-w-px59 m-px text-mono-paleBlack`
-        : `${convertToTailwindClass(colorInactive || '')} text-mono-white`
+        : `${helpers.convertColorToTailwind(
+            'bg',
+            colorInactive,
+            false,
+          )} text-mono-white`
     }
 
     return `
