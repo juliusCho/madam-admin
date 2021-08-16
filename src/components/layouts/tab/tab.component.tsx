@@ -29,8 +29,6 @@ function LayoutTab({
     history.push(route)
   }
 
-  console.log('tabs', tabs)
-
   return (
     <Tabs className={LayoutTabStyle.container({ backgroundColor })}>
       <TabList

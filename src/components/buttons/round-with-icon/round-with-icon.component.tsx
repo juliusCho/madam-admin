@@ -13,6 +13,8 @@ export interface ButtonRoundWithIconProps {
   style?: React.CSSProperties
   className?: string
   disabledChildren?: string | React.ReactNode | Array<React.ReactNode>
+  colorIcon?: string
+  colorIconActive?: string
   colorActive?: string // eg) mono.white, main.red, ...
   colorInactive?: string // eg) mono.white, main.red, ...
   colorDisabled?: string // eg) mono.white, main.red, ...
@@ -29,6 +31,8 @@ function ButtonRoundWithIcon({
   style,
   className,
   disabledChildren,
+  colorIcon,
+  colorIconActive,
   colorActive,
   colorInactive,
   colorDisabled,
@@ -55,7 +59,11 @@ function ButtonRoundWithIcon({
       style={style}>
       <XEIcon
         name={icon}
-        color="mono.black"
+        color={
+          active
+            ? colorIconActive || 'mono.white'
+            : colorIcon || 'mono.paleBlack'
+        }
         size={iconSize}
         onClick={disabled ? undefined : onClickButton}
         className={ButtonRoundWithIconStyle.icon}
@@ -73,6 +81,8 @@ ButtonRoundWithIcon.defaultProps = {
   active: false,
   disabled: false,
   disabledChildren: '',
+  colorIcon: 'mono.paleBlack',
+  colorIconActive: 'mono.white',
   colorActive: 'mono.white',
   colorInactive: 'mono.pale',
   colorDisabled: 'mono.lightGray',

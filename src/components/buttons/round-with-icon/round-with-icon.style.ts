@@ -30,12 +30,12 @@ const ButtonRoundWithIconStyle = {
             'bg',
             colorActive,
             false,
-          )} border-solid border border-mono-gray min-w-px59 m-px text-mono-paleBlack`
+          )} text-mono-white`
         : `${helpers.convertColorToTailwind(
             'bg',
             colorInactive,
             false,
-          )} text-mono-white`
+          )} border-solid min-w-px59 m-px border border-mono-gray  text-mono-paleBlack`
     }
 
     return `

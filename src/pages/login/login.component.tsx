@@ -55,9 +55,11 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
       .signInWithPopup(new firebase.auth.GoogleAuthProvider())
       .then((res) => res)
       .catch((e) => {
-        setAlertType('error')
-        setAlertMsg(e.message)
-        setShowAlert(true)
+        if (!e.code.includes('cancelled-popup-request')) {
+          setAlertType('error')
+          setAlertMsg(e.message)
+          setShowAlert(true)
+        }
         return null
       })
 

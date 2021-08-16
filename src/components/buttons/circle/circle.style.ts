@@ -29,15 +29,15 @@ const ButtonCircleStyle = {
       w-${buttonSize}
       h-${buttonSize}
       p-${padding || 0}
-      ${helpers.convertColorToTailwind('bg', backgroundColor, true)}
-      ${helpers.convertColorToTailwind('border', borderColor, true)}
+      ${helpers.convertColorToTailwind('bg', backgroundColor, false)}
+      ${helpers.convertColorToTailwind('border', borderColor, false)}
       border${borderWidth ? `-${borderWidth}` : ''}
     `
   },
   text({ fontSize, color }: TextStyleProps) {
     return `
       ${helpers.convertTextToTailwind(fontSize)}
-      ${helpers.convertColorToTailwind('text', color, true)}
+      ${helpers.convertColorToTailwind('text', color, false)}
     `
   },
 }

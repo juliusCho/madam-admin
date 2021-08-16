@@ -24,3 +24,7 @@ export const apiLogin = async (
     name: name || email,
   }
 }
+
+export const apiChangeName = async (user: AdminType) => {
+  return { ...user }
+}
