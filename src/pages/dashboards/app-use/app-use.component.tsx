@@ -4,14 +4,14 @@ import { useTitle } from 'react-use'
 import Recoil from 'recoil'
 import { LayoutHeader } from '../../../components/layouts/header'
 import { LayoutTab } from '../../../components/layouts/tab'
-import etcGlobalStates from '../../../recoil/etc'
-import userGlobalStates from '../../../recoil/user'
 import {
   firstDepthTab,
   ROUTER_PATH,
   ROUTER_TITLE,
   secondDepthTab,
-} from '../../../types'
+} from '../../../constants'
+import etcGlobalStates from '../../../recoil/etc'
+import userGlobalStates from '../../../recoil/user'
 import customHooks from '../../../utils/hooks'
 
 export interface PageDashboardAppUseProps {}
@@ -48,14 +48,14 @@ export default function PageDashboardAppUse({
       <LayoutHeader />
       <LayoutTab
         tabs={firstDepthTab(ROUTER_PATH.DASHBOARD.APP_USE)}
-        backgroundColor="mono.pale"
+        backgroundColor="bg-mono-pale hover:bg-mono-paleHover active:bg-mono-paleActive"
         fontSize="titleBig"
-        selectedTextColor="sub.darkPurple">
+        selectedTextColor="text-sub-darkPurple hover:text-sub-darkPurpleHover active:text-sub-darkPurpleActive">
         <LayoutTab
           tabs={secondDepthTab(ROUTER_PATH.DASHBOARD.APP_USE).DASHBOARD}
-          backgroundColor="mono.white"
-          selectedColor="mono.paleWhite"
-          innerColor="mono.paleWhite">
+          backgroundColor="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive"
+          selectedColor="bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive"
+          innerColor="bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive">
           <div />
         </LayoutTab>
       </LayoutTab>

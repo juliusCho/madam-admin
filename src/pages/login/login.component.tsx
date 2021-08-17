@@ -7,10 +7,10 @@ import { apiLogin } from '../../api'
 import { ButtonCircle } from '../../components/buttons/circle'
 import { LabelMadam } from '../../components/labels/madam'
 import { Alert } from '../../components/modals/alert'
+import { ROUTER_PATH, ROUTER_TITLE } from '../../constants'
 import auth from '../../firebaseSetup'
 import etcGlobalStates from '../../recoil/etc'
 import userGlobalStates from '../../recoil/user'
-import { ROUTER_PATH, ROUTER_TITLE } from '../../types'
 import customHooks from '../../utils/hooks'
 import PageLoginStyle from './login.style'
 
@@ -100,7 +100,10 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
       />
       <div className={PageLoginStyle.container} style={{ marginTop: '-5rem' }}>
         <LabelMadam className="mb-10" style={{ fontSize: '5rem' }} />
-        <ButtonCircle onClick={signIn} className="m-5 mb-10" borderWidth={2}>
+        <ButtonCircle
+          onClick={signIn}
+          className="m-5 mb-10"
+          borderWidth="border-2">
           Login
         </ButtonCircle>
         {alertType === 'error' && (

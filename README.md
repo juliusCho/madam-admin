@@ -4,16 +4,28 @@
 
 - [설치가이드 블로그](https://seunghyun90.tistory.com/52)
 
-2. 프로젝트 루트 경로에서 다음 커멘드 실행:
+2. PostCSS 설치
 
-```
-  npm install
+```terminal
+npm i -g postcss
 ```
 
-3. 설치완료 후에 다음 커멘드 실행:
+3. PostCSS CLI 설치
 
+```terminal
+npm i -g postcss-cli
 ```
-  npm start
+
+4. 프로젝트 루트 경로에서 다음 커멘드 실행:
+
+```terminal
+npm i
+```
+
+5. 설치완료 후에 다음 커멘드 실행:
+
+```terminal
+npm start
 ```
 
 ### 클라이언트 Request API 스펙 문서

@@ -84,10 +84,13 @@ function LayoutTab({
 
 LayoutTab.defaultProps = {
   fontSize: 'titleMedium',
-  selectedColor: 'mono.white',
-  selectedTextColor: 'main.blue',
+  selectedColor:
+    'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
+  selectedTextColor:
+    'text-main-blue hover:text-main-blueHover active:text-main-blueActive',
   backgroundColor: undefined,
-  innerColor: 'mono.white',
+  innerColor:
+    'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
 }
 
 export default React.memo(LayoutTab)

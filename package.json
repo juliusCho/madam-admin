@@ -37,13 +37,16 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
+    "css": "npx postcss src/tailwind.css -o src/index.tailwind.css",
+    "prestart": "npm run css",
     "start": "craco start",
-    "build": "craco build",
+    "prebuild": "cross-env NODE_ENV=production npm run css",
+    "build": "npm run css && craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\" --fix",
-    "firebase:dev": "firebase serve",
-    "firebase": "firebase deploy --only hosting"
+    "firebase:dev": "npm run build && firebase serve",
+    "firebase": "npm run build && firebase deploy --only hosting"
   },
   "eslintConfig": {
     "extends": [
@@ -75,6 +78,7 @@
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
     "autoprefixer": "^9",
+    "cross-env": "^7.0.3",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-jsx-a11y": "^6.4.1",

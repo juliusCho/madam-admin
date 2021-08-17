@@ -4,11 +4,10 @@ import ButtonCircleStyle from './circle.style'
 export interface ButtonCircleProps {
   children: string
   onClick: () => void
-  buttonSize?: number
+  buttonSize?: string
   fontSize?: string
   padding?: number
-  borderWidth?: number
-  borderColor?: string
+  borderWidth?: string
   backgroundColor?: string
   color?: string
   style?: React.CSSProperties
@@ -22,7 +21,6 @@ function ButtonCircle({
   fontSize,
   padding,
   borderWidth,
-  borderColor,
   backgroundColor,
   color,
   style,
@@ -32,20 +30,15 @@ function ButtonCircle({
     <button
       type="button"
       onClick={onClick}
-      style={style}
+      style={{ ...style, width: buttonSize, height: buttonSize }}
       className={`${ButtonCircleStyle.button({
-        buttonSize,
-        borderWidth,
-        borderColor,
-        backgroundColor,
         padding,
-      })} ${className}`}
+      })} ${className} ${backgroundColor} ${borderWidth}`}
       data-testid="components.buttons.circle.button">
       <p
-        className={ButtonCircleStyle.text({
+        className={`${ButtonCircleStyle.text({
           fontSize,
-          color,
-        })}
+        })} ${color}`}
         data-testid="components.buttons.circle.text">
         {children}
       </p>
@@ -54,13 +47,14 @@ function ButtonCircle({
 }
 
 ButtonCircle.defaultProps = {
-  buttonSize: 20,
+  buttonSize: '5rem',
   fontSize: 'textMedium',
   padding: 4,
-  borderWidth: undefined,
-  borderColor: 'mono.black',
-  backgroundColor: 'mono.white',
-  color: 'mono.black',
+  borderWidth: 'border',
+  backgroundColor:
+    'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
+  color:
+    'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
   style: undefined,
   className: undefined,
 }

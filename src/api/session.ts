@@ -1,12 +1,10 @@
 import firebase from 'firebase/app'
 import { AdminType } from '../types'
 import helpers from '../utils/helpers'
-// import axios from 'axios'
 
 export const apiLogin = async (
   firebaseUser: firebase.auth.UserCredential,
 ): Promise<AdminType | null> => {
-  // const { profile, credential } = firebaseUser
   // @ts-ignore
   const { id, email, name } = firebaseUser.additionalUserInfo?.profile
 

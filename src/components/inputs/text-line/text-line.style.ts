@@ -42,12 +42,11 @@ const InputTextLineStyle = {
       ${
         disabled
           ? helpers.convertColorToTailwind(
-              'bg',
               disabledColor || 'mono.lightGray',
               true,
             )
-          : helpers.convertColorToTailwind('bg', color, false)
-      } ${helpers.convertColorToTailwind('border', borderColor, disabled)}
+          : helpers.convertColorToTailwind(color, false)
+      } ${helpers.convertColorToTailwind(borderColor, disabled)}
     `
   },
   input({
@@ -70,23 +69,17 @@ const InputTextLineStyle = {
       ${
         disabled
           ? helpers.convertColorToTailwind(
-              'placeholder',
               disabledPlaceholderColor || 'mono.darkGray',
               true,
             )
-          : helpers.convertColorToTailwind(
-              'placeholder',
-              placeholderColor,
-              false,
-            )
+          : helpers.convertColorToTailwind(placeholderColor, false)
       } ${
       disabled
         ? helpers.convertColorToTailwind(
-            'text',
             disabledColor || 'mono.lightGray',
             true,
           )
-        : helpers.convertColorToTailwind('text', color, false)
+        : helpers.convertColorToTailwind(color, false)
     }
     `
   },

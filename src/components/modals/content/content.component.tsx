@@ -47,7 +47,7 @@ function ModalContent({
                 }
               }}
               className={ModalContentStyle.button}
-              colorInactive="mono.white">
+              colorInactive="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive">
               {cancelText}
             </ButtonRoundWithIcon>
           )}
@@ -62,7 +62,7 @@ function ModalContent({
                 }
               }}
               className={ModalContentStyle.button}
-              colorActive="main.blue">
+              colorActive="bg-main-blue hover:bg-main-blueHover active:bg-main-blueActive">
               {submitText}
             </ButtonRoundWithIcon>
           )}
@@ -77,7 +77,8 @@ ModalContent.defaultProps = {
   cancelText: undefined,
   onSubmit: undefined,
   onCancel: undefined,
-  backgroundColor: 'mono.darkGray',
+  backgroundColor:
+    'bg-mono-darkGray hover:bg-mono-darkGrayHover active:bg-mono-darkGrayActive',
   contentClassName: undefined,
 }
 

@@ -25,7 +25,7 @@ const LayoutTabStyle = {
   container({ backgroundColor }: ListStyleProps) {
     return `
       w-screen
-      ${helpers.convertColorToTailwind('bg', backgroundColor, true)}
+      ${helpers.convertColorToTailwind(backgroundColor || '', true)}
     `
   },
   tabList: `
@@ -43,17 +43,31 @@ const LayoutTabStyle = {
       cursor-pointer
       shadow-2xl
       shadow-inner
-      ${helpers.convertTextToTailwind(fontSize)}
-      ${helpers.convertColorToTailwind('bg', 'mono.pale', false)}
-      ${helpers.convertColorToTailwind('text', 'mono.gray', false)}
+      lg:text-${fontSize}
+      lg:font-${fontSize}
+      md:text-${fontSize}
+      md:font-${fontSize}
+      sm:text-subMedium
+      sm:font-subMedium
+      bg-mono-pale
+      hover:bg-mono-paleHover
+      active:bg-mono-paleActive
+      text-mono-gray
+      hover:text-mono-grayHover
+      active:text-mono-grayActive
     `
   },
   selectedTabTitle({ fontSize, selectedColor, selectedTextColor }: StyleProps) {
     return `
       ${tabStyle}
-      ${helpers.convertTextToTailwind(fontSize)}
-      ${helpers.convertColorToTailwind('bg', selectedColor, true)}
-      ${helpers.convertColorToTailwind('text', selectedTextColor, true)}
+      lg:text-${fontSize}
+      lg:font-${fontSize}
+      md:text-${fontSize}
+      md:font-${fontSize}
+      sm:text-subMedium
+      sm:font-subMedium
+      ${helpers.convertColorToTailwind(selectedColor, true)}
+      ${helpers.convertColorToTailwind(selectedTextColor, true)}
     `
   },
   selectedTabUnderline({ selectedColor }: StyleProps) {
@@ -62,7 +76,7 @@ const LayoutTabStyle = {
       left-0
       h-1
       w-full
-      ${helpers.convertColorToTailwind('bg', selectedColor, true)}
+      ${helpers.convertColorToTailwind(selectedColor, true)}
     `
   },
   tabPanel({ selectedColor }: StyleProps) {
@@ -70,7 +84,7 @@ const LayoutTabStyle = {
       pt-4
       w-full
       h-screen
-      ${helpers.convertColorToTailwind('bg', selectedColor, true)}
+      ${helpers.convertColorToTailwind(selectedColor, true)}
     `
   },
 }

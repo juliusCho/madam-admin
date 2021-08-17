@@ -2,8 +2,9 @@ import React from 'react'
 import { useHistory } from 'react-router'
 import Recoil from 'recoil'
 import * as api from '../../../api'
+import { ROUTER_PATH } from '../../../constants'
 import userGlobalStates from '../../../recoil/user'
-import { ROUTER_PATH } from '../../../types'
+import helpers from '../../../utils/helpers'
 import customHooks from '../../../utils/hooks'
 import { ButtonRoundWithIcon } from '../../buttons/round-with-icon'
 import { InputTextLine } from '../../inputs/text-line'
@@ -54,7 +55,6 @@ function LayoutHeader({}: LayoutHeaderProps) {
   }
 
   const onSubmitModal = () => {
-    console.log('adminName', adminName)
     if (!adminName) {
       setAlertMsg('입력된 텍스트가 없습니다.')
       setShowAlert(true)
@@ -123,21 +123,30 @@ function LayoutHeader({}: LayoutHeaderProps) {
           placeholder="이름을 입력해 주세요."
         />
       </ModalContent>
-      <LabelMadam
-        size="titleBig"
-        style={{ marginLeft: '2rem', fontSize: '3rem' }}
-      />
+      <button
+        type="button"
+        onClick={() => history.push(ROUTER_PATH.DASHBOARD.APP_USE)}>
+        <LabelMadam
+          size="titleBig"
+          style={
+            helpers.isMobile()
+              ? { fontSize: '2rem' }
+              : { marginLeft: '2rem', fontSize: '3rem' }
+          }
+          className="cursor-pointer hover:text-mono-blackHover active:text-mono-blackActive"
+        />
+      </button>
       <div
         className={LayoutHeaderStyle.buttonArea}
-        style={{ width: 'calc(100% - 23.5rem)' }}>
+        style={{
+          width: `calc(100% - ${helpers.isMobile() ? '0' : '23.5rem'})`,
+        }}>
         <span className={LayoutHeaderStyle.welcome}>접속 관리자:</span>
-        <span className={LayoutHeaderStyle.adminName}>
-          [ {admin?.name || ''} ]
-        </span>
+        <span className={LayoutHeaderStyle.adminName}>{admin?.name || ''}</span>
         <ButtonRoundWithIcon
           icon="border-color"
           iconSize="0.85rem"
-          colorInactive="mono.white"
+          colorInactive="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive"
           onClick={() => setModalShow(true)}
           className={LayoutHeaderStyle.button}>
           사용자 명 변경
@@ -146,8 +155,12 @@ function LayoutHeader({}: LayoutHeaderProps) {
       <ButtonRoundWithIcon
         icon="log-out"
         onClick={() => setConfirmLogoutShow(true)}
-        colorInactive="mono.white"
-        style={{ marginRight: '2rem', width: '8rem' }}
+        colorInactive="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive"
+        style={{
+          marginRight: '2rem',
+          width: '8.5rem',
+          marginLeft: helpers.isMobile() ? '2rem' : undefined,
+        }}
         className={LayoutHeaderStyle.button}>
         로그아웃
       </ButtonRoundWithIcon>

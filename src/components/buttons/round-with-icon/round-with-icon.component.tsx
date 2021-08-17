@@ -81,11 +81,15 @@ ButtonRoundWithIcon.defaultProps = {
   active: false,
   disabled: false,
   disabledChildren: '',
-  colorIcon: 'mono.paleBlack',
-  colorIconActive: 'mono.white',
-  colorActive: 'mono.white',
-  colorInactive: 'mono.pale',
-  colorDisabled: 'mono.lightGray',
+  colorIcon:
+    'text-mono-paleBlack hover:text-mono-paleBlackHover active:text-mono-paleBlackActive',
+  colorIconActive:
+    'text-mono-white hover:text-mono-whiteHover active:text-mono-whiteActive',
+  colorActive:
+    'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
+  colorInactive:
+    'bg-mono-pale hover:bg-mono-paleHover active:bg-mono-paleActive',
+  colorDisabled: 'bg-mono-lightGray',
 }
 
 export default React.memo(ButtonRoundWithIcon)

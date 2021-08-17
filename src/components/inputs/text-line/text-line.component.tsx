@@ -243,16 +243,20 @@ InputTextLine.defaultProps = {
   inputStyle: {},
   inputClassName: '',
   inputColor: undefined,
-  inputBorderColor: 'mono.pale',
-  inputTextColor: 'mono.black',
-  inputPlaceholderColor: 'mono.gray',
-  inputResetColor: 'mono.black',
+  inputBorderColor:
+    'border-mono-pale hover:border-mono-paleHover active:border-mono-paleActive',
+  inputTextColor:
+    'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
+  inputPlaceholderColor:
+    'placeholder-mono-gray hover:placeholder-mono-grayHover active:placeholder-mono-grayActive',
+  inputResetColor:
+    'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
   placeholder: '',
   locale: 'kr',
   type: 'text',
   disabled: false,
-  disabledInputColor: 'mono.lightGray',
-  disabledPlaceholderColor: 'mono.darkGray',
+  disabledInputColor: 'bg-mono-lightGray',
+  disabledPlaceholderColor: 'placeholder-mono-darkGray',
   maxLength: 200,
 }
 

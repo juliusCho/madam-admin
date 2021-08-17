@@ -1,13 +1,5 @@
 import React from 'react'
-
-const convertToTailwindClass = (color: string, disabled: boolean) => {
-  const tc = color.split('.')
-  return `text-${tc[0]}-${tc[1]} ${
-    disabled
-      ? ''
-      : `hover:text-${tc[0]}Hover-${tc[1]} active:text-${tc[0]}Active-${tc[1]}`
-  }`
-}
+import helpers from '../../../utils/helpers'
 
 export interface XEIconProps {
   name: string
@@ -50,8 +42,8 @@ function XEIcon({
         onClick ? '' : 'cursor-default'
       }`}>
       <i
-        className={`xi-${name} ${convertToTailwindClass(
-          color || 'mono.black',
+        className={`xi-${name} ${helpers.convertColorToTailwind(
+          color || '',
           !onClick,
         )}`}
         data-testid={testID}
@@ -68,7 +60,7 @@ XEIcon.defaultProps = {
   style: {},
   className: '',
   size: undefined,
-  color: 'mono.black',
+  color: 'bg-mono-black hover:bg-mono-blackHover active:bg-mono-blackActive',
   onClick: undefined,
   testID: '',
 }

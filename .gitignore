@@ -31,3 +31,5 @@ tailwind.default.config.js
 firebase-debug.log
 
 .env
+
+/src/index.tailwind.css
