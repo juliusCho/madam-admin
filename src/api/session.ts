@@ -23,6 +23,6 @@ export const apiLogin = async (
   }
 }
 
-export const apiChangeName = async (user: AdminType) => {
+export const apiChangeName = (user: AdminType) => {
   return { ...user }
 }

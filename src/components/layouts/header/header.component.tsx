@@ -26,6 +26,10 @@ function LayoutHeader({}: LayoutHeaderProps) {
   const [modalShow, setModalShow] = React.useState(false)
   const [alertMsg, setAlertMsg] = React.useState('')
   const [showAlert, setShowAlert] = React.useState(false)
+  const [infoMsg, setInfoMsg] = React.useState('')
+  const [showInfo, setShowInfo] = React.useState(false)
+  const [infoType, setInfoType] = React.useState<'info' | 'success'>('info')
+  const [isMobile, setIsMobile] = React.useState(helpers.isMobile())
 
   const isMounted = customHooks.useIsMounted()
 
@@ -33,23 +37,55 @@ function LayoutHeader({}: LayoutHeaderProps) {
 
   const maxLength = 50
 
+  const resizeEvent = React.useCallback(() => {
+    if (window.innerWidth >= 767) {
+      setIsMobile(false)
+    } else {
+      setIsMobile(true)
+    }
+  }, [])
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return () => {}
+
+    if (isMounted()) {
+      resizeEvent()
+
+      window.addEventListener('load', resizeEvent)
+      window.addEventListener('resize', resizeEvent)
+    }
+    return () => {
+      window.removeEventListener('load', resizeEvent)
+      window.removeEventListener('resize', resizeEvent)
+    }
+  }, [isMounted, window, resizeEvent])
+
   React.useEffect(() => {
     if (isMounted()) {
       setAdminName(() => admin?.name ?? '')
     }
   }, [isMounted, admin])
 
-  const changeName = async () => {
+  const changeName = () => {
     setConfirmChangeNameShow(false)
     setModalShow(false)
 
     if (!admin) return
 
-    const newAdmin = await api.apiChangeName({ ...admin, name: adminName })
+    setInfoType('success')
+    setInfoMsg('이름이 변경되었습니다.')
+    setShowInfo(true)
+
+    const newAdmin = { ...admin, name: adminName }
+    api.apiChangeName(newAdmin)
     setAdmin(newAdmin)
   }
 
   const logout = () => {
+    setInfoType('info')
+    setInfoMsg('로그아웃 되었습니다.')
+    setShowInfo(true)
+
     setConfirmLogoutShow(false)
     history.push(ROUTER_PATH.LOGIN)
   }
@@ -72,6 +108,10 @@ function LayoutHeader({}: LayoutHeaderProps) {
 
   const onAlertEnds = () => {
     setShowAlert(false)
+  }
+
+  const onInfoEnds = () => {
+    setShowInfo(false)
   }
 
   return (
@@ -103,6 +143,13 @@ function LayoutHeader({}: LayoutHeaderProps) {
         onHide={onAlertEnds}
         showTime={1000}
       />
+      <Alert
+        show={showInfo}
+        msg={infoMsg}
+        type={infoType}
+        onHide={onInfoEnds}
+        showTime={1000}
+      />
       <ModalContent
         isOpen={modalShow}
         onCancel={() => {
@@ -129,9 +176,15 @@ function LayoutHeader({}: LayoutHeaderProps) {
         <LabelMadam
           size="titleBig"
           style={
-            helpers.isMobile()
-              ? { fontSize: '2rem' }
-              : { marginLeft: '2rem', fontSize: '3rem' }
+            isMobile
+              ? {
+                  marginLeft: '1rem',
+                  fontSize: '2rem',
+                }
+              : {
+                  marginLeft: '2rem',
+                  fontSize: '3rem',
+                }
           }
           className="cursor-pointer hover:text-mono-blackHover active:text-mono-blackActive"
         />
@@ -139,7 +192,7 @@ function LayoutHeader({}: LayoutHeaderProps) {
       <div
         className={LayoutHeaderStyle.buttonArea}
         style={{
-          width: `calc(100% - ${helpers.isMobile() ? '0' : '23.5rem'})`,
+          width: `calc(100% - ${isMobile ? '0px' : '23.5rem'})`,
         }}>
         <span className={LayoutHeaderStyle.welcome}>접속 관리자:</span>
         <span className={LayoutHeaderStyle.adminName}>{admin?.name || ''}</span>
@@ -158,8 +211,7 @@ function LayoutHeader({}: LayoutHeaderProps) {
         colorInactive="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive"
         style={{
           marginRight: '2rem',
-          width: '8.5rem',
-          marginLeft: helpers.isMobile() ? '2rem' : undefined,
+          width: isMobile ? '7.8rem' : '8.5rem',
         }}
         className={LayoutHeaderStyle.button}>
         로그아웃

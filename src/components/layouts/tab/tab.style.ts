@@ -12,13 +12,19 @@ interface ListStyleProps {
 
 const tabStyle = `
   p-3
-  mx-1
+  mx-0
+  sm:mx-1
+  h-12
   border-t-2
   border-l-2
   border-r-2
   border-mono-gray
   rounded-t-lg
   relative
+  break-words
+  whitespace-pre
+  text-subMedium
+  font-subMedium
 `
 
 const LayoutTabStyle = {
@@ -43,12 +49,8 @@ const LayoutTabStyle = {
       cursor-pointer
       shadow-2xl
       shadow-inner
-      lg:text-${fontSize}
-      lg:font-${fontSize}
       md:text-${fontSize}
       md:font-${fontSize}
-      sm:text-subMedium
-      sm:font-subMedium
       bg-mono-pale
       hover:bg-mono-paleHover
       active:bg-mono-paleActive
@@ -60,12 +62,8 @@ const LayoutTabStyle = {
   selectedTabTitle({ fontSize, selectedColor, selectedTextColor }: StyleProps) {
     return `
       ${tabStyle}
-      lg:text-${fontSize}
-      lg:font-${fontSize}
       md:text-${fontSize}
       md:font-${fontSize}
-      sm:text-subMedium
-      sm:font-subMedium
       ${helpers.convertColorToTailwind(selectedColor, true)}
       ${helpers.convertColorToTailwind(selectedTextColor, true)}
     `

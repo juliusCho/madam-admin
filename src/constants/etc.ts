@@ -10,6 +10,7 @@ export const ROUTER_PATH = {
   SYSTEM_VARIABLE: {
     CONFIG: '/sys-var/config',
     PROFILE: '/sys-var/profile',
+    SELECT: '/sys-var/select',
   },
   POINT_PLAN: '/point-plan',
   HELP_DESK: {
@@ -41,6 +42,7 @@ export const ROUTER_TITLE = {
   SYSTEM_VARIABLE: {
     CONFIG: 'Madam Admin - 설정 변수[시스템 설정 변수]',
     PROFILE: 'Madam Admin - 설정 변수[유저 프로필 추가선택 항목]',
+    SELECT: 'Madam Admin - 설정 변수[선택 요소]',
   },
   POINT_PLAN: 'Madam Admin - 포인트 플랜',
   HELP_DESK: {
@@ -76,7 +78,8 @@ export const firstDepthTab = (route: string) => [
     route: ROUTER_PATH.SYSTEM_VARIABLE.CONFIG,
     selected:
       route === ROUTER_PATH.SYSTEM_VARIABLE.CONFIG ||
-      route === ROUTER_PATH.SYSTEM_VARIABLE.PROFILE,
+      route === ROUTER_PATH.SYSTEM_VARIABLE.PROFILE ||
+      route === ROUTER_PATH.SYSTEM_VARIABLE.SELECT,
   },
   {
     title: '포인트 플랜',
@@ -139,6 +142,11 @@ export const secondDepthTab = (route: string) => ({
       title: '유저 프로필 추가선택 항목',
       route: ROUTER_PATH.SYSTEM_VARIABLE.PROFILE,
       selected: route === ROUTER_PATH.SYSTEM_VARIABLE.PROFILE,
+    },
+    {
+      title: '선택 요소',
+      route: ROUTER_PATH.SYSTEM_VARIABLE.SELECT,
+      selected: route === ROUTER_PATH.SYSTEM_VARIABLE.SELECT,
     },
   ],
   HELP_DESK: [

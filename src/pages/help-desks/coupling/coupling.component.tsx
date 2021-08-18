@@ -1,0 +1,12 @@
+import React from 'react'
+import PageHelpDeskLayout from '../layout.component'
+
+export interface PageHelpDeskCouplingProps {}
+
+export default function PageHelpDeskCoupling({}: PageHelpDeskCouplingProps) {
+  return (
+    <PageHelpDeskLayout endpoint="COUPLING">
+      <div />
+    </PageHelpDeskLayout>
+  )
+}

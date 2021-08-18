@@ -1,17 +1,12 @@
 const LayoutHeaderStyle = {
   container: `
-    lg:h-36
-    md:h-36
-    sm:h-64
+    h-56
+    sm:h-32
     py-4
     w-screen
-    flex
-    lg:flex-row
-    md:flex-row
-    sm:flex-col
-    lg:justify-between
-    md:justify-between
-    sm:justify-center
+    sm:flex
+    justify-start
+    justify-between
     items-center
     bg-mono-pale
   `,
@@ -24,60 +19,53 @@ const LayoutHeaderStyle = {
     h-36
   `,
   buttonArea: `
-    lg:h-full
-    flex
-    lg:flex-row
-    md:flex-row
-    sm:flex-col
-    lg:justify-end
-    md:justify-end
-    sm:justify-center
+    md:h-full
+    sm:flex
+    justify-end
     items-center
-    lg:mr-4
-    md:mr-4
-    sm:mr-0
+    mr-0
+    sm:mr-4
+    mt-4
+    sm:mt-0
   `,
   button: `
     shadow-md
-    lg:h-12
+    h-8
     md:h-12
-    sm:h-8
-    lg:m-0
-    md:m-0
-    sm:m-2
+    sm:h-10
+    m-2
+    sm:m-0
+    ml-4
+    mt-4
+    sm:mt-0
+    text-subMedium
+    font-subMedium
+    md:text-textMedium
+    md:font-textMedium
   `,
   welcome: `
-    lg:text-subTitleSmall
+    text-subMedium
+    font-subMedium
     md:text-subTitleSmall
-    sm:text-textSmall
-    lg:font-subTitleSmall
     md:font-subTitleSmall
-    sm:font-textSmall
     text-mono-paleBlack
-    lg:mt-1
-    md:mt-1
-    sm:mt-4
-    lg:mr-4
-    md:mr-4
-    sm:mr-0
-    lg:mb-0
-    md:mb-0
-    sm:mb-1
+    m-4
+    sm:mt-1
+    mr-0
+    sm:mr-4
+    mb-1
+    sm:mb-0
   `,
   adminName: `
-    lg:text-subTitleBig
+    text-textBig
+    font-textBig
     md:text-subTitleBig
-    sm:text-textBig
-    lg:font-subTitleBig
     md:font-subTitleBig
-    sm:font-textBig
     text-sub-darkPurple
-    lg:mr-8
-    md:mr-8
-    sm:mr-0
-    lg:mb-0
-    md:mb-0
-    sm:mb-2
+    mr-0
+    sm:mr-8
+    mb-2
+    sm:mb-0
   `,
 }
 

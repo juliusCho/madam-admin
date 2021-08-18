@@ -34,7 +34,7 @@ export default {
         )
       ) {
         check = true
-      } else if (window.innerWidth <= 900) {
+      } else if (window.innerWidth <= 767) {
         check = true
       }
     })(navigator.userAgent || navigator.vendor)

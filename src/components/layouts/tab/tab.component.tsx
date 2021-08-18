@@ -2,6 +2,8 @@ import React from 'react'
 import { useHistory } from 'react-router'
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs'
 import 'react-tabs/style/react-tabs.scss'
+import Recoil from 'recoil'
+import etcGlobalStates from '../../../recoil/etc'
 import LayoutTabStyle from './tab.style'
 
 export interface LayoutTabProps {
@@ -25,12 +27,17 @@ function LayoutTab({
 }: LayoutTabProps) {
   const history = useHistory()
 
+  const setLoading = Recoil.useSetRecoilState(etcGlobalStates.loadingState)
+
   const onClick = (route: string) => {
+    setLoading(true)
     history.push(route)
   }
 
   return (
-    <Tabs className={LayoutTabStyle.container({ backgroundColor })}>
+    <Tabs
+      className={LayoutTabStyle.container({ backgroundColor })}
+      defaultIndex={tabs.findIndex((tab) => tab.selected)}>
       <TabList
         data-testid="layouts.tab.list"
         className={LayoutTabStyle.tabList}>
