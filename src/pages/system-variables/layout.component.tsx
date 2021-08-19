@@ -62,10 +62,10 @@ function PageSystemVariableLayout({
         fontSize="titleBig"
         selectedTextColor="text-sub-darkPurple hover:text-sub-darkPurpleHover active:text-sub-darkPurpleActive">
         <LayoutTab
-          tabs={[
-            ...secondDepthTab(ROUTER_PATH.SYSTEM_VARIABLE[endpoint])
-              .SYSTEM_VARIABLE,
-          ]}
+          tabs={
+            secondDepthTab(ROUTER_PATH.SYSTEM_VARIABLE[endpoint])
+              .SYSTEM_VARIABLE
+          }
           backgroundColor="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive"
           selectedColor="bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive"
           innerColor="bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive">

@@ -3,7 +3,10 @@ import { useHistory } from 'react-router'
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs'
 import 'react-tabs/style/react-tabs.scss'
 import Recoil from 'recoil'
+import { ROUTER_PATH } from '../../../constants'
 import etcGlobalStates from '../../../recoil/etc'
+import helpers from '../../../utils/helpers'
+import { Alert } from '../../modals/alert'
 import LayoutTabStyle from './tab.style'
 
 export interface LayoutTabProps {
@@ -29,63 +32,103 @@ function LayoutTab({
 
   const setLoading = Recoil.useSetRecoilState(etcGlobalStates.loadingState)
 
+  const [alertShow, setAlertShow] = React.useState(false)
+
   const onClick = (route: string) => {
-    setLoading(true)
-    history.push(route)
+    if (
+      route === ROUTER_PATH.DASHBOARD.APP_USE ||
+      route === ROUTER_PATH.DASHBOARD.BEST_MADAM ||
+      route === ROUTER_PATH.DASHBOARD.USER ||
+      route === ROUTER_PATH.DASHBOARD.COUPLING ||
+      route === ROUTER_PATH.DASHBOARD.ETC ||
+      !helpers.isMobile()
+    ) {
+      setLoading(true)
+      history.push(route)
+    } else {
+      setAlertShow(true)
+    }
+  }
+
+  const onAlertHide = () => {
+    setAlertShow(false)
   }
 
   return (
-    <Tabs
-      className={LayoutTabStyle.container({ backgroundColor })}
-      defaultIndex={tabs.findIndex((tab) => tab.selected)}>
-      <TabList
-        data-testid="layouts.tab.list"
-        className={LayoutTabStyle.tabList}>
-        {tabs.map((tab) => (
-          <Tab
-            key={tab.route}
-            onClick={() => {
-              if (!tab.selected) {
-                onClick(tab.route)
+    <>
+      <Alert
+        show={alertShow}
+        msg="모바일 환경에서는 지원되지 않는 기능입니다."
+        type="warning"
+        showTime={1500}
+        onHide={onAlertHide}
+      />
+      <Tabs
+        className={LayoutTabStyle.container({ backgroundColor })}
+        defaultIndex={tabs.findIndex((tab) => tab.selected)}>
+        <TabList
+          data-testid="layouts.tab.list"
+          className={LayoutTabStyle.tabList}>
+          {tabs.map((tab) => (
+            <Tab
+              key={tab.route}
+              onClick={() => {
+                if (!tab.selected) {
+                  onClick(tab.route)
+                }
+              }}
+              disabled={
+                tab.route !== ROUTER_PATH.DASHBOARD.APP_USE &&
+                tab.route !== ROUTER_PATH.DASHBOARD.BEST_MADAM &&
+                tab.route !== ROUTER_PATH.DASHBOARD.USER &&
+                tab.route !== ROUTER_PATH.DASHBOARD.COUPLING &&
+                tab.route !== ROUTER_PATH.DASHBOARD.ETC &&
+                helpers.isMobile()
               }
-            }}
-            selected={tab.selected}
-            selectedClassName={
-              tab.selected
-                ? `${LayoutTabStyle.selectedTabTitle({
-                    fontSize,
+              selected={tab.selected}
+              selectedClassName={
+                tab.selected
+                  ? `${LayoutTabStyle.selectedTabTitle({
+                      fontSize,
+                      selectedColor,
+                      selectedTextColor,
+                    })}`
+                  : ''
+              }
+              className={
+                !tab.selected
+                  ? LayoutTabStyle.unselectedTabTitle({ fontSize })
+                  : ''
+              }>
+              {tab.title}
+              {tab.selected && (
+                <div
+                  className={LayoutTabStyle.selectedTabUnderline({
                     selectedColor,
-                    selectedTextColor,
-                  })}`
-                : ''
-            }
-            className={
-              !tab.selected
-                ? LayoutTabStyle.unselectedTabTitle({ fontSize })
-                : ''
-            }>
-            {tab.title}
-            {tab.selected && (
-              <div
-                className={LayoutTabStyle.selectedTabUnderline({
-                  selectedColor,
-                })}
-                style={{ bottom: -2 }}
-              />
-            )}
-          </Tab>
-        ))}
-      </TabList>
-      <TabPanel
-        className={LayoutTabStyle.tabPanel({ selectedColor: innerColor })}>
-        {children}
-      </TabPanel>
-      {[...tabs].splice(0, tabs.length - 1).map((tab) => (
-        <TabPanel key={tab.route}>
-          <></>
-        </TabPanel>
-      ))}
-    </Tabs>
+                  })}
+                  style={{ bottom: -2 }}
+                />
+              )}
+            </Tab>
+          ))}
+        </TabList>
+        {tabs.map((tab) =>
+          tab.selected ? (
+            <TabPanel
+              key={tab.route}
+              className={LayoutTabStyle.tabPanel({
+                selectedColor: innerColor,
+              })}>
+              {children}
+            </TabPanel>
+          ) : (
+            <TabPanel key={tab.route}>
+              <></>
+            </TabPanel>
+          ),
+        )}
+      </Tabs>
+    </>
   )
 }
 
