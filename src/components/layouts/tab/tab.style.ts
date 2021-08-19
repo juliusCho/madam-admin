@@ -49,8 +49,8 @@ const LayoutTabStyle = {
       cursor-pointer
       shadow-2xl
       shadow-inner
-      md:text-${fontSize}
-      md:font-${fontSize}
+      ${fontSize}
+      ${fontSize}
       bg-mono-pale
       hover:bg-mono-paleHover
       active:bg-mono-paleActive
@@ -62,8 +62,8 @@ const LayoutTabStyle = {
   selectedTabTitle({ fontSize, selectedColor, selectedTextColor }: StyleProps) {
     return `
       ${tabStyle}
-      md:text-${fontSize}
-      md:font-${fontSize}
+      ${fontSize}
+      ${fontSize}
       ${helpers.convertColorToTailwind(selectedColor, true)}
       ${helpers.convertColorToTailwind(selectedTextColor, true)}
     `

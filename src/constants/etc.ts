@@ -102,6 +102,15 @@ export const firstDepthTab = (route: string) => [
     route: ROUTER_PATH.QNA,
     selected: route === ROUTER_PATH.QNA,
   },
+  {
+    title: '유저관리',
+    route: ROUTER_PATH.USER.BLOCK,
+    selected:
+      route === ROUTER_PATH.USER.BLOCK ||
+      route === ROUTER_PATH.USER.INTEREST ||
+      route === ROUTER_PATH.USER.PHOTO ||
+      route === ROUTER_PATH.USER.PROFILE,
+  },
 ]
 
 export const secondDepthTab = (route: string) => ({

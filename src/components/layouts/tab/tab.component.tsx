@@ -133,7 +133,7 @@ function LayoutTab({
 }
 
 LayoutTab.defaultProps = {
-  fontSize: 'titleMedium',
+  fontSize: 'md:text-titleMedium md:font-titleMedium',
   selectedColor:
     'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
   selectedTextColor:

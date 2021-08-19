@@ -46,7 +46,7 @@ function PageQnaLayout({ children }: PageQnaLayoutProps) {
       <LayoutTab
         tabs={firstDepthTab(ROUTER_PATH.QNA)}
         backgroundColor="bg-mono-pale hover:bg-mono-paleHover active:bg-mono-paleActive"
-        fontSize="titleBig"
+        fontSize="md:text-titleBig md:font-titleBig"
         selectedTextColor="text-sub-darkPurple hover:text-sub-darkPurpleHover active:text-sub-darkPurpleActive">
         {children}
       </LayoutTab>
