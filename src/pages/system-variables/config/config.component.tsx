@@ -6,7 +6,7 @@ export interface PageSystemVariableConfigProps {}
 export default function PageSystemVariableConfig({}: PageSystemVariableConfigProps) {
   return (
     <PageSystemVariableLayout endpoint="CONFIG">
-      <div />
+      <span>Config</span>
     </PageSystemVariableLayout>
   )
 }

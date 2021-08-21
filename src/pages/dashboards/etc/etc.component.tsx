@@ -6,7 +6,7 @@ export interface PageDashboardEtcProps {}
 export default function PageDashboardEtc({}: PageDashboardEtcProps) {
   return (
     <PageDashboardLayout endpoint="ETC">
-      <div />
+      <span>Etc</span>
     </PageDashboardLayout>
   )
 }

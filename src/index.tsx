@@ -6,7 +6,7 @@ import { RecoilRoot } from 'recoil'
 import './firebaseSetup'
 import './index.css'
 import './index.tailwind.css'
-import App from './pages/App'
+import { App } from './pages'
 import reportWebVitals from './reportWebVitals'
 
 Modal.setAppElement('#root')

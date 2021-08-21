@@ -6,7 +6,7 @@ export interface PageHelpDeskCouplingProps {}
 export default function PageHelpDeskCoupling({}: PageHelpDeskCouplingProps) {
   return (
     <PageHelpDeskLayout endpoint="COUPLING">
-      <div />
+      <span>Coupling</span>
     </PageHelpDeskLayout>
   )
 }

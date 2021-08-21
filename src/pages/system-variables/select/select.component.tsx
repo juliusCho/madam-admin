@@ -6,7 +6,7 @@ export interface PageSystemVariableSelectProps {}
 export default function PageSystemVariableSelect({}: PageSystemVariableSelectProps) {
   return (
     <PageSystemVariableLayout endpoint="SELECT">
-      <div />
+      <span>Select</span>
     </PageSystemVariableLayout>
   )
 }

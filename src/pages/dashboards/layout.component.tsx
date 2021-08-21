@@ -1,17 +1,11 @@
 import React from 'react'
-import { useHistory } from 'react-router'
-import { useTitle } from 'react-use'
 import Recoil from 'recoil'
+import { Loading } from '../../components/etc/loading'
 import { LayoutHeader } from '../../components/layouts/header'
 import { LayoutTab } from '../../components/layouts/tab'
-import {
-  firstDepthTab,
-  ROUTER_PATH,
-  ROUTER_TITLE,
-  secondDepthTab,
-} from '../../constants'
+import { ROUTER_PATH, ROUTER_TITLE } from '../../constants'
 import etcGlobalStates from '../../recoil/etc'
-import userGlobalStates from '../../recoil/user'
+import helpers from '../../utils/helpers'
 import customHooks from '../../utils/hooks'
 
 export interface PageDashboardLayoutProps {
@@ -20,44 +14,49 @@ export interface PageDashboardLayoutProps {
 }
 
 function PageDashboardLayout({ endpoint, children }: PageDashboardLayoutProps) {
-  useTitle(ROUTER_TITLE.DASHBOARD[endpoint])
+  customHooks.usePage(
+    ROUTER_TITLE.DASHBOARD[endpoint],
+    ROUTER_PATH.DASHBOARD[endpoint],
+  )
 
-  const history = useHistory()
+  const [isMobile, setIsMobile] = React.useState(helpers.isMobile())
 
-  const user = Recoil.useRecoilValue(userGlobalStates.userState)
-  const setLoading = Recoil.useSetRecoilState(etcGlobalStates.loadingState)
+  customHooks.useCheckMobile(setIsMobile)
 
-  const isMounted = customHooks.useIsMounted()
-
-  React.useEffect(() => {
-    if (!isMounted()) return
-
-    if (history.location.pathname === ROUTER_PATH.DASHBOARD[endpoint]) {
-      setLoading(() => false)
-    }
-  }, [isMounted, history.location.pathname, ROUTER_PATH.DASHBOARD[endpoint]])
-
-  React.useEffect(() => {
-    if (!isMounted()) return
-
-    if (user === null) {
-      setLoading(() => true)
-      history.push(ROUTER_PATH.LOGIN)
-    }
-  }, [isMounted, user, history.push, ROUTER_PATH.LOGIN])
+  const firstLoading = Recoil.useRecoilValue(
+    etcGlobalStates.firstTabLoadingState,
+  )
+  const secondLoading = Recoil.useRecoilValue(
+    etcGlobalStates.secondTabLoadingState,
+  )
 
   return (
     <>
       <LayoutHeader />
       <LayoutTab
-        tabs={firstDepthTab(ROUTER_PATH.DASHBOARD[endpoint])}
-        backgroundColor="bg-mono-pale hover:bg-mono-paleHover active:bg-mono-paleActive"
-        fontSize="md:text-titleBig md:font-titleBig"
-        selectedTextColor="text-sub-darkPurple hover:text-sub-darkPurpleHover active:text-sub-darkPurpleActive">
+        depth={1}
+        loading={
+          <Loading
+            loading={firstLoading}
+            style={{ height: 'calc(100% - 11.25rem)' }}
+          />
+        }
+        tabs={helpers.firstDepthTab(ROUTER_PATH.DASHBOARD[endpoint], isMobile)}>
         <LayoutTab
-          tabs={secondDepthTab(ROUTER_PATH.DASHBOARD[endpoint]).DASHBOARD}
+          depth={2}
+          tabs={
+            helpers.secondDepthTab(ROUTER_PATH.DASHBOARD[endpoint]).DASHBOARD
+          }
+          loading={
+            <Loading
+              loading={secondLoading}
+              style={{ height: 'calc(100% - 14.5rem)' }}
+            />
+          }
+          fontSize="md:text-titleMedium md:font-titleMedium"
           backgroundColor="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive"
           selectedColor="bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive"
+          selectedTextColor="text-main-blue hover:text-main-blueHover active:text-main-blueActive"
           innerColor="bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive">
           {children}
         </LayoutTab>

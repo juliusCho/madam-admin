@@ -6,7 +6,7 @@ export interface PageSystemVariableProfileProps {}
 export default function PageSystemVariableProfile({}: PageSystemVariableProfileProps) {
   return (
     <PageSystemVariableLayout endpoint="PROFILE">
-      <div />
+      <span>Profile</span>
     </PageSystemVariableLayout>
   )
 }

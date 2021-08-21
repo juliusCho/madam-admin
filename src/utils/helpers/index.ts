@@ -1,3 +1,4 @@
+import { ROUTER_PATH } from '../../constants'
 import endpointsConfig from '../../endpoints.config'
 
 export default {
@@ -39,5 +40,169 @@ export default {
       }
     })(navigator.userAgent || navigator.vendor)
     return check
+  },
+  firstDepthTab(route: string, isMobile?: boolean) {
+    let result = [
+      {
+        title: '대시보드',
+        route: ROUTER_PATH.DASHBOARD.APP_USE,
+        selected:
+          route === ROUTER_PATH.DASHBOARD.APP_USE ||
+          route === ROUTER_PATH.DASHBOARD.BEST_MADAM ||
+          route === ROUTER_PATH.DASHBOARD.COUPLING ||
+          route === ROUTER_PATH.DASHBOARD.USER ||
+          route === ROUTER_PATH.DASHBOARD.ETC,
+      },
+    ]
+
+    if (!isMobile) {
+      result = [
+        ...result,
+        ...[
+          {
+            title: '설정 변수',
+            route: ROUTER_PATH.SYSTEM_VARIABLE.CONFIG,
+            selected:
+              route === ROUTER_PATH.SYSTEM_VARIABLE.CONFIG ||
+              route === ROUTER_PATH.SYSTEM_VARIABLE.PROFILE ||
+              route === ROUTER_PATH.SYSTEM_VARIABLE.SELECT,
+          },
+          {
+            title: '포인트 플랜',
+            route: ROUTER_PATH.POINT_PLAN,
+            selected: route === ROUTER_PATH.POINT_PLAN,
+          },
+          {
+            title: '헬프데스크',
+            route: ROUTER_PATH.HELP_DESK.BASE_USE,
+            selected:
+              route === ROUTER_PATH.HELP_DESK.BASE_USE ||
+              route === ROUTER_PATH.HELP_DESK.ACCOUNT ||
+              route === ROUTER_PATH.HELP_DESK.BEST_MADAM ||
+              route === ROUTER_PATH.HELP_DESK.COUPLING ||
+              route === ROUTER_PATH.HELP_DESK.MADAM_TEAM ||
+              route === ROUTER_PATH.HELP_DESK.MEETING,
+          },
+          {
+            title: '문의글 답변',
+            route: ROUTER_PATH.QNA,
+            selected: route === ROUTER_PATH.QNA,
+          },
+          {
+            title: '유저관리',
+            route: ROUTER_PATH.USER.BLOCK,
+            selected:
+              route === ROUTER_PATH.USER.BLOCK ||
+              route === ROUTER_PATH.USER.INTEREST ||
+              route === ROUTER_PATH.USER.PHOTO ||
+              route === ROUTER_PATH.USER.PROFILE,
+          },
+        ],
+      ]
+    }
+
+    return result
+  },
+  secondDepthTab(route: string) {
+    return {
+      DASHBOARD: [
+        {
+          title: '앱 사용',
+          route: ROUTER_PATH.DASHBOARD.APP_USE,
+          selected: route === ROUTER_PATH.DASHBOARD.APP_USE,
+        },
+        {
+          title: '최고의 마담',
+          route: ROUTER_PATH.DASHBOARD.BEST_MADAM,
+          selected: route === ROUTER_PATH.DASHBOARD.BEST_MADAM,
+        },
+        {
+          title: '유저',
+          route: ROUTER_PATH.DASHBOARD.USER,
+          selected: route === ROUTER_PATH.DASHBOARD.USER,
+        },
+        {
+          title: '소개팅',
+          route: ROUTER_PATH.DASHBOARD.COUPLING,
+          selected: route === ROUTER_PATH.DASHBOARD.COUPLING,
+        },
+        {
+          title: '기타',
+          route: ROUTER_PATH.DASHBOARD.ETC,
+          selected: route === ROUTER_PATH.DASHBOARD.ETC,
+        },
+      ],
+      SYSTEM_VARIABLE: [
+        {
+          title: '시스템 설정 변수',
+          route: ROUTER_PATH.SYSTEM_VARIABLE.CONFIG,
+          selected: route === ROUTER_PATH.SYSTEM_VARIABLE.CONFIG,
+        },
+        {
+          title: '유저 프로필 추가선택 항목',
+          route: ROUTER_PATH.SYSTEM_VARIABLE.PROFILE,
+          selected: route === ROUTER_PATH.SYSTEM_VARIABLE.PROFILE,
+        },
+        {
+          title: '선택 요소',
+          route: ROUTER_PATH.SYSTEM_VARIABLE.SELECT,
+          selected: route === ROUTER_PATH.SYSTEM_VARIABLE.SELECT,
+        },
+      ],
+      HELP_DESK: [
+        {
+          title: '앱 기본 사용',
+          route: ROUTER_PATH.HELP_DESK.BASE_USE,
+          selected: route === ROUTER_PATH.HELP_DESK.BASE_USE,
+        },
+        {
+          title: '계정',
+          route: ROUTER_PATH.HELP_DESK.ACCOUNT,
+          selected: route === ROUTER_PATH.HELP_DESK.ACCOUNT,
+        },
+        {
+          title: '소개팅',
+          route: ROUTER_PATH.HELP_DESK.COUPLING,
+          selected: route === ROUTER_PATH.HELP_DESK.COUPLING,
+        },
+        {
+          title: '미팅',
+          route: ROUTER_PATH.HELP_DESK.MEETING,
+          selected: route === ROUTER_PATH.HELP_DESK.MEETING,
+        },
+        {
+          title: '최고의 마담',
+          route: ROUTER_PATH.HELP_DESK.BEST_MADAM,
+          selected: route === ROUTER_PATH.HELP_DESK.BEST_MADAM,
+        },
+        {
+          title: 'Madam 팀',
+          route: ROUTER_PATH.HELP_DESK.MADAM_TEAM,
+          selected: route === ROUTER_PATH.HELP_DESK.MADAM_TEAM,
+        },
+      ],
+      USER: [
+        {
+          title: '신고/차단',
+          route: ROUTER_PATH.USER.BLOCK,
+          selected: route === ROUTER_PATH.USER.BLOCK,
+        },
+        {
+          title: '관심사',
+          route: ROUTER_PATH.USER.INTEREST,
+          selected: route === ROUTER_PATH.USER.INTEREST,
+        },
+        {
+          title: '사진',
+          route: ROUTER_PATH.USER.PHOTO,
+          selected: route === ROUTER_PATH.USER.PHOTO,
+        },
+        {
+          title: '프로필',
+          route: ROUTER_PATH.USER.PROFILE,
+          selected: route === ROUTER_PATH.USER.PROFILE,
+        },
+      ],
+    }
   },
 }

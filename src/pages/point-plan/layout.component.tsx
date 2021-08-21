@@ -1,12 +1,11 @@
 import React from 'react'
-import { useHistory } from 'react-router'
-import { useTitle } from 'react-use'
 import Recoil from 'recoil'
+import { Loading } from '../../components/etc/loading'
 import { LayoutHeader } from '../../components/layouts/header'
 import { LayoutTab } from '../../components/layouts/tab'
-import { firstDepthTab, ROUTER_PATH, ROUTER_TITLE } from '../../constants'
+import { ROUTER_PATH, ROUTER_TITLE } from '../../constants'
 import etcGlobalStates from '../../recoil/etc'
-import userGlobalStates from '../../recoil/user'
+import helpers from '../../utils/helpers'
 import customHooks from '../../utils/hooks'
 
 export interface PagePointPlanLayoutProps {
@@ -14,40 +13,28 @@ export interface PagePointPlanLayoutProps {
 }
 
 function PagePointPlanLayout({ children }: PagePointPlanLayoutProps) {
-  useTitle(ROUTER_TITLE.POINT_PLAN)
+  customHooks.usePage(ROUTER_TITLE.POINT_PLAN, ROUTER_PATH.POINT_PLAN)
 
-  const history = useHistory()
+  const [isMobile, setIsMobile] = React.useState(helpers.isMobile())
 
-  const user = Recoil.useRecoilValue(userGlobalStates.userState)
-  const setLoading = Recoil.useSetRecoilState(etcGlobalStates.loadingState)
+  customHooks.useCheckMobile(setIsMobile)
 
-  const isMounted = customHooks.useIsMounted()
-
-  React.useEffect(() => {
-    if (!isMounted()) return
-
-    if (history.location.pathname === ROUTER_PATH.POINT_PLAN) {
-      setLoading(() => false)
-    }
-  }, [isMounted, history.location.pathname, ROUTER_PATH.POINT_PLAN])
-
-  React.useEffect(() => {
-    if (!isMounted()) return
-
-    if (user === null) {
-      setLoading(() => true)
-      history.push(ROUTER_PATH.LOGIN)
-    }
-  }, [isMounted, user, history.push, ROUTER_PATH.LOGIN])
+  const firstLoading = Recoil.useRecoilValue(
+    etcGlobalStates.firstTabLoadingState,
+  )
 
   return (
     <>
       <LayoutHeader />
       <LayoutTab
-        tabs={firstDepthTab(ROUTER_PATH.POINT_PLAN)}
-        backgroundColor="bg-mono-pale hover:bg-mono-paleHover active:bg-mono-paleActive"
-        fontSize="md:text-titleBig md:font-titleBig"
-        selectedTextColor="text-sub-darkPurple hover:text-sub-darkPurpleHover active:text-sub-darkPurpleActive">
+        depth={1}
+        tabs={helpers.firstDepthTab(ROUTER_PATH.POINT_PLAN, isMobile)}
+        loading={
+          <Loading
+            loading={firstLoading}
+            style={{ height: 'calc(100% - 11.25rem)' }}
+          />
+        }>
         {children}
       </LayoutTab>
     </>

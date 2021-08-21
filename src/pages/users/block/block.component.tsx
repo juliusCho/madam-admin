@@ -6,7 +6,7 @@ export interface PageUserBlockProps {}
 export default function PageUserBlock({}: PageUserBlockProps) {
   return (
     <PageUserLayout endpoint="BLOCK">
-      <div />
+      <span>Block</span>
     </PageUserLayout>
   )
 }

@@ -6,7 +6,7 @@ export interface PageDashboardCouplingProps {}
 export default function PageDashboardCoupling({}: PageDashboardCouplingProps) {
   return (
     <PageDashboardLayout endpoint="COUPLING">
-      <div />
+      <span>Coupling</span>
     </PageDashboardLayout>
   )
 }

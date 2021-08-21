@@ -35,30 +35,9 @@ function LayoutHeader({}: LayoutHeaderProps) {
 
   const history = useHistory()
 
+  customHooks.useCheckMobile(setIsMobile)
+
   const maxLength = 50
-
-  const resizeEvent = React.useCallback(() => {
-    if (window.innerWidth >= 767) {
-      setIsMobile(false)
-    } else {
-      setIsMobile(true)
-    }
-  }, [])
-
-  React.useEffect(() => {
-    if (typeof window === 'undefined') return () => {}
-
-    if (isMounted()) {
-      resizeEvent()
-
-      window.addEventListener('load', resizeEvent)
-      window.addEventListener('resize', resizeEvent)
-    }
-    return () => {
-      window.removeEventListener('load', resizeEvent)
-      window.removeEventListener('resize', resizeEvent)
-    }
-  }, [isMounted, window, resizeEvent])
 
   React.useEffect(() => {
     if (isMounted()) {

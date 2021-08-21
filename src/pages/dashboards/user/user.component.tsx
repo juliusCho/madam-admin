@@ -6,7 +6,7 @@ export interface PageDashboardUserProps {}
 export default function PageDashboardUser({}: PageDashboardUserProps) {
   return (
     <PageDashboardLayout endpoint="USER">
-      <div />
+      <span>User</span>
     </PageDashboardLayout>
   )
 }

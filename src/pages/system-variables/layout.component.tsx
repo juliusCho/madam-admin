@@ -1,17 +1,11 @@
 import React from 'react'
-import { useHistory } from 'react-router'
-import { useTitle } from 'react-use'
 import Recoil from 'recoil'
+import { Loading } from '../../components/etc/loading'
 import { LayoutHeader } from '../../components/layouts/header'
 import { LayoutTab } from '../../components/layouts/tab'
-import {
-  firstDepthTab,
-  ROUTER_PATH,
-  ROUTER_TITLE,
-  secondDepthTab,
-} from '../../constants'
+import { ROUTER_PATH, ROUTER_TITLE } from '../../constants'
 import etcGlobalStates from '../../recoil/etc'
-import userGlobalStates from '../../recoil/user'
+import helpers from '../../utils/helpers'
 import customHooks from '../../utils/hooks'
 
 export interface PageSystemVariableLayoutProps {
@@ -23,51 +17,53 @@ function PageSystemVariableLayout({
   endpoint,
   children,
 }: PageSystemVariableLayoutProps) {
-  useTitle(ROUTER_TITLE.SYSTEM_VARIABLE[endpoint])
-
-  const history = useHistory()
-
-  const user = Recoil.useRecoilValue(userGlobalStates.userState)
-  const setLoading = Recoil.useSetRecoilState(etcGlobalStates.loadingState)
-
-  const isMounted = customHooks.useIsMounted()
-
-  React.useEffect(() => {
-    if (!isMounted()) return
-
-    if (history.location.pathname === ROUTER_PATH.SYSTEM_VARIABLE[endpoint]) {
-      setLoading(() => false)
-    }
-  }, [
-    isMounted,
-    history.location.pathname,
+  customHooks.usePage(
+    ROUTER_TITLE.SYSTEM_VARIABLE[endpoint],
     ROUTER_PATH.SYSTEM_VARIABLE[endpoint],
-  ])
+  )
 
-  React.useEffect(() => {
-    if (!isMounted()) return
+  const [isMobile, setIsMobile] = React.useState(helpers.isMobile())
 
-    if (user === null) {
-      setLoading(() => true)
-      history.push(ROUTER_PATH.LOGIN)
-    }
-  }, [isMounted, user, history.push, ROUTER_PATH.LOGIN])
+  customHooks.useCheckMobile(setIsMobile)
+
+  const firstLoading = Recoil.useRecoilValue(
+    etcGlobalStates.firstTabLoadingState,
+  )
+  const secondLoading = Recoil.useRecoilValue(
+    etcGlobalStates.secondTabLoadingState,
+  )
 
   return (
     <>
       <LayoutHeader />
       <LayoutTab
-        tabs={firstDepthTab(ROUTER_PATH.SYSTEM_VARIABLE[endpoint])}
-        backgroundColor="bg-mono-pale hover:bg-mono-paleHover active:bg-mono-paleActive"
-        fontSize="md:text-titleBig md:font-titleBig"
-        selectedTextColor="text-sub-darkPurple hover:text-sub-darkPurpleHover active:text-sub-darkPurpleActive">
+        depth={1}
+        tabs={helpers.firstDepthTab(
+          ROUTER_PATH.SYSTEM_VARIABLE[endpoint],
+          isMobile,
+        )}
+        loading={
+          <Loading
+            loading={firstLoading}
+            style={{ height: 'calc(100% - 11.25rem)' }}
+          />
+        }>
         <LayoutTab
+          depth={2}
           tabs={
-            secondDepthTab(ROUTER_PATH.SYSTEM_VARIABLE[endpoint])
+            helpers.secondDepthTab(ROUTER_PATH.SYSTEM_VARIABLE[endpoint])
               .SYSTEM_VARIABLE
           }
+          loading={
+            <Loading
+              loading={secondLoading}
+              style={{ height: 'calc(100% - 14.5rem)' }}
+            />
+          }
+          fontSize="md:text-titleMedium md:font-titleMedium"
           backgroundColor="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive"
           selectedColor="bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive"
+          selectedTextColor="text-main-blue hover:text-main-blueHover active:text-main-blueActive"
           innerColor="bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive">
           {children}
         </LayoutTab>

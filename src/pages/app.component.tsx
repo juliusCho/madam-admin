@@ -29,7 +29,7 @@ import { PageUserInterest } from './users/interest'
 import { PageUserPhoto } from './users/photo'
 import { PageUserProfile } from './users/profile'
 
-function App() {
+export default function App() {
   const user = Recoil.useRecoilValue(userGlobalStates.userState)
   const loading = Recoil.useRecoilValue(etcGlobalStates.loadingState)
 
@@ -118,5 +118,3 @@ function App() {
     </>
   )
 }
-
-export default App

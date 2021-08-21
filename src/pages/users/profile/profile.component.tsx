@@ -6,7 +6,7 @@ export interface PageUserProfileProps {}
 export default function PageUserProfile({}: PageUserProfileProps) {
   return (
     <PageUserLayout endpoint="PROFILE">
-      <div />
+      <span>Profile</span>
     </PageUserLayout>
   )
 }

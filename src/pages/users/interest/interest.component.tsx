@@ -6,7 +6,7 @@ export interface PageUserInterestProps {}
 export default function PageUserInterest({}: PageUserInterestProps) {
   return (
     <PageUserLayout endpoint="INTEREST">
-      <div />
+      <span>Interest</span>
     </PageUserLayout>
   )
 }

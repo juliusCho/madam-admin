@@ -6,7 +6,7 @@ export interface PageHelpDeskBestMadamProps {}
 export default function PageHelpDeskBestMadam({}: PageHelpDeskBestMadamProps) {
   return (
     <PageHelpDeskLayout endpoint="BEST_MADAM">
-      <div />
+      <span>Best Madam</span>
     </PageHelpDeskLayout>
   )
 }

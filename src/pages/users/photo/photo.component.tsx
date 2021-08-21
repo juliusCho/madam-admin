@@ -6,7 +6,7 @@ export interface PageUserPhotoProps {}
 export default function PageUserPhoto({}: PageUserPhotoProps) {
   return (
     <PageUserLayout endpoint="PHOTO">
-      <div />
+      <span>Photo</span>
     </PageUserLayout>
   )
 }

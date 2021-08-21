@@ -10,6 +10,7 @@ body {
 
 * {
   outline-style: none;
+  overflow: hidden;
 }
 
 @font-face {

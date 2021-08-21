@@ -6,7 +6,7 @@ export interface PageQnaProps {}
 export default function PageQna({}: PageQnaProps) {
   return (
     <PageQnaLayout>
-      <div />
+      <span>Qna</span>
     </PageQnaLayout>
   )
 }

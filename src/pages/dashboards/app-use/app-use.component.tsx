@@ -6,7 +6,7 @@ export interface PageDashboardAppUseProps {}
 export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
   return (
     <PageDashboardLayout endpoint="APP_USE">
-      <div />
+      <span>App Use</span>
     </PageDashboardLayout>
   )
 }

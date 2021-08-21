@@ -6,7 +6,7 @@ export interface PageHelpDeskMadamTeamProps {}
 export default function PageHelpDeskMadamTeam({}: PageHelpDeskMadamTeamProps) {
   return (
     <PageHelpDeskLayout endpoint="MADAM_TEAM">
-      <div />
+      <span>Madam Team</span>
     </PageHelpDeskLayout>
   )
 }

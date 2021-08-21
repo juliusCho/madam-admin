@@ -6,7 +6,7 @@ export interface PagePointPlanProps {}
 export default function PagePointPlan({}: PagePointPlanProps) {
   return (
     <PagePointPlanLayout>
-      <div />
+      <span>Point Plan</span>
     </PagePointPlanLayout>
   )
 }

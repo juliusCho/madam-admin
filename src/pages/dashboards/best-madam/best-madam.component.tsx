@@ -6,7 +6,7 @@ export interface PageDashboardBestMadamProps {}
 export default function PageDashboardBestMadam({}: PageDashboardBestMadamProps) {
   return (
     <PageDashboardLayout endpoint="BEST_MADAM">
-      <div />
+      <span>Best Madam</span>
     </PageDashboardLayout>
   )
 }

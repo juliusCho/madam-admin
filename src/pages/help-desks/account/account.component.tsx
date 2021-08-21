@@ -6,7 +6,7 @@ export interface PageHelpDeskAccountProps {}
 export default function PageHelpDeskAccount({}: PageHelpDeskAccountProps) {
   return (
     <PageHelpDeskLayout endpoint="ACCOUNT">
-      <div />
+      <span>Account</span>
     </PageHelpDeskLayout>
   )
 }

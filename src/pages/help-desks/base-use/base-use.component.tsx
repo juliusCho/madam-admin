@@ -6,7 +6,7 @@ export interface PageHelpDeskBaseUseProps {}
 export default function PageHelpDeskBaseUse({}: PageHelpDeskBaseUseProps) {
   return (
     <PageHelpDeskLayout endpoint="BASE_USE">
-      <div />
+      <span>Base Use</span>
     </PageHelpDeskLayout>
   )
 }

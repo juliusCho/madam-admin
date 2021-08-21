@@ -3,15 +3,14 @@ import { useHistory } from 'react-router'
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs'
 import 'react-tabs/style/react-tabs.scss'
 import Recoil from 'recoil'
-import { ROUTER_PATH } from '../../../constants'
 import etcGlobalStates from '../../../recoil/etc'
-import helpers from '../../../utils/helpers'
-import { Alert } from '../../modals/alert'
 import LayoutTabStyle from './tab.style'
 
 export interface LayoutTabProps {
-  tabs: Array<{ title: string; route: string; selected?: boolean }>
   children: React.ReactNode
+  loading: React.ReactNode
+  depth: 1 | 2
+  tabs: Array<{ title: string; route: string; selected?: boolean }>
   fontSize?: string
   selectedColor?: string
   selectedTextColor?: string
@@ -21,6 +20,8 @@ export interface LayoutTabProps {
 
 function LayoutTab({
   tabs,
+  depth,
+  loading,
   children,
   fontSize,
   selectedColor,
@@ -30,39 +31,24 @@ function LayoutTab({
 }: LayoutTabProps) {
   const history = useHistory()
 
-  const setLoading = Recoil.useSetRecoilState(etcGlobalStates.loadingState)
-
-  const [alertShow, setAlertShow] = React.useState(false)
+  const setFirstLoading = Recoil.useSetRecoilState(
+    etcGlobalStates.firstTabLoadingState,
+  )
+  const setSecondLoading = Recoil.useSetRecoilState(
+    etcGlobalStates.secondTabLoadingState,
+  )
 
   const onClick = (route: string) => {
-    if (
-      route === ROUTER_PATH.DASHBOARD.APP_USE ||
-      route === ROUTER_PATH.DASHBOARD.BEST_MADAM ||
-      route === ROUTER_PATH.DASHBOARD.USER ||
-      route === ROUTER_PATH.DASHBOARD.COUPLING ||
-      route === ROUTER_PATH.DASHBOARD.ETC ||
-      !helpers.isMobile()
-    ) {
-      setLoading(true)
-      history.push(route)
+    if (depth === 1) {
+      setFirstLoading(true)
     } else {
-      setAlertShow(true)
+      setSecondLoading(true)
     }
-  }
-
-  const onAlertHide = () => {
-    setAlertShow(false)
+    history.push(route)
   }
 
   return (
     <>
-      <Alert
-        show={alertShow}
-        msg="모바일 환경에서는 지원되지 않는 기능입니다."
-        type="warning"
-        showTime={1500}
-        onHide={onAlertHide}
-      />
       <Tabs
         className={LayoutTabStyle.container({ backgroundColor })}
         defaultIndex={tabs.findIndex((tab) => tab.selected)}>
@@ -77,14 +63,6 @@ function LayoutTab({
                   onClick(tab.route)
                 }
               }}
-              disabled={
-                tab.route !== ROUTER_PATH.DASHBOARD.APP_USE &&
-                tab.route !== ROUTER_PATH.DASHBOARD.BEST_MADAM &&
-                tab.route !== ROUTER_PATH.DASHBOARD.USER &&
-                tab.route !== ROUTER_PATH.DASHBOARD.COUPLING &&
-                tab.route !== ROUTER_PATH.DASHBOARD.ETC &&
-                helpers.isMobile()
-              }
               selected={tab.selected}
               selectedClassName={
                 tab.selected
@@ -119,6 +97,7 @@ function LayoutTab({
               className={LayoutTabStyle.tabPanel({
                 selectedColor: innerColor,
               })}>
+              {loading}
               {children}
             </TabPanel>
           ) : (
@@ -133,12 +112,13 @@ function LayoutTab({
 }
 
 LayoutTab.defaultProps = {
-  fontSize: 'md:text-titleMedium md:font-titleMedium',
+  fontSize: 'md:text-titleBig md:font-titleBig',
   selectedColor:
     'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
   selectedTextColor:
-    'text-main-blue hover:text-main-blueHover active:text-main-blueActive',
-  backgroundColor: undefined,
+    'text-sub-darkPurple hover:text-sub-darkPurpleHover active:text-sub-darkPurpleActive',
+  backgroundColor:
+    'bg-mono-pale hover:bg-mono-paleHover active:bg-mono-paleActive',
   innerColor:
     'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
 }
