@@ -13,7 +13,16 @@
       }
     }
 
-    animation: spin 2s linear infinite;
+    @keyframes bottomUp {
+      0% {
+        transform: translateY(1000%);
+      }
+      100% {
+        transform: translateY(0px);
+      }
+    }
+
+    animation: bottomUp 0.2s ease-in-out, spin 2s linear infinite;
 
     @apply bg-transparent select-none flex justify-center items-center w-12 h-12;
 
