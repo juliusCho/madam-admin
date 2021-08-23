@@ -23,6 +23,8 @@ function PageQnaLayout({ children }: PageQnaLayoutProps) {
     etcGlobalStates.firstTabLoadingState,
   )
 
+  const firstHeight = 'calc(100vh - 11.25rem)'
+
   return (
     <>
       <LayoutHeader />
@@ -30,11 +32,9 @@ function PageQnaLayout({ children }: PageQnaLayoutProps) {
         depth={1}
         tabs={helpers.firstDepthTab(ROUTER_PATH.QNA, isMobile)}
         loading={
-          <Loading
-            loading={firstLoading}
-            style={{ height: 'calc(100% - 11.25rem)' }}
-          />
-        }>
+          <Loading loading={firstLoading} style={{ height: firstHeight }} />
+        }
+        height={firstHeight}>
         {children}
       </LayoutTab>
     </>

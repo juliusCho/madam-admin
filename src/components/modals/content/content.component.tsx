@@ -54,7 +54,6 @@ function ModalContent({
     <Modal
       isOpen={isOpen}
       onRequestClose={() => onClose('cancel')}
-      portalClassName="h-screen w-screen"
       overlayClassName={ModalContentStyle.container({ backgroundColor })}
       contentLabel={title}
       className={`modal-content-container bottom-${

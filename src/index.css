@@ -6,11 +6,17 @@ body {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 767px) {
+  body {
+    overflow: auto;
+  }
 }
 
 * {
   outline-style: none;
-  overflow: hidden;
 }
 
 @font-face {

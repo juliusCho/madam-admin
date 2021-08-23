@@ -27,6 +27,9 @@ function PageUserLayout({ endpoint, children }: PageUserLayoutProps) {
     etcGlobalStates.secondTabLoadingState,
   )
 
+  const firstHeight = 'calc(100vh - 11.25rem)'
+  const secondHeight = 'calc(100vh - 15.35rem)'
+
   return (
     <>
       <LayoutHeader />
@@ -34,25 +37,21 @@ function PageUserLayout({ endpoint, children }: PageUserLayoutProps) {
         depth={1}
         tabs={helpers.firstDepthTab(ROUTER_PATH.USER[endpoint], isMobile)}
         loading={
-          <Loading
-            loading={firstLoading}
-            style={{ height: 'calc(100% - 11.25rem)' }}
-          />
-        }>
+          <Loading loading={firstLoading} style={{ height: firstHeight }} />
+        }
+        height={firstHeight}>
         <LayoutTab
           depth={2}
           tabs={helpers.secondDepthTab(ROUTER_PATH.USER[endpoint]).USER}
           loading={
-            <Loading
-              loading={secondLoading}
-              style={{ height: 'calc(100% - 14.5rem)' }}
-            />
+            <Loading loading={secondLoading} style={{ height: secondHeight }} />
           }
           fontSize="md:text-titleMedium md:font-titleMedium"
           backgroundColor="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive"
           selectedColor="bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive"
           selectedTextColor="text-main-blue hover:text-main-blueHover active:text-main-blueActive"
-          innerColor="bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive">
+          innerColor="bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive"
+          height={secondHeight}>
           {children}
         </LayoutTab>
       </LayoutTab>

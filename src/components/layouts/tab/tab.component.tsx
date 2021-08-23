@@ -9,13 +9,14 @@ import LayoutTabStyle from './tab.style'
 export interface LayoutTabProps {
   children: React.ReactNode
   loading: React.ReactNode
-  depth: 1 | 2
+  depth: 1 | 2 | 3
   tabs: Array<{ title: string; route: string; selected?: boolean }>
   fontSize?: string
   selectedColor?: string
   selectedTextColor?: string
   backgroundColor?: string
   innerColor?: string
+  height?: string
 }
 
 function LayoutTab({
@@ -28,6 +29,7 @@ function LayoutTab({
   selectedTextColor,
   backgroundColor,
   innerColor,
+  height,
 }: LayoutTabProps) {
   const history = useHistory()
 
@@ -41,7 +43,7 @@ function LayoutTab({
   const onClick = (route: string) => {
     if (depth === 1) {
       setFirstLoading(true)
-    } else {
+    } else if (depth === 2) {
       setSecondLoading(true)
     }
     history.push(route)
@@ -96,7 +98,8 @@ function LayoutTab({
               key={tab.route}
               className={LayoutTabStyle.tabPanel({
                 selectedColor: innerColor,
-              })}>
+              })}
+              style={{ height }}>
               {loading}
               {children}
             </TabPanel>
@@ -121,6 +124,7 @@ LayoutTab.defaultProps = {
     'bg-mono-pale hover:bg-mono-paleHover active:bg-mono-paleActive',
   innerColor:
     'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
+  height: 'calc(100vh - 11.25rem)',
 }
 
 export default React.memo(LayoutTab)

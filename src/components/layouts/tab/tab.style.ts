@@ -81,7 +81,7 @@ const LayoutTabStyle = {
     return `
       pt-4
       w-full
-      h-screen
+      overflow-auto
       ${helpers.convertColorToTailwind(selectedColor, true)}
     `
   },
