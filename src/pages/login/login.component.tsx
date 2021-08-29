@@ -1,4 +1,4 @@
-import firebase from 'firebase/app'
+import firebase from 'firebase'
 import React from 'react'
 import { RouterProps } from 'react-router'
 import { useTitle } from 'react-use'
@@ -6,11 +6,10 @@ import Recoil from 'recoil'
 import { apiLogin } from '../../api'
 import { ButtonCircle } from '../../components/buttons/circle'
 import { LabelMadam } from '../../components/labels/madam'
-import { Alert } from '../../components/modals/alert'
 import { ROUTER_PATH, ROUTER_TITLE } from '../../constants'
 import auth from '../../firebaseSetup'
+import adminGlobalStates from '../../recoil/admin'
 import etcGlobalStates from '../../recoil/etc'
-import userGlobalStates from '../../recoil/user'
 import customHooks from '../../utils/hooks'
 import PageLoginStyle from './login.style'
 
@@ -21,83 +20,93 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
 
   const isMounted = customHooks.useIsMounted()
 
-  const setUser = Recoil.useSetRecoilState(userGlobalStates.userState)
+  const setAdmin = Recoil.useSetRecoilState(adminGlobalStates.adminState)
+  const setVerified = Recoil.useSetRecoilState(adminGlobalStates.verifiedState)
   const setLoading = Recoil.useSetRecoilState(etcGlobalStates.loadingState)
+  const [alert, setAlert] = Recoil.useRecoilState(etcGlobalStates.alertState)
 
-  const [showAlert, setShowAlert] = React.useState(false)
-  const [alertMsg, setAlertMsg] = React.useState('')
-  const [alertType, setAlertType] = React.useState<
-    'success' | 'error' | 'warning'
-  >('success')
+  const [noFound, setNoFound] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!isMounted()) return
+    setNoFound(() => alert.type === 'error')
+  }, [isMounted, alert.type])
+
+  React.useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        setAdmin(() => null)
+        return
+      }
+
+      console.log('=====================================')
+      console.log('uid: ', user.uid)
+      console.log('email: ', user.email)
+      console.log('name: ', user.displayName)
+
+      firebase
+        .database()
+        .ref('admin')
+        .orderByKey()
+        .equalTo(user.uid)
+        .once('value', async (admin) => {
+          if (!admin.exists) {
+            setAdmin(() => null)
+            return
+          }
+          setLoading(() => true)
+
+          const result = await apiLogin(admin.exportVal())
+          if (!result) {
+            setAdmin(() => null)
+            return
+          }
+          const { loggedInAdmin, verified } = result
+          setVerified(() => verified)
+
+          if (verified) {
+            setAdmin(() => loggedInAdmin)
+          }
+        })
+    })
+  }, [isMounted, auth, firebase])
 
   React.useEffect(() => {
     if (!isMounted()) return
     if (history.location.pathname === ROUTER_PATH.LOGIN) {
-      setAlertType(() => 'success')
-
       setLoading(() => false)
 
-      setUser(() => null)
+      setAdmin(() => null)
     }
   }, [isMounted, history.location.pathname, ROUTER_PATH.LOGIN, auth])
 
   const signIn = async () => {
     if (window.navigator.userAgent.includes('KAKAOTALK')) {
-      setAlertType('warning')
-      setAlertMsg('카카오톡 내에서는 구글 로그인이 불가능합니다.')
-      setShowAlert(true)
+      setAlert((old) => ({
+        ...old,
+        show: true,
+        type: 'warning',
+        msg: '카카오톡 내에서는 구글 로그인이 불가능합니다.',
+        time: 1500,
+      }))
       return
     }
 
-    setAlertType('success')
-
-    const result = await auth
-      .signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .then((res) => res)
-      .catch((e) => {
-        if (!e.code.includes('cancelled-popup-request')) {
-          setAlertType('error')
-          setAlertMsg(e.message)
-          setShowAlert(true)
-        }
-        return null
-      })
-
-    if (!result) {
-      setUser(null)
-      return
-    }
-
-    setLoading(true)
-
-    const fetched = await apiLogin(result)
-
-    if (!fetched) {
-      setShowAlert(false)
-      setAlertType('error')
-    } else {
-      setAlertMsg('로그인 되었습니다.')
-      setShowAlert(true)
-    }
-
-    setUser(fetched)
-
-    setLoading(false)
-  }
-
-  const onHide = () => {
-    setShowAlert(false)
+    auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch((e) => {
+      if (!e.code.includes('cancelled-popup-request')) {
+        setAlert((old) => ({
+          ...old,
+          show: true,
+          type: 'error',
+          msg: e.message,
+          time: 1500,
+        }))
+      }
+    })
   }
 
   return (
     <>
-      <Alert
-        show={showAlert}
-        msg={alertMsg}
-        type={alertType}
-        showTime={1500}
-        onHide={onHide}
-      />
       <div className={PageLoginStyle.container} style={{ marginTop: '-5rem' }}>
         <LabelMadam className="mb-10" style={{ fontSize: '5rem' }} />
         <ButtonCircle
@@ -106,7 +115,7 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
           borderWidth="border-2">
           Login
         </ButtonCircle>
-        {alertType === 'error' && (
+        {noFound && (
           <span className={PageLoginStyle.error}>
             해당 정보와 일치하는 계정을 찾을 수 없습니다.
           </span>

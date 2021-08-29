@@ -4,12 +4,19 @@ import { AdminType } from '../types'
 
 const { persistAtom } = recoilPersist()
 
-const userState = Recoil.atom<AdminType | null>({
-  key: 'userState',
+const adminState = Recoil.atom<AdminType | null>({
+  key: 'adminState',
   default: null,
   effects_UNSTABLE: [persistAtom],
 })
 
+const verifiedState = Recoil.atom({
+  key: 'verifiedState',
+  default: false,
+  effects_UNSTABLE: [persistAtom],
+})
+
 export default {
-  userState,
+  adminState,
+  verifiedState,
 }

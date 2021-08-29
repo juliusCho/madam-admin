@@ -1,7 +1,8 @@
 import React from 'react'
+import Recoil from 'recoil'
+import etcGlobalState from '../../../recoil/etc'
 import customHooks from '../../../utils/hooks'
 import XEIcon from '../../etc/xeicon/xeicon.component'
-import Alert from '../../modals/alert/alert.component'
 import InputTextLineStyle from './text-line.style'
 
 const seperateMeasurement = (num: string | number) => {
@@ -67,8 +68,8 @@ function InputTextLine({
 }: InputTextLineProps) {
   const [text, setText] = React.useState('')
   const [isInput, setIsInput] = React.useState(false)
-  const [alertMsg, setAlertMsg] = React.useState('')
-  const [showAlert, setShowAlert] = React.useState(false)
+
+  const setAlert = Recoil.useSetRecoilState(etcGlobalState.alertState)
 
   const isMounted = customHooks.useIsMounted()
 
@@ -111,21 +112,29 @@ function InputTextLine({
 
   const onAdd = () => {
     if (text === '') {
-      setAlertMsg(
-        locale === 'kr'
-          ? '입력된 텍스트가 없습니다.'
-          : 'No text has been added.',
-      )
-      setShowAlert(true)
+      setAlert((old) => ({
+        ...old,
+        show: true,
+        type: 'warning',
+        msg:
+          locale === 'kr'
+            ? '입력된 텍스트가 없습니다.'
+            : 'No text has been added.',
+        time: 1000,
+      }))
       return
     }
     if (text.length > Number(maxLength)) {
-      setAlertMsg(
-        locale === 'kr'
-          ? `최대 ${maxLength}자 까지 입력 가능합니다.`
-          : `Maximum input text length must be less than or equal to ${maxLength}.`,
-      )
-      setShowAlert(true)
+      setAlert((old) => ({
+        ...old,
+        show: true,
+        type: 'warning',
+        msg:
+          locale === 'kr'
+            ? `최대 ${maxLength}자 까지 입력 가능합니다.`
+            : `Maximum input text length must be less than or equal to ${maxLength}.`,
+        time: 1500,
+      }))
       return
     }
 
@@ -144,12 +153,16 @@ function InputTextLine({
     const { value: inputValue } = e.target
 
     if (inputValue.length > Number(maxLength)) {
-      setAlertMsg(
-        locale === 'kr'
-          ? `최대 ${maxLength}자 까지 입력 가능합니다.`
-          : `Maximum input text length must be less than or equal to ${maxLength}.`,
-      )
-      setShowAlert(true)
+      setAlert((old) => ({
+        ...old,
+        show: true,
+        type: 'warning',
+        msg:
+          locale === 'kr'
+            ? `최대 ${maxLength}자 까지 입력 가능합니다.`
+            : `Maximum input text length must be less than or equal to ${maxLength}.`,
+        time: 1500,
+      }))
 
       setText(inputValue.substr(0, maxLength))
       return
@@ -170,21 +183,10 @@ function InputTextLine({
     }
   }
 
-  const onAlertEnds = () => {
-    setShowAlert(false)
-  }
-
   return (
     <div
       className={`${InputTextLineStyle.container} ${className}`}
       style={style}>
-      <Alert
-        show={showAlert}
-        msg={alertMsg}
-        type="warning"
-        onHide={onAlertEnds}
-        showTime={1000}
-      />
       <div
         className={`${InputTextLineStyle.inputContainer({
           color: inputColor || '',

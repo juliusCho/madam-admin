@@ -2,10 +2,11 @@ import React from 'react'
 import { Route, Switch, useHistory } from 'react-router-dom'
 import Recoil from 'recoil'
 import { Loading } from '../components/etc/loading'
+import { Alert } from '../components/modals/alert'
 import { ROUTER_PATH } from '../constants'
 import auth from '../firebaseSetup'
+import adminGlobalStates from '../recoil/admin'
 import etcGlobalStates from '../recoil/etc'
-import userGlobalStates from '../recoil/user'
 import customHooks from '../utils/hooks'
 import { PageDashboardAppUse } from './dashboards/app-use'
 import { PageDashboardBestMadam } from './dashboards/best-madam'
@@ -30,8 +31,15 @@ import { PageUserPhoto } from './users/photo'
 import { PageUserProfile } from './users/profile'
 
 export default function App() {
-  const user = Recoil.useRecoilValue(userGlobalStates.userState)
+  const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
+  const [verified, setVerified] = Recoil.useRecoilState(
+    adminGlobalStates.verifiedState,
+  )
   const loading = Recoil.useRecoilValue(etcGlobalStates.loadingState)
+  const { show, msg, type, time } = Recoil.useRecoilValue(
+    etcGlobalStates.alertState,
+  )
+  const setAlert = Recoil.useSetRecoilState(etcGlobalStates.alertState)
 
   const isMounted = customHooks.useIsMounted()
 
@@ -40,18 +48,41 @@ export default function App() {
   React.useEffect(() => {
     if (!isMounted()) return
 
-    if (user === null) {
+    if (admin === null) {
       auth.signOut()
+
+      setVerified(() => false)
 
       history.push(ROUTER_PATH.LOGIN)
     } else {
       history.push(ROUTER_PATH.DASHBOARD.APP_USE)
     }
-  }, [isMounted, user])
+  }, [isMounted, admin])
+
+  React.useEffect(() => {
+    if (!isMounted()) return
+    if (admin === null) return
+    if (verified) return
+
+    setAlert((old) => ({
+      ...old,
+      show: true,
+      type: 'warning',
+      msg: '로그인이 만료되었습니다. 다시 로그인 해 주세요.',
+      time: 1500,
+    }))
+  }, [isMounted, admin, verified])
 
   return (
     <>
-      <Loading loading={loading} />
+      <Alert
+        show={show}
+        msg={msg}
+        type={type}
+        showTime={time}
+        onHide={() => setAlert((old) => ({ ...old, show: false }))}
+      />
+      <Loading loading={loading} style={{ height: '100vh', bottom: 0 }} />
       <Switch>
         <Route path="/" exact component={() => <></>} />
         <Route path={ROUTER_PATH.LOGIN} component={PageLogin} />

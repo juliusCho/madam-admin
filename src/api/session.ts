@@ -1,28 +1,54 @@
-import firebase from 'firebase/app'
+import firebase from 'firebase'
+import auth from '../firebaseSetup'
 import { AdminType } from '../types'
-import helpers from '../utils/helpers'
+
+export const verifyAndGetToken = async (token: string, uid: string) => {
+  return true
+}
 
 export const apiLogin = async (
-  firebaseUser: firebase.auth.UserCredential,
-): Promise<AdminType | null> => {
+  firebaseAdmin: Record<string, string> | null,
+): Promise<{ loggedInAdmin: AdminType; verified: boolean } | null> => {
+  if (!firebaseAdmin) return null
+
+  const uid = Object.keys(firebaseAdmin)[0]
   // @ts-ignore
-  const { id, email, name } = firebaseUser.additionalUserInfo?.profile
+  const { email, name } = firebaseAdmin[uid]
 
-  if (!id || !email) return null
+  const idToken = await auth.currentUser
+    ?.getIdToken(true)
+    .then((res) => res)
+    .catch((e) => {
+      console.error('firebase getIdToken', e.message)
+      return null
+    })
 
-  const uid = helpers.encode(id)
-  console.log('=============로그인 Attempt 유저 정보============')
-  console.log('email: ', email)
-  console.log('uid: ', uid)
-  console.log('name: ', name || email)
+  if (!idToken) return null
+
+  const verified = await verifyAndGetToken(idToken, uid)
 
   return {
-    email,
-    uid,
-    name: name || email,
+    loggedInAdmin: {
+      uid,
+      email,
+      name,
+    },
+    verified,
   }
 }
 
-export const apiChangeName = (user: AdminType) => {
-  return { ...user }
+export const apiChangeName = async (user: AdminType): Promise<boolean> => {
+  return firebase
+    .database()
+    .ref(`admin/${user.uid}`)
+    .update({
+      name: user.name,
+    })
+    .then(() => true)
+    .catch((e) => {
+      console.error('firebase changeName', e.message)
+      return false
+    })
 }
+
+export const apiLogout = () => {}

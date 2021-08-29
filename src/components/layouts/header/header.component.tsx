@@ -2,14 +2,15 @@ import React from 'react'
 import { useHistory } from 'react-router'
 import Recoil from 'recoil'
 import * as api from '../../../api'
+import { apiLogout } from '../../../api'
 import { ROUTER_PATH } from '../../../constants'
-import userGlobalStates from '../../../recoil/user'
+import adminGlobalStates from '../../../recoil/admin'
+import etcGlobalStates from '../../../recoil/etc'
 import helpers from '../../../utils/helpers'
 import customHooks from '../../../utils/hooks'
 import { ButtonRoundWithIcon } from '../../buttons/round-with-icon'
 import { InputTextLine } from '../../inputs/text-line'
 import { LabelMadam } from '../../labels/madam'
-import { Alert } from '../../modals/alert'
 import Confirm from '../../modals/confirm/confirm.component'
 import { ModalContent } from '../../modals/content'
 import LayoutHeaderStyle from './header.style'
@@ -17,18 +18,15 @@ import LayoutHeaderStyle from './header.style'
 export interface LayoutHeaderProps {}
 
 function LayoutHeader({}: LayoutHeaderProps) {
-  const [admin, setAdmin] = Recoil.useRecoilState(userGlobalStates.userState)
+  const [admin, setAdmin] = Recoil.useRecoilState(adminGlobalStates.adminState)
+  const setAlert = Recoil.useSetRecoilState(etcGlobalStates.alertState)
 
   const [adminName, setAdminName] = React.useState('')
   const [confirmLogoutShow, setConfirmLogoutShow] = React.useState(false)
   const [confirmChangeNameShow, setConfirmChangeNameShow] =
     React.useState(false)
   const [modalShow, setModalShow] = React.useState(false)
-  const [alertMsg, setAlertMsg] = React.useState('')
-  const [showAlert, setShowAlert] = React.useState(false)
-  const [infoMsg, setInfoMsg] = React.useState('')
-  const [showInfo, setShowInfo] = React.useState(false)
-  const [infoType, setInfoType] = React.useState<'info' | 'success'>('info')
+
   const [isMobile, setIsMobile] = React.useState(helpers.isMobile())
 
   const isMounted = customHooks.useIsMounted()
@@ -41,56 +39,73 @@ function LayoutHeader({}: LayoutHeaderProps) {
 
   React.useEffect(() => {
     if (isMounted()) {
+      if (!admin) return
+
       setAdminName(() => admin?.name ?? '')
     }
-  }, [isMounted, admin])
+  }, [isMounted, admin?.name])
 
-  const changeName = () => {
+  const changeName = async () => {
     setConfirmChangeNameShow(false)
     setModalShow(false)
 
     if (!admin) return
 
-    setInfoType('success')
-    setInfoMsg('이름이 변경되었습니다.')
-    setShowInfo(true)
+    setAlert((old) => ({
+      ...old,
+      show: true,
+      type: 'success',
+      msg: '이름이 변경되었습니다.',
+      time: 1000,
+    }))
 
-    const newAdmin = { ...admin, name: adminName }
-    api.apiChangeName(newAdmin)
-    setAdmin(newAdmin)
+    setAdmin({ ...admin, name: adminName })
+    const boo = await api.apiChangeName({ ...admin, name: adminName })
+
+    if (!boo) {
+      setAdmin(null)
+    }
   }
 
   const logout = () => {
-    setInfoType('info')
-    setInfoMsg('로그아웃 되었습니다.')
-    setShowInfo(true)
+    apiLogout()
+
+    setAlert((old) => ({
+      ...old,
+      show: true,
+      type: 'info',
+      msg: '로그아웃 되었습니다.',
+      time: 1000,
+    }))
 
     setConfirmLogoutShow(false)
-    history.push(ROUTER_PATH.LOGIN)
+    setAdmin(null)
   }
 
   const onSubmitModal = () => {
     if (!adminName) {
-      setAlertMsg('입력된 텍스트가 없습니다.')
-      setShowAlert(true)
+      setAlert((old) => ({
+        ...old,
+        show: true,
+        type: 'warning',
+        msg: '입력된 텍스트가 없습니다.',
+        time: 1000,
+      }))
       return
     }
 
     if (adminName.length > maxLength) {
-      setAlertMsg(`최대 ${maxLength}자 까지 입력 가능합니다.`)
-      setShowAlert(true)
+      setAlert((old) => ({
+        ...old,
+        show: true,
+        type: 'warning',
+        msg: `최대 ${maxLength}자 까지 입력 가능합니다.`,
+        time: 1000,
+      }))
       return
     }
 
     setConfirmChangeNameShow(true)
-  }
-
-  const onAlertEnds = () => {
-    setShowAlert(false)
-  }
-
-  const onInfoEnds = () => {
-    setShowInfo(false)
   }
 
   return (
@@ -114,20 +129,6 @@ function LayoutHeader({}: LayoutHeaderProps) {
         cancelButtonText="취소"
         onConfirm={changeName}
         onCancel={() => setConfirmChangeNameShow(false)}
-      />
-      <Alert
-        show={showAlert}
-        msg={alertMsg}
-        type="warning"
-        onHide={onAlertEnds}
-        showTime={1000}
-      />
-      <Alert
-        show={showInfo}
-        msg={infoMsg}
-        type={infoType}
-        onHide={onInfoEnds}
-        showTime={1000}
       />
       <ModalContent
         isOpen={modalShow}

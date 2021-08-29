@@ -547,37 +547,28 @@ components:
 paths:
   /login:
     post:
+      security:
+        - bearerAuth: []
       tags:
         - Admin Auth
       summary: 관리자 로그인
-      description: Google Firebase 인증 이메일과 암호화된 Auth Credential ID을 DB에서 인증하고 로그인 처리한다
+      description: |
+        ### Google Firebase Auth Id Token을 DB에서 인증한다
+          - 모든 API 호출에는 헤더값, Authorization 에 Bearer 타입으로 ID Token을 첨부한다.
+          - Firebase token 인증 return과 UID 비교로 인증 결과 도출
+          - UID는 세션 또는 쿠키에 임시 저장(앞으로의 API 호출에 포함될 ID Token 헤더로 인증 필터링 용)
+          - http response status code 200 / 403 으로 인증 결과 반환
       requestBody:
-        description: Google Firebase 인증 이메일 / 암호화된 Auth Credential ID
+        description: Google Firebase Id Token & User UID
         required: true
         content:
-          application/json:
+          text/plain:
             schema:
-              type: object
-              required:
-                - email
-                - uid
-              properties:
-                email:
-                  type: string
-                  format: email
-                  description: Google Firebase 인증 이메일
-                  example: madam@example.com
-                uid:
-                  type: string
-                  description: 암호화된 Google Firebase Auth Credential ID
-                  example: UID
+              type: string
+              example: UID
       responses:
         200:
           description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Admin'
         204:
           description: No Content
         400:
@@ -587,64 +578,13 @@ paths:
         500:
           description: Server Error
   /logout:
-    post:
+    get:
       security:
         - bearerAuth: []
       tags:
         - Admin Auth
       summary: 관리자 로그아웃
-      description: 로그인 시 발행된 토큰 만료처리
-      requestBody:
-        description: 로그인 시 발행된 토큰
-        required: true
-        content:
-          text/plain:
-            schema:
-              type: string
-              example: token
-      responses:
-        200:
-          description: Success
-        204:
-          description: No Content
-        400:
-          description: Invalid Request Params
-        403:
-          description: No Authority
-        500:
-          description: Server Error
-  /name:
-    put:
-      security:
-        - bearerAuth: []
-      tags:
-        - Admin Auth
-      summary: 관리자 명 변경
-      description: 관리자 사용자명 변경
-      requestBody:
-        description: Google Firebase 인증 이메일 / 암호화된 Auth Credential ID
-        required: true
-        content:
-          application/json:
-            schema:
-              required:
-                - email
-                - uid
-                - name
-              properties:
-                email:
-                  type: string
-                  format: email
-                  description: 사용자 이메일
-                  example: madam@example.com
-                uid:
-                  type: string
-                  description: 암호화 된 Google Firebase Auth Credential ID
-                  example: UID
-                name:
-                  type: string
-                  description: Google Firebase 인증에서 가져온 표시되는 사용자 명칭
-                  example: Madam
+      description: 로그인 시 넘어온 UID 값 만료처리
       responses:
         200:
           description: Success

@@ -3,8 +3,8 @@ import { useHistory } from 'react-router'
 import { useTitle } from 'react-use'
 import Recoil from 'recoil'
 import { ROUTER_PATH } from '../../constants'
+import adminGlobalStates from '../../recoil/admin'
 import etcGlobalStates from '../../recoil/etc'
-import userGlobalStates from '../../recoil/user'
 
 const useIsMounted = () => {
   const isMountedRef = React.useRef(true)
@@ -54,7 +54,7 @@ const usePage = (title: string, path: string) => {
 
   const history = useHistory()
 
-  const user = Recoil.useRecoilValue(userGlobalStates.userState)
+  const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
   const setLoading = Recoil.useSetRecoilState(etcGlobalStates.loadingState)
   const setFirstLoading = Recoil.useSetRecoilState(
     etcGlobalStates.firstTabLoadingState,
@@ -79,11 +79,11 @@ const usePage = (title: string, path: string) => {
   React.useEffect(() => {
     if (!isMounted()) return
 
-    if (user === null) {
+    if (admin === null) {
       setLoading(() => true)
       history.push(ROUTER_PATH.LOGIN)
     }
-  }, [isMounted, user, history.push, ROUTER_PATH.LOGIN])
+  }, [isMounted, admin, history.push, ROUTER_PATH.LOGIN])
 }
 
 export default {
