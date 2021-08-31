@@ -1,5 +1,4 @@
 import { render } from '@testing-library/react'
-import React from 'react'
 import Swal from 'sweetalert2'
 import Confirm from './confirm.component'
 

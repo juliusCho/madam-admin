@@ -1,5 +1,4 @@
 import { fireEvent, render } from '@testing-library/react'
-import React from 'react'
 import InputTextLine from './text-line.component'
 
 describe('input.textLine 테스트', () => {

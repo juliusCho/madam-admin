@@ -1,5 +1,4 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import React from 'react'
 import ButtonRoundWithIcon from './round-with-icon.component'
 
 describe('Components ButtonRoundWithIcon 테스트', () => {

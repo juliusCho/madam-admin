@@ -116,7 +116,9 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
           Login
         </ButtonCircle>
         {noFound && (
-          <span className={PageLoginStyle.error}>
+          <span
+            className={PageLoginStyle.error}
+            data-testid="page.login.noAuthMsg">
             해당 정보와 일치하는 계정을 찾을 수 없습니다.
           </span>
         )}

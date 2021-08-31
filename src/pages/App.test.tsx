@@ -1,5 +1,80 @@
-it('renders learn react link', () => {
-  expect(true).toBeTruthy()
-})
+import { render } from '@testing-library/react'
+import { createMemoryHistory } from 'history'
+import { Router } from 'react-router'
+import Recoil from 'recoil'
+import { ROUTER_PATH } from '../constants'
+import { AdminType } from '../types'
+import App from './app.component'
 
-export {}
+describe('app 테스트', () => {
+  const testAdminState = Recoil.atom<AdminType | null>({
+    key: 'testAdminState',
+    default: null,
+  })
+  const testVerifiedState = Recoil.atom({
+    key: 'testVerifiedState',
+    default: false,
+  })
+
+  const testUser = {
+    uid: 'test',
+    name: 'test',
+    email: 'test',
+  }
+
+  it('recoil state', () => {
+    const initialSnapshot = Recoil.snapshot_UNSTABLE()
+
+    expect(initialSnapshot.getLoadable(testAdminState).valueOrThrow()).toBe(
+      null,
+    )
+    expect(
+      initialSnapshot.getLoadable(testVerifiedState).valueOrThrow(),
+    ).toBeFalsy()
+
+    const changedSnapshot = Recoil.snapshot_UNSTABLE(({ set }) => {
+      set(testAdminState, testUser)
+      set(testVerifiedState, true)
+    })
+
+    expect(
+      changedSnapshot.getLoadable(testAdminState).valueOrThrow(),
+    ).toStrictEqual(testUser)
+    expect(
+      changedSnapshot.getLoadable(testVerifiedState).valueOrThrow(),
+    ).toBeTruthy()
+  })
+
+  describe('init Router', () => {
+    const history = createMemoryHistory()
+
+    render(
+      <Recoil.RecoilRoot>
+        <Router history={history}>
+          <App />
+        </Router>
+      </Recoil.RecoilRoot>,
+    )
+
+    it('not logged in', () => {
+      Recoil.snapshot_UNSTABLE(({ set }) => {
+        set(testAdminState, null)
+        set(testVerifiedState, false)
+      })
+
+      setTimeout(() => {
+        expect(history.location.pathname).toBe(ROUTER_PATH.LOGIN)
+      }, 300)
+    })
+    it('logged in', () => {
+      Recoil.snapshot_UNSTABLE(({ set }) => {
+        set(testAdminState, testUser)
+        set(testVerifiedState, true)
+      })
+
+      setTimeout(() => {
+        expect(history.location.pathname).toBe(ROUTER_PATH.DASHBOARD.APP_USE)
+      }, 300)
+    })
+  })
+})

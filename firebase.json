@@ -49,5 +49,11 @@
     "cleanUrls": true,
     "trailingSlash": false,
     "appAssociation": "AUTO"
+  },
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "storage": {
+    "rules": "storage.rules.json"
   }
 }

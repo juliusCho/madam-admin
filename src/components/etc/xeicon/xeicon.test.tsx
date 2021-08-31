@@ -1,5 +1,4 @@
 import { render } from '@testing-library/react'
-import React from 'react'
 import XEIcon from './xeicon.component'
 
 describe('XEIcon 테스트', () => {

@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "admin": {
+      ".read": true,
+      "$uid": {
+        "email": {
+          ".write": false
+        },
+        "name": {
+          ".write": "$uid === auth.uid"
+        }
+      }
+    }
+  }
+}

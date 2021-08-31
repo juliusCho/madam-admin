@@ -1,5 +1,4 @@
 import { render } from '@testing-library/react'
-import React from 'react'
 import LabelMadam from './madam.component'
 
 describe('Components LabelMadam', () => {
