@@ -32,9 +32,7 @@ import { PageUserProfile } from './users/profile'
 
 export default function App() {
   const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
-  const [verified, setVerified] = Recoil.useRecoilState(
-    adminGlobalStates.verifiedState,
-  )
+  const [token, setToken] = Recoil.useRecoilState(adminGlobalStates.tokenState)
   const loading = Recoil.useRecoilValue(etcGlobalStates.loadingState)
   const { show, msg, type, time } = Recoil.useRecoilValue(
     etcGlobalStates.alertState,
@@ -51,7 +49,7 @@ export default function App() {
     if (admin === null) {
       auth.signOut()
 
-      setVerified(() => false)
+      setToken(() => '')
 
       history.push(ROUTER_PATH.LOGIN)
     } else {
@@ -62,7 +60,7 @@ export default function App() {
   React.useEffect(() => {
     if (!isMounted()) return
     if (admin === null) return
-    if (verified) return
+    if (token) return
 
     setAlert((old) => ({
       ...old,
@@ -71,7 +69,7 @@ export default function App() {
       msg: '로그인이 만료되었습니다. 다시 로그인 해 주세요.',
       time: 1500,
     }))
-  }, [isMounted, admin, verified])
+  }, [isMounted, admin, token])
 
   return (
     <>

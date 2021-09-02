@@ -3,7 +3,7 @@ import React from 'react'
 import { RouterProps } from 'react-router'
 import { useTitle } from 'react-use'
 import Recoil from 'recoil'
-import { apiLogin } from '../../api'
+import { apiLogin, apiToken } from '../../api'
 import { ButtonCircle } from '../../components/buttons/circle'
 import { LabelMadam } from '../../components/labels/madam'
 import { ROUTER_PATH, ROUTER_TITLE } from '../../constants'
@@ -21,7 +21,7 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
   const isMounted = customHooks.useIsMounted()
 
   const setAdmin = Recoil.useSetRecoilState(adminGlobalStates.adminState)
-  const setVerified = Recoil.useSetRecoilState(adminGlobalStates.verifiedState)
+  const setToken = Recoil.useSetRecoilState(adminGlobalStates.tokenState)
   const setLoading = Recoil.useSetRecoilState(etcGlobalStates.loadingState)
   const [alert, setAlert] = Recoil.useRecoilState(etcGlobalStates.alertState)
 
@@ -33,7 +33,7 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
   }, [isMounted, alert.type])
 
   React.useEffect(() => {
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(async (user) => {
       if (!user) {
         setAdmin(() => null)
         return
@@ -44,30 +44,20 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
       console.log('email: ', user.email)
       console.log('name: ', user.displayName)
 
-      firebase
-        .database()
-        .ref('admin')
-        .orderByKey()
-        .equalTo(user.uid)
-        .once('value', async (admin) => {
-          if (!admin.exists) {
-            setAdmin(() => null)
-            return
-          }
-          setLoading(() => true)
+      const admin = await apiLogin(user.uid)
+      if (!admin) {
+        setAdmin(() => null)
+        return
+      }
 
-          const result = await apiLogin(admin.exportVal())
-          if (!result) {
-            setAdmin(() => null)
-            return
-          }
-          const { loggedInAdmin, verified } = result
-          setVerified(() => verified)
+      const token = await apiToken(admin.uid)
+      if (!token) {
+        setAdmin(() => null)
+        return
+      }
 
-          if (verified) {
-            setAdmin(() => loggedInAdmin)
-          }
-        })
+      setToken(() => token)
+      setAdmin(() => admin)
     })
   }, [isMounted, auth, firebase])
 

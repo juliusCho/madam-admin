@@ -59,8 +59,10 @@ function LayoutHeader({}: LayoutHeaderProps) {
       time: 1000,
     }))
 
-    setAdmin({ ...admin, name: adminName })
-    const boo = await api.apiChangeName({ ...admin, name: adminName })
+    const newAdmin = { ...admin, name: adminName }
+
+    setAdmin(newAdmin)
+    const boo = await api.apiChangeName(newAdmin)
 
     if (!boo) {
       setAdmin(null)
@@ -148,6 +150,7 @@ function LayoutHeader({}: LayoutHeaderProps) {
           maxLength={maxLength}
           type="text"
           placeholder="이름을 입력해 주세요."
+          data-testid="components.layouts.header.changeName.input"
         />
       </ModalContent>
       <button

@@ -68,7 +68,8 @@ function ModalContent({
               iconSize="0.85rem"
               onClick={() => onClose('cancel')}
               className={ModalContentStyle.button}
-              colorInactive="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive">
+              colorInactive="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive"
+              data-testid="components.modals.content.cancelButton">
               {cancelText}
             </ButtonRoundWithIcon>
           )}
@@ -79,7 +80,8 @@ function ModalContent({
               iconSize="0.85rem"
               onClick={() => onClose('submit')}
               className={ModalContentStyle.button}
-              colorActive="bg-main-blue hover:bg-main-blueHover active:bg-main-blueActive">
+              colorActive="bg-main-blue hover:bg-main-blueHover active:bg-main-blueActive"
+              data-testid="components.modals.content.confirmButton">
               {submitText}
             </ButtonRoundWithIcon>
           )}

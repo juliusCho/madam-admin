@@ -6,6 +6,8 @@ describe('Components LayoutTab', () => {
   it('display', () => {
     const { getByTestId } = render(
       <LayoutTab
+        loading={false}
+        depth={1}
         tabs={[
           {
             title: '1',
