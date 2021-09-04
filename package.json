@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "license": "UNLICENSED",
+  "homepage": "https://madam-19d6d.web.app",
   "author": "Julius Cho <johncrist2000@gmail.com>",
   "scripts": {
     "css": "npx postcss src/tailwind.css -o src/index.tailwind.css",

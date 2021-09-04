@@ -791,7 +791,7 @@ paths:
       parameters:
         - in: path
           name: type
-          description: 변수 구반값
+          description: 변수 구분값
           required: true
           schema:
             type: string
@@ -853,7 +853,7 @@ paths:
       parameters:
         - in: path
           name: type
-          description: 변수 구반값
+          description: 변수 구분값
           required: true
           schema:
             type: string
