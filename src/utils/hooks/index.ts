@@ -22,11 +22,12 @@ const useIsMounted = () => {
 
 const useCheckMobile = (
   setIsMobile: React.Dispatch<React.SetStateAction<boolean>>,
+  maxWidth = 767,
 ) => {
   const isMounted = useIsMounted()
 
   const resizeEvent = React.useCallback(() => {
-    if (window.innerWidth >= 767) {
+    if (window.innerWidth >= maxWidth) {
       setIsMobile(false)
     } else {
       setIsMobile(true)
@@ -86,8 +87,14 @@ const usePage = (title: string, path: string) => {
   }, [isMounted, admin, history.push, ROUTER_PATH.LOGIN])
 }
 
+function useForceUpdate() {
+  const [, setValue] = React.useState(0)
+  return () => setValue((value) => value + 1)
+}
+
 export default {
   useIsMounted,
   useCheckMobile,
   usePage,
+  useForceUpdate,
 }

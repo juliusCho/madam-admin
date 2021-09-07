@@ -7,12 +7,12 @@ export default {
 
     return `text-${text} font-${text}`
   },
-  convertColorToTailwind(color?: string, isButtonOrDisabled?: boolean) {
+  convertColorToTailwind(color?: string, isNotButtonOrDisabled?: boolean) {
     if (!color) return ''
 
     const tc = color.split(' ')
 
-    return `${tc[0]} ${isButtonOrDisabled ? '' : `${tc[1]} ${tc[2]}`}`
+    return `${tc[0]} ${isNotButtonOrDisabled ? '' : `${tc[1]} ${tc[2]}`}`
   },
   encode(input: string | number) {
     return btoa(
@@ -204,5 +204,38 @@ export default {
         },
       ],
     }
+  },
+  convertToMoneyFormat(num: number) {
+    const str = String(num)
+    let result = ''
+
+    let idx = 0
+    for (let i = str.length - 1, ii = 0; i >= ii; i -= 1) {
+      if (idx > 0 && idx % 3 === 0) {
+        result = `,${result}`
+      }
+      result = str[i] + result
+      idx += 1
+    }
+
+    return result
+  },
+  setToEndDate(date: Date) {
+    date.setHours(23)
+    date.setMinutes(59)
+    date.setSeconds(59)
+    date.setMilliseconds(59)
+  },
+  setToStartDate(date: Date) {
+    date.setHours(0)
+    date.setMinutes(0)
+    date.setSeconds(0)
+    date.setMilliseconds(0)
+  },
+  getDateRangeArray(range: 'date' | 'month', dates: Date[]) {
+    if (dates.length === 1) {
+      return dates
+    }
+    return dates
   },
 }

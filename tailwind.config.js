@@ -119,6 +119,7 @@ module.exports = {
       },
     },
     fontSize: {
+      titleMassive: ['2rem', { lineHeight: '1.8rem' }],
       titleBig: ['1.5rem', { lineHeight: '1.25rem' }],
       titleMedium: ['1.25rem', { lineHeight: '1.2rem' }],
       titleSmall: ['1.25rem', { lineHeight: '1.2rem' }],
@@ -133,6 +134,7 @@ module.exports = {
       subSmall: ['0.625rem', { lineHeight: '0.6rem' }],
     },
     fontWeight: {
+      titleMassive: '900',
       titleBig: '900',
       titleMedium: '800',
       titleSmall: '700',
