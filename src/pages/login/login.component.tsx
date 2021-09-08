@@ -3,7 +3,7 @@ import React from 'react'
 import { RouterProps } from 'react-router'
 import { useTitle } from 'react-use'
 import Recoil from 'recoil'
-import { apiGetAdminInfo, apiLogin } from '../../api'
+import { apiSession } from '../../api'
 import { ButtonCircle } from '../../components/buttons/circle'
 import { LabelMadam } from '../../components/labels/madam'
 import { ROUTER_PATH, ROUTER_TITLE } from '../../constants'
@@ -46,13 +46,13 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
       console.log('email: ', user.email)
       console.log('name: ', user.displayName)
 
-      const token = await apiLogin(uid)
+      const token = await apiSession.apiLogin(uid)
       if (!token) {
         setAdmin(() => null)
         return
       }
 
-      const admin = await apiGetAdminInfo(token, uid)
+      const admin = await apiSession.apiGetAdminInfo(token, uid)
       if (!admin) {
         setAdmin(() => null)
         return

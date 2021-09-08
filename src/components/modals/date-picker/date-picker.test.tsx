@@ -18,7 +18,7 @@ describe('Modal DatePicker', () => {
 
       setTimeout(() => {
         expect(container).toHaveStyle('height: 23.75rem')
-      }, 100)
+      }, 300)
     })
 
     it('월 선택', () => {
@@ -27,15 +27,14 @@ describe('Modal DatePicker', () => {
         <DatePicker changeDate={changeDate} isOpen datePick={false} />,
       )
 
-      const exterior = getByTestId('calendarPeriod.exterior')
-      const container = getByTestId('calendarPeriod.container')
-
-      expect(exterior).toBeTruthy()
-      expect(container).toBeTruthy()
-
       setTimeout(() => {
+        const exterior = getByTestId('calendarPeriod.exterior')
+        const container = getByTestId('calendarPeriod.container')
+
+        expect(exterior).toBeTruthy()
+        expect(container).toBeTruthy()
         expect(container).toHaveStyle('height: 21.875rem')
-      }, 100)
+      }, 300)
     })
 
     it('일자 범위 선택', () => {
@@ -44,15 +43,14 @@ describe('Modal DatePicker', () => {
         <DatePicker changeDate={changeDate} isOpen selectRange />,
       )
 
-      const exterior = getByTestId('calendarPeriod.exterior')
-      const container = getByTestId('calendarPeriod.container')
-
-      expect(exterior).toBeTruthy()
-      expect(container).toBeTruthy()
-
       setTimeout(() => {
+        const exterior = getByTestId('calendarPeriod.exterior')
+        const container = getByTestId('calendarPeriod.container')
+
+        expect(exterior).toBeTruthy()
+        expect(container).toBeTruthy()
         expect(container).toHaveStyle('height: 28.125rem')
-      }, 100)
+      }, 300)
     })
 
     it('일시 선택', () => {
@@ -66,21 +64,20 @@ describe('Modal DatePicker', () => {
         />,
       )
 
-      const exterior = getByTestId('calendarPeriod.exterior')
-      const container = getByTestId('calendarPeriod.container')
-      const timeValue = getByTestId('calendarPeriod.timepicker')
-      const timeButton = getByTestId('calendarPeriod.timepicker-button')
-
-      expect(exterior).toBeTruthy()
-      expect(container).toBeTruthy()
-      expect(timeValue).toBeTruthy()
-      expect(timeButton).toBeTruthy()
-
-      const displayDate = moment(new Date()).format('YYYY/MM/DD')
-
       setTimeout(() => {
+        const exterior = getByTestId('calendarPeriod.exterior')
+        const container = getByTestId('calendarPeriod.container')
+        const timeValue = getByTestId('calendarPeriod.timepicker')
+        const timeButton = getByTestId('calendarPeriod.timepicker-button')
+
+        expect(exterior).toBeTruthy()
+        expect(container).toBeTruthy()
+        expect(timeValue).toBeTruthy()
+        expect(timeButton).toBeTruthy()
+
+        const displayDate = moment(new Date()).format('YYYY/MM/DD')
         expect(timeValue).toHaveTextContent(displayDate)
-      }, 100)
+      }, 300)
     })
 
     it('시간 범위 선택', () => {
@@ -96,26 +93,25 @@ describe('Modal DatePicker', () => {
         />,
       )
 
-      const exterior = getByTestId('calendarPeriod.exterior')
-      const container = getByTestId('calendarPeriod.container')
-      const time1Value = getByTestId('calendarPeriod.timepicker1')
-      const time1Button = getByTestId('calendarPeriod.timepicker1-button')
-      const time2Value = getByTestId('calendarPeriod.timepicker2')
-      const time2Button = getByTestId('calendarPeriod.timepicker2-button')
-
-      expect(exterior).toBeTruthy()
-      expect(container).toBeTruthy()
-      expect(time1Value).toBeTruthy()
-      expect(time1Button).toBeTruthy()
-      expect(time2Value).toBeTruthy()
-      expect(time2Button).toBeTruthy()
-
-      const displayDate = moment(new Date()).format('YYYY/MM/DD')
-
       setTimeout(() => {
+        const exterior = getByTestId('calendarPeriod.exterior')
+        const container = getByTestId('calendarPeriod.container')
+        const time1Value = getByTestId('calendarPeriod.timepicker1')
+        const time1Button = getByTestId('calendarPeriod.timepicker1-button')
+        const time2Value = getByTestId('calendarPeriod.timepicker2')
+        const time2Button = getByTestId('calendarPeriod.timepicker2-button')
+
+        expect(exterior).toBeTruthy()
+        expect(container).toBeTruthy()
+        expect(time1Value).toBeTruthy()
+        expect(time1Button).toBeTruthy()
+        expect(time2Value).toBeTruthy()
+        expect(time2Button).toBeTruthy()
+
+        const displayDate = moment(new Date()).format('YYYY/MM/DD')
         expect(time1Value).toHaveTextContent(displayDate)
         expect(time2Value).toHaveTextContent(displayDate)
-      }, 100)
+      }, 300)
     })
 
     it('일시 범위 선택', () => {
@@ -133,27 +129,26 @@ describe('Modal DatePicker', () => {
         />,
       )
 
-      const exterior = getByTestId('calendarPeriod.exterior')
-      const container = getByTestId('calendarPeriod.container')
-      const time1Value = getByTestId('calendarPeriod.timepicker1')
-      const time1Button = getByTestId('calendarPeriod.timepicker1-button')
-      const time2Value = getByTestId('calendarPeriod.timepicker2')
-      const time2Button = getByTestId('calendarPeriod.timepicker2-button')
-
-      expect(exterior).toBeTruthy()
-      expect(container).toBeTruthy()
-      expect(time1Value).toBeTruthy()
-      expect(time1Button).toBeTruthy()
-      expect(time2Value).toBeTruthy()
-      expect(time2Button).toBeTruthy()
-
-      const displayDate1 = moment(new Date()).format('YYYY/MM/DD')
-      const displayDate2 = moment(date2).format('YYYY/MM/DD')
-
       setTimeout(() => {
+        const exterior = getByTestId('calendarPeriod.exterior')
+        const container = getByTestId('calendarPeriod.container')
+        const time1Value = getByTestId('calendarPeriod.timepicker1')
+        const time1Button = getByTestId('calendarPeriod.timepicker1-button')
+        const time2Value = getByTestId('calendarPeriod.timepicker2')
+        const time2Button = getByTestId('calendarPeriod.timepicker2-button')
+
+        expect(exterior).toBeTruthy()
+        expect(container).toBeTruthy()
+        expect(time1Value).toBeTruthy()
+        expect(time1Button).toBeTruthy()
+        expect(time2Value).toBeTruthy()
+        expect(time2Button).toBeTruthy()
+
+        const displayDate1 = moment(new Date()).format('YYYY/MM/DD')
+        const displayDate2 = moment(date2).format('YYYY/MM/DD')
         expect(time1Value).toHaveTextContent(displayDate1)
         expect(time2Value).toHaveTextContent(displayDate2)
-      }, 100)
+      }, 300)
     })
   })
 })

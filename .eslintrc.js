@@ -32,6 +32,7 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'off',
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
+    'react/jsx-props-no-spreading': 'off',
   },
   ignorePatterns: [
     'build/',

@@ -1,10 +1,10 @@
 import { AdminType } from '../types'
 
-export const apiLogin = async (uid: string): Promise<string | null> => {
+const apiLogin = async (uid: string): Promise<string | null> => {
   return uid
 }
 
-export const apiGetAdminInfo = async (token: string, uid: string) => {
+const apiGetAdminInfo = async (token: string, uid: string) => {
   return {
     uid,
     email: process.env.REACT_APP_TEST_EMAIL || '',
@@ -12,11 +12,18 @@ export const apiGetAdminInfo = async (token: string, uid: string) => {
   }
 }
 
-export const apiChangeName = async (
+const apiChangeName = async (
   token: string,
   user: AdminType,
 ): Promise<boolean> => {
   return true
 }
 
-export const apiLogout = () => {}
+const apiLogout = () => {}
+
+export default {
+  apiLogin,
+  apiGetAdminInfo,
+  apiChangeName,
+  apiLogout,
+}

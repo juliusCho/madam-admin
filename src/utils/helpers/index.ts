@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { ROUTER_PATH } from '../../constants'
 import endpointsConfig from '../../endpoints.config'
 
@@ -232,10 +233,24 @@ export default {
     date.setSeconds(0)
     date.setMilliseconds(0)
   },
-  getDateRangeArray(range: 'date' | 'month', dates: Date[]) {
+  getDateRangeArray(range: 'days' | 'months', dates: Date[]) {
     if (dates.length === 1) {
       return dates
     }
-    return dates
+
+    const num = moment(dates[1]).diff(dates[0], range)
+    const setFnc = range === 'days' ? 'setDate' : 'setMonth'
+    const getFnc = range === 'days' ? 'getDate' : 'getMonth'
+
+    const result: Date[] = [dates[0]]
+
+    for (let i = 1; i < num; i += 1) {
+      const newDate = moment(dates[0]).toDate()
+      newDate[setFnc](dates[0][getFnc]() + i)
+      result.push(newDate)
+    }
+
+    result.push(dates[1])
+    return result
   },
 }

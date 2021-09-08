@@ -20,12 +20,15 @@ const PageDashboardAppUseStyle = {
     justify-center
     items-center
   `,
-  chart: `
-    flex
-    flex-col
-    justify-center
-    items-center
-  `,
+  chart({ isMobile }: StyleProps) {
+    return `
+      flex
+      flex-col
+      justify-center
+      items-center
+      ${isMobile ? 'border-b border-solid border-mono-gray py-2' : ''}
+    `
+  },
   chartLabel({ isMobile }: StyleProps) {
     return isMobile
       ? 'text-titleBig font-titleBig text-mono-black'
@@ -38,7 +41,13 @@ const PageDashboardAppUseStyle = {
     justify-center
     items-center
     z-10
-    mt-14
+  `,
+  chartDate: `
+    flex
+    justify-center
+    items-center
+    mt-6
+    w-82
   `,
 }
 

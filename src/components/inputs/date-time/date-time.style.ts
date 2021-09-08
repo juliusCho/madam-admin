@@ -29,7 +29,7 @@ const InputDateTimeStyle = {
       items-center
       rounded-full
       w-full
-      h-8.5
+      h-9
       border
       border-solid
       bg-mono-lightGray
@@ -60,13 +60,15 @@ const InputDateTimeStyle = {
       return `${helpers.convertColorToTailwind(
         disabledColor || 'text-mono-lightGray',
         true,
-      )} text-textThin font-textThin`
+      )} text-textSmall font-textSmall px-2`
     }
     return active
       ? `${helpers.convertColorToTailwind(
           activeColor,
-        )} text-textRegular font-textRegular`
-      : `${helpers.convertColorToTailwind(color)} text-textThin font-textThin`
+        )} text-textMedium font-textMedium px-2`
+      : `${helpers.convertColorToTailwind(
+          color,
+        )} text-textSmall font-textSmall px-2`
   },
   axe: `
     bg-transparent 

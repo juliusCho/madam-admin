@@ -7,6 +7,7 @@ import { ROUTER_PATH, ROUTER_TITLE } from '../../constants'
 import etcGlobalStates from '../../recoil/etc'
 import helpers from '../../utils/helpers'
 import customHooks from '../../utils/hooks'
+import AppPageStyle from '../app.style'
 
 export interface PageDashboardLayoutProps {
   endpoint: 'APP_USE' | 'BEST_MADAM' | 'USER' | 'COUPLING' | 'ETC'
@@ -51,12 +52,8 @@ function PageDashboardLayout({ endpoint, children }: PageDashboardLayoutProps) {
           loading={
             <Loading loading={secondLoading} style={{ height: secondHeight }} />
           }
-          fontSize="md:text-titleMedium md:font-titleMedium"
-          backgroundColor="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive"
-          selectedColor="bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive"
-          selectedTextColor="text-main-blue hover:text-main-blueHover active:text-main-blueActive"
-          innerColor="bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive"
-          height={secondHeight}>
+          height={secondHeight}
+          {...AppPageStyle.layoutTabSecondDepthProps}>
           {children}
         </LayoutTab>
       </LayoutTab>

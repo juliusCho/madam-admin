@@ -30,3 +30,32 @@ body {
   font-weight: normal;
   font-style: normal;
 }
+
+@keyframes bottomUp {
+  0% {
+    transform: translateY(1000%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(500%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+@keyframes bottomDown {
+  0% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(500%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(1000%);
+    opacity: 0;
+  }
+}

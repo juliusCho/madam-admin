@@ -1,8 +1,7 @@
 import React from 'react'
 import { useHistory } from 'react-router'
 import Recoil from 'recoil'
-import * as api from '../../../api'
-import { apiLogout } from '../../../api'
+import { apiSession } from '../../../api'
 import { ROUTER_PATH } from '../../../constants'
 import adminGlobalStates from '../../../recoil/admin'
 import etcGlobalStates from '../../../recoil/etc'
@@ -63,7 +62,7 @@ function LayoutHeader({}: LayoutHeaderProps) {
     const newAdmin = { ...admin, name: adminName }
 
     setAdmin(newAdmin)
-    const boo = await api.apiChangeName(token, newAdmin)
+    const boo = await apiSession.apiChangeName(token, newAdmin)
 
     if (!boo) {
       setAdmin(null)
@@ -71,7 +70,7 @@ function LayoutHeader({}: LayoutHeaderProps) {
   }
 
   const logout = () => {
-    apiLogout()
+    apiSession.apiLogout()
 
     setAlert((old) => ({
       ...old,

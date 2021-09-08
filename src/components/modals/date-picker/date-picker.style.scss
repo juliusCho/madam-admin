@@ -11,6 +11,14 @@
 }
 
 .container {
+  &.bottom-up {
+    animation: bottomUp 0.3s ease-in-out;
+  }
+
+  &.bottom-down {
+    animation: bottomDown 0.3s ease-in-out;
+  }
+
   border-style: none;
   position: fixed;
   background-color: rgba(255, 255, 255, 1);

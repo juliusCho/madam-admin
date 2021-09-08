@@ -58,8 +58,8 @@ const InputTextLineStyle = {
   }: InputStyleProps) {
     return `
       border-none 
-      text-textThin 
-      font-textThin
+      text-textSmall 
+      font-textSmall
       rounded-md 
       h-full 
       w-full 
@@ -85,8 +85,8 @@ const InputTextLineStyle = {
   },
   text({ input }: { input: boolean }) {
     return input
-      ? 'text-textRegular font-textRegular'
-      : 'text-textThin font-textThin'
+      ? 'text-textMedium font-textMedium'
+      : 'text-textSmall font-textSmall'
   },
   axe: `
     bg-transparent 

@@ -130,6 +130,7 @@ function DatePicker({
   datePick = true, // 일자 선택 가능 여부(false면, 월 선택)
   locale,
 }: DateTimePickerProps) {
+  const [show, setShow] = React.useState(false)
   // 세기/년/월/일 선택 화면 중, 기본화면 모드
   const [viewMode, setViewMode] = React.useState<
     undefined | 'month' | 'year' | 'decade' | 'century'
@@ -160,6 +161,18 @@ function DatePicker({
       forceUpdate()
     }, 300)
   }, [isMounted, isOpen, forceUpdate])
+
+  React.useEffect(() => {
+    if (!isMounted()) return
+
+    if (isOpen) {
+      setShow(() => true)
+    } else {
+      setTimeout(() => {
+        setShow(() => false)
+      }, 200)
+    }
+  }, [isMounted, isOpen])
 
   // prop으로 받아온 날짜 값을 세팅
   React.useEffect(() => {
@@ -281,7 +294,6 @@ function DatePicker({
     if (!selectRange && !timeRange) return
 
     if (Array.isArray(value) || value === undefined) {
-      console.log('yESS', pickedDate)
       setValue(() => pickedDate)
     } else if (selectRange) {
       if (
@@ -499,16 +511,16 @@ function DatePicker({
         onKeyPress={onClickExterior}
         onClick={onClickExterior}
         style={{
-          display: isOpen ? 'block' : 'none',
+          display: show ? 'block' : 'none',
           height: `calc(1000% + ${calculatedTop || '0.063rem'})`,
         }}>
         {' '}
       </div>
       <div
-        className="container"
+        className={`container bottom-${isOpen ? 'up' : 'down'}`}
         data-testid="calendarPeriod.container"
         style={{
-          display: isOpen ? 'block' : 'none',
+          display: show ? 'block' : 'none',
           height: containerHeight,
           top: calculatedTop,
           left: calculatedLeft,
@@ -528,7 +540,7 @@ function DatePicker({
           format="yyyy.MM.dd"
           maxDate={maxDate}
           minDate={minDate}
-          isOpen={isOpen}
+          isOpen={show}
           onCalendarClose={onCalendarClose}
           selectRange={selectRange}
           onClickMonth={datePick ? undefined : onClickMonth}
@@ -541,7 +553,7 @@ function DatePicker({
           }
         />
         {timeDisplay &&
-          isOpen &&
+          show &&
           ((selectRange && Array.isArray(value)) || timeRange ? (
             <TimePickerRange
               value={timeValue as string[] | undefined}

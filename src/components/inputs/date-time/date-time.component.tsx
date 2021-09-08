@@ -200,11 +200,11 @@ InputDateTime.defaultProps = {
   style: {},
   className: '',
   backgroundColor:
-    'bg-mono-pale hover:bg-mono-paleHover active:bg-mono-paleActive',
+    'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
   borderColor:
     'border-mono-lightGray hover:border-mono-lightGrayHover active:border-mono-lightGrayActive',
   textColor:
-    'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
+    'text-main-blue hover:text-main-blueHover active:text-main-blueActive',
   placeholderColor:
     'placeholder-mono-darkGray hover:placeholder-mono-darkGrayHover active:placeholder-mono-darkGrayActive',
   resetColor:
