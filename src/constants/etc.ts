@@ -61,3 +61,6 @@ export const ROUTER_TITLE = {
     PROFILE: 'Madam Admin - 유저관리[프로필]',
   },
 }
+
+export const MAX_WEB_BROWSER_WIDTH = 767
+export const MAX_WEB_BROWSER_WIDTH_FOR_DASHBOARD = 1242

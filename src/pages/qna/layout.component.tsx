@@ -3,7 +3,11 @@ import Recoil from 'recoil'
 import { Loading } from '../../components/etc/loading'
 import { LayoutHeader } from '../../components/layouts/header'
 import { LayoutTab } from '../../components/layouts/tab'
-import { ROUTER_PATH, ROUTER_TITLE } from '../../constants'
+import {
+  MAX_WEB_BROWSER_WIDTH,
+  ROUTER_PATH,
+  ROUTER_TITLE,
+} from '../../constants'
 import etcGlobalStates from '../../recoil/etc'
 import helpers from '../../utils/helpers'
 import customHooks from '../../utils/hooks'
@@ -15,9 +19,11 @@ export interface PageQnaLayoutProps {
 function PageQnaLayout({ children }: PageQnaLayoutProps) {
   customHooks.usePage(ROUTER_TITLE.QNA, ROUTER_PATH.QNA)
 
-  const [isMobile, setIsMobile] = React.useState(helpers.isMobile())
+  const [isMobile, setIsMobile] = React.useState(
+    helpers.isMobile(MAX_WEB_BROWSER_WIDTH),
+  )
 
-  customHooks.useCheckMobile(setIsMobile)
+  customHooks.useCheckMobile(setIsMobile, MAX_WEB_BROWSER_WIDTH)
 
   const firstLoading = Recoil.useRecoilValue(
     etcGlobalStates.firstTabLoadingState,
@@ -32,10 +38,13 @@ function PageQnaLayout({ children }: PageQnaLayoutProps) {
         depth={1}
         tabs={helpers.firstDepthTab(ROUTER_PATH.QNA, isMobile)}
         loading={
-          <Loading loading={firstLoading} style={{ height: firstHeight }} />
+          <Loading
+            loading={firstLoading}
+            style={{ height: firstHeight, opacity: 0.8 }}
+          />
         }
         height={firstHeight}>
-        {children}
+        <div className="fade-in">{children}</div>
       </LayoutTab>
     </>
   )

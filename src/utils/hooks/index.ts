@@ -5,6 +5,7 @@ import Recoil from 'recoil'
 import { ROUTER_PATH } from '../../constants'
 import adminGlobalStates from '../../recoil/admin'
 import etcGlobalStates from '../../recoil/etc'
+import helpers from '../helpers'
 
 const useIsMounted = () => {
   const isMountedRef = React.useRef(true)
@@ -22,16 +23,12 @@ const useIsMounted = () => {
 
 const useCheckMobile = (
   setIsMobile: React.Dispatch<React.SetStateAction<boolean>>,
-  maxWidth = 767,
+  maxWidth?: number,
 ) => {
   const isMounted = useIsMounted()
 
   const resizeEvent = React.useCallback(() => {
-    if (window.innerWidth >= maxWidth) {
-      setIsMobile(false)
-    } else {
-      setIsMobile(true)
-    }
+    setIsMobile(helpers.isMobile(maxWidth))
   }, [])
 
   React.useEffect(() => {

@@ -2,7 +2,7 @@ import React from 'react'
 import { useHistory } from 'react-router'
 import Recoil from 'recoil'
 import { apiSession } from '../../../api'
-import { ROUTER_PATH } from '../../../constants'
+import { MAX_WEB_BROWSER_WIDTH, ROUTER_PATH } from '../../../constants'
 import adminGlobalStates from '../../../recoil/admin'
 import etcGlobalStates from '../../../recoil/etc'
 import helpers from '../../../utils/helpers'
@@ -27,13 +27,15 @@ function LayoutHeader({}: LayoutHeaderProps) {
     React.useState(false)
   const [modalShow, setModalShow] = React.useState(false)
 
-  const [isMobile, setIsMobile] = React.useState(helpers.isMobile())
+  const [isMobile, setIsMobile] = React.useState(
+    helpers.isMobile(MAX_WEB_BROWSER_WIDTH),
+  )
 
   const isMounted = customHooks.useIsMounted()
 
   const history = useHistory()
 
-  customHooks.useCheckMobile(setIsMobile)
+  customHooks.useCheckMobile(setIsMobile, MAX_WEB_BROWSER_WIDTH)
 
   const maxLength = 50
 

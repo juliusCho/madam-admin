@@ -3,7 +3,11 @@ import Recoil from 'recoil'
 import { Loading } from '../../components/etc/loading'
 import { LayoutHeader } from '../../components/layouts/header'
 import { LayoutTab } from '../../components/layouts/tab'
-import { ROUTER_PATH, ROUTER_TITLE } from '../../constants'
+import {
+  MAX_WEB_BROWSER_WIDTH,
+  ROUTER_PATH,
+  ROUTER_TITLE,
+} from '../../constants'
 import etcGlobalStates from '../../recoil/etc'
 import helpers from '../../utils/helpers'
 import customHooks from '../../utils/hooks'
@@ -23,9 +27,11 @@ function PageSystemVariableLayout({
     ROUTER_PATH.SYSTEM_VARIABLE[endpoint],
   )
 
-  const [isMobile, setIsMobile] = React.useState(helpers.isMobile())
+  const [isMobile, setIsMobile] = React.useState(
+    helpers.isMobile(MAX_WEB_BROWSER_WIDTH),
+  )
 
-  customHooks.useCheckMobile(setIsMobile)
+  customHooks.useCheckMobile(setIsMobile, MAX_WEB_BROWSER_WIDTH)
 
   const firstLoading = Recoil.useRecoilValue(
     etcGlobalStates.firstTabLoadingState,
@@ -47,9 +53,13 @@ function PageSystemVariableLayout({
           isMobile,
         )}
         loading={
-          <Loading loading={firstLoading} style={{ height: firstHeight }} />
+          <Loading
+            loading={firstLoading}
+            style={{ height: firstHeight, opacity: 0.8 }}
+          />
         }
-        height={firstHeight}>
+        height={firstHeight}
+        {...AppPageStyle.layoutTabFirstDepthProps}>
         <LayoutTab
           depth={2}
           tabs={
@@ -57,11 +67,14 @@ function PageSystemVariableLayout({
               .SYSTEM_VARIABLE
           }
           loading={
-            <Loading loading={secondLoading} style={{ height: secondHeight }} />
+            <Loading
+              loading={secondLoading}
+              style={{ height: secondHeight, opacity: 0.5 }}
+            />
           }
           height={secondHeight}
           {...AppPageStyle.layoutTabSecondDepthProps}>
-          {children}
+          <div className="fade-in">{children}</div>
         </LayoutTab>
       </LayoutTab>
     </>

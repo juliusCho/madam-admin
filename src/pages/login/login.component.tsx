@@ -98,23 +98,23 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
   }
 
   return (
-    <>
-      <div className={PageLoginStyle.container} style={{ marginTop: '-5rem' }}>
-        <LabelMadam className="mb-10" style={{ fontSize: '5rem' }} />
-        <ButtonCircle
-          onClick={signIn}
-          className="m-5 mb-10"
-          borderWidth="border-2">
-          Login
-        </ButtonCircle>
-        {noFound && (
-          <span
-            className={PageLoginStyle.error}
-            data-testid="page.login.noAuthMsg">
-            해당 정보와 일치하는 계정을 찾을 수 없습니다.
-          </span>
-        )}
-      </div>
-    </>
+    <div
+      className={`fade-in ${PageLoginStyle.container}`}
+      style={{ marginTop: '-5rem', height: 'calc(100vh + 5rem)' }}>
+      <LabelMadam className="mb-10" style={{ fontSize: '5rem' }} />
+      <ButtonCircle
+        onClick={signIn}
+        className="m-5 mb-10"
+        borderWidth="border-2">
+        Login
+      </ButtonCircle>
+      {noFound && (
+        <span
+          className={`bottom-up ${PageLoginStyle.error}`}
+          data-testid="page.login.noAuthMsg">
+          해당 정보와 일치하는 계정을 찾을 수 없습니다.
+        </span>
+      )}
+    </div>
   )
 }

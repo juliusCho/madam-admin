@@ -51,9 +51,9 @@ const LayoutTabStyle = {
       shadow-inner
       ${fontSize}
       ${fontSize}
-      bg-mono-pale
-      hover:bg-mono-paleHover
-      active:bg-mono-paleActive
+      bg-mono-lightGray
+      hover:bg-mono-lightGrayHover
+      active:bg-mono-lightGrayActive
       text-mono-gray
       hover:text-mono-grayHover
       active:text-mono-grayActive

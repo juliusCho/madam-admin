@@ -3,7 +3,6 @@ import Modal from 'react-modal'
 import customHooks from '../../../utils/hooks'
 import { ButtonRoundWithIcon } from '../../buttons/round-with-icon'
 import ModalContentStyle from './content.style'
-import './content.style.scss'
 
 export interface ModalContentProps {
   isOpen: boolean

@@ -24,7 +24,7 @@ export default {
     const key = atob(input).split(`-${endpointsConfig.snsKeySecret}-`)
     return key[0]
   },
-  isMobile() {
+  isMobile(maxWidth?: number) {
     let check = false
     ;(function (a: string) {
       if (
@@ -36,7 +36,7 @@ export default {
         )
       ) {
         check = true
-      } else if (window.innerWidth <= 767) {
+      } else if (maxWidth && window.innerWidth <= maxWidth) {
         check = true
       }
     })(navigator.userAgent || navigator.vendor)

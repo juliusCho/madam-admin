@@ -5,7 +5,7 @@ const PageLoginStyle = {
     justify-center
     items-center
     w-screen
-    h-screen
+    bg-mono-pale
   `,
   error: `
     text-textMedium

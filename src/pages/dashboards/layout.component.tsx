@@ -3,7 +3,11 @@ import Recoil from 'recoil'
 import { Loading } from '../../components/etc/loading'
 import { LayoutHeader } from '../../components/layouts/header'
 import { LayoutTab } from '../../components/layouts/tab'
-import { ROUTER_PATH, ROUTER_TITLE } from '../../constants'
+import {
+  MAX_WEB_BROWSER_WIDTH,
+  ROUTER_PATH,
+  ROUTER_TITLE,
+} from '../../constants'
 import etcGlobalStates from '../../recoil/etc'
 import helpers from '../../utils/helpers'
 import customHooks from '../../utils/hooks'
@@ -20,9 +24,11 @@ function PageDashboardLayout({ endpoint, children }: PageDashboardLayoutProps) {
     ROUTER_PATH.DASHBOARD[endpoint],
   )
 
-  const [isMobile, setIsMobile] = React.useState(helpers.isMobile())
+  const [isMobile, setIsMobile] = React.useState(
+    helpers.isMobile(MAX_WEB_BROWSER_WIDTH),
+  )
 
-  customHooks.useCheckMobile(setIsMobile)
+  customHooks.useCheckMobile(setIsMobile, MAX_WEB_BROWSER_WIDTH)
 
   const firstLoading = Recoil.useRecoilValue(
     etcGlobalStates.firstTabLoadingState,
@@ -40,21 +46,28 @@ function PageDashboardLayout({ endpoint, children }: PageDashboardLayoutProps) {
       <LayoutTab
         depth={1}
         loading={
-          <Loading loading={firstLoading} style={{ height: firstHeight }} />
+          <Loading
+            loading={firstLoading}
+            style={{ height: firstHeight, opacity: 0.8 }}
+          />
         }
         tabs={helpers.firstDepthTab(ROUTER_PATH.DASHBOARD[endpoint], isMobile)}
-        height={firstHeight}>
+        height={firstHeight}
+        {...AppPageStyle.layoutTabFirstDepthProps}>
         <LayoutTab
           depth={2}
           tabs={
             helpers.secondDepthTab(ROUTER_PATH.DASHBOARD[endpoint]).DASHBOARD
           }
           loading={
-            <Loading loading={secondLoading} style={{ height: secondHeight }} />
+            <Loading
+              loading={secondLoading}
+              style={{ height: secondHeight, opacity: 0.5 }}
+            />
           }
           height={secondHeight}
           {...AppPageStyle.layoutTabSecondDepthProps}>
-          {children}
+          <div className="fade-in">{children}</div>
         </LayoutTab>
       </LayoutTab>
     </>

@@ -1,14 +1,15 @@
 const AppPageStyle = {
+  layoutTabFirstDepthProps: {
+    backgroundColor: 'bg-mono-pale',
+    selectedColor: 'bg-mono-grayActive',
+    innerColor: 'bg-mono-grayActive',
+  },
   layoutTabSecondDepthProps: {
     fontSize: 'md:text-titleMedium md:font-titleMedium',
-    backgroundColor:
-      'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
-    selectedColor:
-      'bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive',
-    selectedTextColor:
-      'text-main-blue hover:text-main-blueHover active:text-main-blueActive',
-    innerColor:
-      'bg-mono-paleWhite hover:bg-mono-paleWhiteHover active:bg-mono-paleWhiteActive',
+    selectedTextColor: 'text-main-blue',
+    backgroundColor: 'bg-mono-grayActive',
+    selectedColor: 'bg-mono-white',
+    innerColor: 'bg-mono-white',
   },
 }
 
