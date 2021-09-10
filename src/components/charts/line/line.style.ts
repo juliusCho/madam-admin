@@ -18,13 +18,6 @@ const ChartLineStyle = {
       ? 'text-titleBig font-titleBig text-mono-black'
       : 'text-titleMassive font-titleMassive text-mono-black'
   },
-  chartDate: `
-    flex
-    justify-center
-    items-center
-    mt-6
-    w-82
-  `,
 }
 
 export default ChartLineStyle

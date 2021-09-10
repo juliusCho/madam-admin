@@ -1,10 +1,9 @@
 import React from 'react'
 import Chart from 'react-google-charts'
 import { MAX_WEB_BROWSER_WIDTH_FOR_DASHBOARD } from '../../../constants'
-import PageDashboardLayoutStyle from '../../../pages/dashboards/layout.style'
 import helpers from '../../../utils/helpers'
 import customHooks from '../../../utils/hooks'
-import { InputDateTime } from '../../inputs/date-time'
+import { SearchChartDate } from '../../search/chart-date'
 import ChartLineStyle from './line.style'
 
 export interface ChartLineProps {
@@ -71,18 +70,14 @@ function ChartLine({
         {title}
       </span>
       {dateSearch && (
-        <div className={ChartLineStyle.chartDate}>
-          <InputDateTime
-            onChange={dateSearch.onChange}
-            date={dateSearch.date}
-            format={dateSearch.format}
-            range={dateSearch.type !== 'day'}
-            datePick={dateSearch.type !== 'months'}
-            maxDate={dateSearch.maxDate}
-            minDate={dateSearch.minDate}
-            {...PageDashboardLayoutStyle.inputDateTimeStyleProps}
-          />
-        </div>
+        <SearchChartDate
+          type={dateSearch.type}
+          onChange={dateSearch.onChange}
+          date={dateSearch.date}
+          format={dateSearch.format}
+          maxDate={dateSearch.maxDate}
+          minDate={dateSearch.minDate}
+        />
       )}
       <Chart
         {...chartLayoutProps()}
