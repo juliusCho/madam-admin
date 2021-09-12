@@ -1,8 +1,7 @@
 import React from 'react'
 import Chart from 'react-google-charts'
-import { MAX_WEB_BROWSER_WIDTH_FOR_DASHBOARD } from '../../../constants'
-import helpers from '../../../utils/helpers'
-import customHooks from '../../../utils/hooks'
+import Recoil from 'recoil'
+import deviceGlobalState from '../../../recoil/device'
 import ChartDonutStyle from './donut.style'
 
 type CenterTextType = {
@@ -25,25 +24,16 @@ function ChartDonut({
   style,
   className,
 }: ChartDonutProps) {
-  const [isMobile, setIsMobile] = React.useState(helpers.isMobile())
-  const [isSmallScreen, setIsSmallScreen] = React.useState(
-    helpers.isMobile(MAX_WEB_BROWSER_WIDTH_FOR_DASHBOARD),
-  )
-
-  customHooks.useCheckMobile(setIsMobile)
-  customHooks.useCheckMobile(
-    setIsSmallScreen,
-    MAX_WEB_BROWSER_WIDTH_FOR_DASHBOARD,
-  )
+  const device = Recoil.useRecoilValue(deviceGlobalState.getDevice)
 
   const chartLayoutProps = React.useCallback(() => {
-    if (isMobile) {
+    if (device === 'mobile') {
       return {
         width: 300,
         height: 270,
       }
     }
-    return isSmallScreen
+    return device === 'smallScreen'
       ? {
           width: 350,
           height: 300,
@@ -52,23 +42,23 @@ function ChartDonut({
           width: 500,
           height: 420,
         }
-  }, [isMobile, isSmallScreen])
+  }, [device])
 
   const fontSize = React.useCallback(() => {
-    return isSmallScreen ? 8 : 16
-  }, [isSmallScreen])
+    return device === 'mobile' || device === 'smallScreen' ? 8 : 16
+  }, [device])
 
   return (
     <div
       className={`${ChartDonutStyle.chart({
-        isMobile: isSmallScreen,
+        isMobile: device === 'mobile' || device === 'smallScreen',
       })} ${className ?? ''}`}
       style={style}>
       {centerText && (
         <div className={ChartDonutStyle.centerTextContainer}>
           <span
             className={ChartDonutStyle.centerText({
-              isSmallScreen,
+              isSmallScreen: device === 'mobile' || device === 'smallScreen',
               bold: Array.isArray(centerText)
                 ? centerText[0].bold
                 : centerText.bold,
@@ -78,7 +68,7 @@ function ChartDonut({
           {Array.isArray(centerText) && centerText.length > 1 && (
             <span
               className={`mt-2 ${ChartDonutStyle.centerText({
-                isSmallScreen,
+                isSmallScreen: device === 'mobile' || device === 'smallScreen',
                 bold: centerText[1].bold,
               })}`}>
               {centerText[1].text}
@@ -88,7 +78,7 @@ function ChartDonut({
       )}
       <span
         className={ChartDonutStyle.chartLabel({
-          isMobile: isSmallScreen,
+          isMobile: device === 'mobile' || device === 'smallScreen',
         })}>
         {title}
       </span>

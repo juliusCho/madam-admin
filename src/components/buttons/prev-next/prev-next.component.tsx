@@ -51,28 +51,24 @@ function ButtonPrevNext({
       style={style}>
       <button
         type="button"
-        className={`${ButtonPrevNextStyle.prev} ${
+        className={`${ButtonPrevNextStyle.prevNext} ${
           prevDisabled ? prevDisabledClassName : prevClassName
         } ${prevDisabled ? 'cursor-not-allowed' : ''}`}
         disabled={prevDisabled}
         onClick={onClickPrev}>
-        {prevIcon && (
-          <XEIcon onClick={onClickPrev} {...prevIcon} className="mr-2" />
-        )}
+        {prevIcon && <XEIcon onClick={onClickPrev} {...prevIcon} />}
         {prevLabel}
       </button>
       <div className={`${ButtonPrevNextStyle.divider} ${dividerClassName}`} />
       <button
         type="button"
-        className={`${ButtonPrevNextStyle.next} ${
+        className={`${ButtonPrevNextStyle.prevNext} ${
           nextDisabled ? nextDisabledClassName : nextClassName
         } ${nextDisabled ? 'cursor-not-allowed' : ''}`}
         disabled={nextDisabled}
         onClick={onClickNext}>
         {nextLabel}
-        {nextIcon && (
-          <XEIcon onClick={onClickNext} {...nextIcon} className="ml-2" />
-        )}
+        {nextIcon && <XEIcon onClick={onClickNext} {...nextIcon} />}
       </button>
     </div>
   )

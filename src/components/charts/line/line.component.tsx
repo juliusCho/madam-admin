@@ -1,8 +1,7 @@
 import React from 'react'
 import Chart from 'react-google-charts'
-import { MAX_WEB_BROWSER_WIDTH_FOR_DASHBOARD } from '../../../constants'
-import helpers from '../../../utils/helpers'
-import customHooks from '../../../utils/hooks'
+import Recoil from 'recoil'
+import deviceGlobalStates from '../../../recoil/device'
 import { SearchChartDate } from '../../search/chart-date'
 import ChartLineStyle from './line.style'
 
@@ -28,25 +27,16 @@ function ChartLine({
   style,
   className,
 }: ChartLineProps) {
-  const [isMobile, setIsMobile] = React.useState(helpers.isMobile())
-  const [isSmallScreen, setIsSmallScreen] = React.useState(
-    helpers.isMobile(MAX_WEB_BROWSER_WIDTH_FOR_DASHBOARD),
-  )
-
-  customHooks.useCheckMobile(setIsMobile)
-  customHooks.useCheckMobile(
-    setIsSmallScreen,
-    MAX_WEB_BROWSER_WIDTH_FOR_DASHBOARD,
-  )
+  const device = Recoil.useRecoilValue(deviceGlobalStates.getDevice)
 
   const chartLayoutProps = React.useCallback(() => {
-    if (isMobile) {
+    if (device === 'mobile') {
       return {
         width: 300,
         height: 250,
       }
     }
-    return isSmallScreen
+    return device === 'smallScreen'
       ? {
           width: 400,
           height: 300,
@@ -55,30 +45,20 @@ function ChartLine({
           width: 550,
           height: 350,
         }
-  }, [isMobile, isSmallScreen])
+  }, [device])
 
   return (
     <div
       className={`${ChartLineStyle.chart({
-        isMobile: isSmallScreen,
+        isMobile: device === 'mobile' || device === 'smallScreen',
       })} ${className}`}
       style={style}>
       <span
         className={ChartLineStyle.chartLabel({
-          isMobile: isSmallScreen,
+          isMobile: device === 'mobile' || device === 'smallScreen',
         })}>
         {title}
       </span>
-      {dateSearch && (
-        <SearchChartDate
-          type={dateSearch.type}
-          onChange={dateSearch.onChange}
-          date={dateSearch.date}
-          format={dateSearch.format}
-          maxDate={dateSearch.maxDate}
-          minDate={dateSearch.minDate}
-        />
-      )}
       <Chart
         {...chartLayoutProps()}
         chartType="LineChart"
@@ -95,7 +75,8 @@ function ChartLine({
             alignment: 'center',
             position: 'top',
             textStyle: {
-              fontSize: isSmallScreen ? 8 : 16,
+              fontSize:
+                device === 'mobile' || device === 'smallScreen' ? 8 : 16,
             },
           },
           animation: {
@@ -107,6 +88,15 @@ function ChartLine({
           lineWidth: 3,
         }}
       />
+      {dateSearch && (
+        <SearchChartDate
+          type={dateSearch.type}
+          onChange={dateSearch.onChange}
+          date={dateSearch.date}
+          maxDate={dateSearch.maxDate}
+          minDate={dateSearch.minDate}
+        />
+      )}
     </div>
   )
 }

@@ -61,8 +61,10 @@ function ButtonRoundWithIcon({
         name={icon}
         color={
           active
-            ? colorIconActive || 'mono.white'
-            : colorIcon || 'mono.paleBlack'
+            ? colorIconActive ||
+              'text-mono-white hover:text-mono-whiteHover active:text-mono-whiteActive'
+            : colorIcon ||
+              'text-mono-paleBlack hover:text-mono-paleBlackHover active:text-mono-paleBlackActive'
         }
         size={iconSize}
         onClick={disabled ? undefined : onClickButton}

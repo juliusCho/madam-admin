@@ -1,11 +1,13 @@
 import React from 'react'
 import { Route, Switch, useHistory } from 'react-router-dom'
 import Recoil from 'recoil'
+import { ButtonToTop } from '../components/buttons/to-top'
 import { Loading } from '../components/etc/loading'
 import { Alert } from '../components/modals/alert'
 import { ROUTER_PATH } from '../constants'
 import auth from '../firebaseSetup'
 import adminGlobalStates from '../recoil/admin'
+import deviceGlobalStates from '../recoil/device'
 import etcGlobalStates from '../recoil/etc'
 import customHooks from '../utils/hooks'
 import { PageDashboardAppUse } from './dashboards/app-use'
@@ -31,6 +33,7 @@ import { PageUserPhoto } from './users/photo'
 import { PageUserProfile } from './users/profile'
 
 export default function App() {
+  const isMobile = Recoil.useRecoilValue(deviceGlobalStates.isMobile)
   const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
   const [token, setToken] = Recoil.useRecoilState(adminGlobalStates.tokenState)
   const loading = Recoil.useRecoilValue(etcGlobalStates.loadingState)
@@ -39,7 +42,11 @@ export default function App() {
   )
   const setAlert = Recoil.useSetRecoilState(etcGlobalStates.alertState)
 
+  const [showToTop, setShowToTop] = React.useState(false)
+
   const isMounted = customHooks.useIsMounted()
+
+  customHooks.useCheckMobile(isMobile, setShowToTop)
 
   const history = useHistory()
 
@@ -144,6 +151,7 @@ export default function App() {
         <Route path={ROUTER_PATH.USER.PHOTO} component={PageUserPhoto} />
         <Route path={ROUTER_PATH.USER.PROFILE} component={PageUserProfile} />
       </Switch>
+      <ButtonToTop show={showToTop} />
     </>
   )
 }

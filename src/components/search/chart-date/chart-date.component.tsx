@@ -1,7 +1,9 @@
 import moment from 'moment'
 import React from 'react'
 import { ButtonPrevNext } from '../../buttons/prev-next'
-import { InputDateTime } from '../../inputs/date-time'
+import { XEIcon } from '../../etc/xeicon'
+import { DateTimePicker } from '../../modals/date-picker'
+import SearchChartDateStyle from './chart-date.style'
 
 const getPrevNextSequel = (
   type: 'day' | 'days' | 'months',
@@ -45,7 +47,6 @@ export interface SearchChartDateProps {
   type: 'day' | 'days' | 'months'
   onChange: (date?: Date | Array<Date | undefined>) => void
   date: Date | Array<Date | undefined>
-  format?: string
   maxDate?: Date
   minDate?: Date
 }
@@ -54,10 +55,15 @@ function SearchChartDate({
   type,
   onChange,
   date,
-  format,
   maxDate,
   minDate,
 }: SearchChartDateProps) {
+  const [showPicker, setShowPicker] = React.useState(false)
+
+  const onClick = () => {
+    setShowPicker(true)
+  }
+
   const prevDisabled = React.useCallback(() => {
     if (!minDate) return false
 
@@ -186,64 +192,46 @@ function SearchChartDate({
     onChange([compareDtMin.toDate(), compareDtMax.toDate()])
   }, [maxDate, getNextDate, date, type, onChange])
 
-  const prevNextClassName = `
-    bg-mono-pale hover:bg-mono-paleHover active:bg-mono-paleActive
-    text-subTitleBig font-subTitleBig
-    text-mono-black hover:text-mono-blackHover active:text-mono-blackActive
-  `
-
-  const prevNextDisabledClassName = `
-    bg-transparent
-    text-subTitleBig font-subTitleBig
-    text-mono-lightGray
-  `
-
   return (
-    <div className="flex flex-col justify-center items-center mt-6 w-82">
-      <ButtonPrevNext
-        prevDisabled={prevDisabled()}
-        nextDisabled={nextDisabled()}
-        onClickPrev={onClickPrev}
-        onClickNext={onClickNext}
-        prevLabel="전 주"
-        nextLabel="차 주"
-        className="my-2"
-        dividerClassName="bg-mono-pale mx-2 w-4"
-        prevClassName={prevNextClassName}
-        nextClassName={prevNextClassName}
-        prevDisabledClassName={prevNextDisabledClassName}
-        nextDisabledClassName={prevNextDisabledClassName}
-        prevIcon={{
-          name: 'angle-left',
-          color: 'mono.black',
-          size: '1.125rem',
-        }}
-        nextIcon={{
-          name: 'angle-right',
-          color: 'mono.black',
-          size: '1.125rem',
-        }}
-      />
-      <InputDateTime
-        onChange={onChange}
+    <>
+      <DateTimePicker
         date={date}
-        format={format}
-        range={type !== 'day'}
+        changeDate={(inputDate?: Date | Array<Date | undefined>) => {
+          setShowPicker(false)
+          onChange(inputDate)
+        }}
+        isOpen={showPicker}
+        selectRange={type !== 'day'}
         datePick={type !== 'months'}
-        maxDate={maxDate}
         minDate={minDate}
-        backgroundColor="bg-main-blue hover:bg-main-blueHover active:bg-main-blueActive"
-        textColor="text-mono-white hover:text-mono-whiteHover active:text-mono-whiteActive"
-        resetColor="text-mono-lightGray hover:text-mono-lightGrayHover active:text-mono-lightGrayActive"
-        placeholderColor="text-mono-lightGray hover:text-mono-lightGrayHover active:text-mono-lightGrayActive"
+        maxDate={maxDate}
       />
-    </div>
+      <div className={SearchChartDateStyle.container}>
+        <XEIcon
+          {...SearchChartDateStyle.icon('calendar-check')}
+          onClick={onClick}
+          className={SearchChartDateStyle.calendarCaller}
+        />
+        <ButtonPrevNext
+          prevDisabled={prevDisabled()}
+          nextDisabled={nextDisabled()}
+          onClickPrev={onClickPrev}
+          onClickNext={onClickNext}
+          dividerClassName={SearchChartDateStyle.dividerClassName}
+          prevClassName={SearchChartDateStyle.prevNextClassName}
+          nextClassName={SearchChartDateStyle.prevNextClassName}
+          prevDisabledClassName={SearchChartDateStyle.prevNextDisabledClassName}
+          nextDisabledClassName={SearchChartDateStyle.prevNextDisabledClassName}
+          prevIcon={SearchChartDateStyle.icon('angle-left')}
+          nextIcon={SearchChartDateStyle.icon('angle-right')}
+        />
+      </div>
+    </>
   )
 }
 
 SearchChartDate.defaultProps = {
   date: undefined,
-  format: 'YYYY-MM-DD',
   maxDate: undefined,
   minDate: undefined,
 }

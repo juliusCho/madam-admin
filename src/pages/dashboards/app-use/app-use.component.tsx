@@ -4,8 +4,8 @@ import Recoil from 'recoil'
 import { apiDashboard } from '../../../api'
 import { ChartDonut } from '../../../components/charts/donut'
 import { ChartLine } from '../../../components/charts/line'
-import { MAX_WEB_BROWSER_WIDTH_FOR_DASHBOARD } from '../../../constants'
 import adminGlobalStates from '../../../recoil/admin'
+import deviceGlobalStates from '../../../recoil/device'
 import helpers from '../../../utils/helpers'
 import customHooks from '../../../utils/hooks'
 import PageDashboardLayout from '../layout.component'
@@ -28,11 +28,8 @@ export interface PageDashboardAppUseProps {}
 
 export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
   const token = Recoil.useRecoilValue(adminGlobalStates.tokenState)
+  const device = Recoil.useRecoilValue(deviceGlobalStates.getDevice)
 
-  const [isMobile, setIsMobile] = React.useState(helpers.isMobile())
-  const [isSmallScreen, setIsSmallScreen] = React.useState(
-    helpers.isMobile(MAX_WEB_BROWSER_WIDTH_FOR_DASHBOARD),
-  )
   const [pieChartData, setPieChartData] = React.useState<
     Array<{ status: string; count: number; label: string }>
   >([
@@ -74,12 +71,6 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
   const [inviteChartDate, setInviteChartDate] = React.useState<
     undefined | Date | Array<Date | undefined>
   >([lastMonth, yesterday])
-
-  customHooks.useCheckMobile(setIsMobile)
-  customHooks.useCheckMobile(
-    setIsSmallScreen,
-    MAX_WEB_BROWSER_WIDTH_FOR_DASHBOARD,
-  )
 
   const isMounted = customHooks.useIsMounted()
 
@@ -173,21 +164,8 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
 
   return (
     <PageDashboardLayout endpoint="APP_USE">
-      <div
-        className={PageDashboardAppUseStyle.container}
-        style={{ marginTop: isSmallScreen ? '2rem' : undefined }}>
-        <div
-          className={PageDashboardAppUseStyle.row}
-          style={
-            isSmallScreen
-              ? {
-                  flexDirection: 'column',
-                  marginTop: isMobile ? '6rem' : '2rem',
-                }
-              : {
-                  flexDirection: 'row',
-                }
-          }>
+      <div className={PageDashboardAppUseStyle.container({ device })}>
+        <div className={PageDashboardAppUseStyle.row({ device })}>
           <ChartDonut
             title="사용자 상태별 비율"
             data={(
@@ -211,7 +189,7 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
                 bold: true,
               },
             ]}
-            style={{ marginRight: isSmallScreen ? undefined : '10rem' }}
+            className="mt-5"
           />
           <ChartLine
             title="신규 가입 / 탈퇴 수"
@@ -231,16 +209,10 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
               format: 'YYYY-MM-DD',
               maxDate: yesterday,
             }}
-            style={{ marginTop: isSmallScreen ? '2rem' : undefined }}
+            className={PageDashboardAppUseStyle.lineChart({ device })}
           />
         </div>
-        <div
-          className={PageDashboardAppUseStyle.row}
-          style={{
-            flexDirection: isSmallScreen ? 'column' : 'row',
-            marginTop: isSmallScreen ? '2rem' : undefined,
-          }}
-        />
+        <div className={PageDashboardAppUseStyle.row({ device })} />
       </div>
     </PageDashboardLayout>
   )

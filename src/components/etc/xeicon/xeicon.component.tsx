@@ -60,7 +60,8 @@ XEIcon.defaultProps = {
   style: {},
   className: '',
   size: undefined,
-  color: 'bg-mono-black hover:bg-mono-blackHover active:bg-mono-blackActive',
+  color:
+    'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
   onClick: undefined,
   testID: '',
 }

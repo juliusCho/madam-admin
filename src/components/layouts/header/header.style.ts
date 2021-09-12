@@ -1,3 +1,7 @@
+interface StyleProps {
+  device: 'mobile' | 'smallScreen' | 'mediumScreen' | 'screen'
+}
+
 const LayoutHeaderStyle = {
   container: `
     h-56
@@ -67,6 +71,15 @@ const LayoutHeaderStyle = {
     mb-2
     sm:mb-0
   `,
+  madam({ device }: StyleProps) {
+    return `
+      cursor-pointer 
+      hover:text-mono-blackHover 
+      active:text-mono-blackActive
+      titleMassive
+      ${device === 'mobile' || device === 'smallScreen' ? 'ml-4' : 'ml-8'}
+    `
+  },
 }
 
 export default LayoutHeaderStyle

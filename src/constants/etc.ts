@@ -62,5 +62,5 @@ export const ROUTER_TITLE = {
   },
 }
 
-export const MAX_WEB_BROWSER_WIDTH = 767
-export const MAX_WEB_BROWSER_WIDTH_FOR_DASHBOARD = 1242
+export const MAX_SMALL_SCREEN = 767
+export const MAX_MEDIUM_SCREEN = 1242

@@ -24,7 +24,7 @@ export default {
     const key = atob(input).split(`-${endpointsConfig.snsKeySecret}-`)
     return key[0]
   },
-  isMobile(maxWidth?: number) {
+  isMobile() {
     let check = false
     ;(function (a: string) {
       if (
@@ -36,13 +36,14 @@ export default {
         )
       ) {
         check = true
-      } else if (maxWidth && window.innerWidth <= maxWidth) {
-        check = true
       }
     })(navigator.userAgent || navigator.vendor)
     return check
   },
-  firstDepthTab(route: string, isMobile?: boolean) {
+  firstDepthTab(
+    route: string,
+    device?: 'mobile' | 'smallScreen' | 'mediumScreen' | 'screen',
+  ) {
     let result = [
       {
         title: '대시보드',
@@ -56,7 +57,7 @@ export default {
       },
     ]
 
-    if (!isMobile) {
+    if (device !== 'mobile' && device !== 'smallScreen') {
       result = [
         ...result,
         ...[

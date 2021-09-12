@@ -1,18 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
 @import url('//cdn.jsdelivr.net/xeicon/2/xeicon.min.css');
 
+html,
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
-}
-
-@media screen and (max-width: 767px) {
-  body {
-    overflow: auto;
-  }
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
 }
 
 * {
@@ -76,7 +72,42 @@ body {
     opacity: 1;
   }
 }
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 
 .fade-in {
   animation: fadeIn 0.5s ease;
+}
+.fade-out {
+  animation: fadeOut 0.5s ease;
+}
+
+@keyframes fadeInHalf {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+@keyframes fadeOutHalf {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.fade-in-half {
+  animation: fadeInHalf 0.5s ease;
+}
+.fade-out-half {
+  animation: fadeOutHalf 0.5s ease;
 }

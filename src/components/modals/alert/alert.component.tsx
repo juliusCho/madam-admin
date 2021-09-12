@@ -1,21 +1,8 @@
 import React from 'react'
 import Swal, { SweetAlertResult } from 'sweetalert2'
+import customHooks from '../../../utils/hooks'
 
 type IconType = 'error' | 'success' | 'warning' | 'info'
-
-function useIsMounted() {
-  const isMountedRef = React.useRef(true)
-  const isMounted = React.useCallback(() => isMountedRef.current, [])
-
-  React.useEffect(
-    () => () => {
-      isMountedRef.current = false
-    },
-    [],
-  )
-
-  return isMounted
-}
 
 function AlertOrConfirm(
   confirm: boolean,
@@ -73,7 +60,7 @@ export interface AlertProps {
 function Alert({ show, msg, type, onHide, showTime }: AlertProps) {
   const [popup, setPopup] = React.useState(false)
 
-  const isMounted = useIsMounted()
+  const isMounted = customHooks.useIsMounted()
 
   const showAlert = React.useCallback(async () => {
     if (!isMounted()) return

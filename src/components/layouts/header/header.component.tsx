@@ -2,10 +2,10 @@ import React from 'react'
 import { useHistory } from 'react-router'
 import Recoil from 'recoil'
 import { apiSession } from '../../../api'
-import { MAX_WEB_BROWSER_WIDTH, ROUTER_PATH } from '../../../constants'
+import { ROUTER_PATH } from '../../../constants'
 import adminGlobalStates from '../../../recoil/admin'
+import deviceGlobalStates from '../../../recoil/device'
 import etcGlobalStates from '../../../recoil/etc'
-import helpers from '../../../utils/helpers'
 import customHooks from '../../../utils/hooks'
 import { ButtonRoundWithIcon } from '../../buttons/round-with-icon'
 import { InputTextLine } from '../../inputs/text-line'
@@ -18,6 +18,7 @@ export interface LayoutHeaderProps {}
 
 function LayoutHeader({}: LayoutHeaderProps) {
   const [admin, setAdmin] = Recoil.useRecoilState(adminGlobalStates.adminState)
+  const device = Recoil.useRecoilValue(deviceGlobalStates.getDevice)
   const token = Recoil.useRecoilValue(adminGlobalStates.tokenState)
   const setAlert = Recoil.useSetRecoilState(etcGlobalStates.alertState)
 
@@ -27,15 +28,9 @@ function LayoutHeader({}: LayoutHeaderProps) {
     React.useState(false)
   const [modalShow, setModalShow] = React.useState(false)
 
-  const [isMobile, setIsMobile] = React.useState(
-    helpers.isMobile(MAX_WEB_BROWSER_WIDTH),
-  )
-
   const isMounted = customHooks.useIsMounted()
 
   const history = useHistory()
-
-  customHooks.useCheckMobile(setIsMobile, MAX_WEB_BROWSER_WIDTH)
 
   const maxLength = 50
 
@@ -160,24 +155,21 @@ function LayoutHeader({}: LayoutHeaderProps) {
         onClick={() => history.push(ROUTER_PATH.DASHBOARD.APP_USE)}>
         <LabelMadam
           size="titleBig"
-          style={
-            isMobile
-              ? {
-                  marginLeft: '1rem',
-                  fontSize: '2rem',
-                }
-              : {
-                  marginLeft: '2rem',
-                  fontSize: '3rem',
-                }
-          }
-          className="cursor-pointer hover:text-mono-blackHover active:text-mono-blackActive"
+          style={{
+            fontSize:
+              device === 'mobile' || device === 'smallScreen'
+                ? undefined
+                : '3rem',
+          }}
+          className={LayoutHeaderStyle.madam({ device })}
         />
       </button>
       <div
         className={LayoutHeaderStyle.buttonArea}
         style={{
-          width: `calc(100% - ${isMobile ? '0px' : '23.5rem'})`,
+          width: `calc(100% - ${
+            device === 'mobile' || device === 'smallScreen' ? '0px' : '23.5rem'
+          })`,
         }}>
         <span className={LayoutHeaderStyle.welcome}>접속 관리자:</span>
         <span className={LayoutHeaderStyle.adminName}>{admin?.name || ''}</span>
@@ -196,7 +188,10 @@ function LayoutHeader({}: LayoutHeaderProps) {
         colorInactive="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive"
         style={{
           marginRight: '2rem',
-          width: isMobile ? '7.8rem' : '8.5rem',
+          width:
+            device === 'mobile' || device === 'smallScreen'
+              ? '7.8rem'
+              : '8.5rem',
         }}
         className={LayoutHeaderStyle.button}>
         로그아웃

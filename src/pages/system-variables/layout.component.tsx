@@ -3,11 +3,8 @@ import Recoil from 'recoil'
 import { Loading } from '../../components/etc/loading'
 import { LayoutHeader } from '../../components/layouts/header'
 import { LayoutTab } from '../../components/layouts/tab'
-import {
-  MAX_WEB_BROWSER_WIDTH,
-  ROUTER_PATH,
-  ROUTER_TITLE,
-} from '../../constants'
+import { ROUTER_PATH, ROUTER_TITLE } from '../../constants'
+import deviceGlobalStates from '../../recoil/device'
 import etcGlobalStates from '../../recoil/etc'
 import helpers from '../../utils/helpers'
 import customHooks from '../../utils/hooks'
@@ -22,16 +19,12 @@ function PageSystemVariableLayout({
   endpoint,
   children,
 }: PageSystemVariableLayoutProps) {
+  const device = Recoil.useRecoilValue(deviceGlobalStates.getDevice)
+
   customHooks.usePage(
     ROUTER_TITLE.SYSTEM_VARIABLE[endpoint],
     ROUTER_PATH.SYSTEM_VARIABLE[endpoint],
   )
-
-  const [isMobile, setIsMobile] = React.useState(
-    helpers.isMobile(MAX_WEB_BROWSER_WIDTH),
-  )
-
-  customHooks.useCheckMobile(setIsMobile, MAX_WEB_BROWSER_WIDTH)
 
   const firstLoading = Recoil.useRecoilValue(
     etcGlobalStates.firstTabLoadingState,
@@ -40,9 +33,6 @@ function PageSystemVariableLayout({
     etcGlobalStates.secondTabLoadingState,
   )
 
-  const firstHeight = 'calc(100vh - 11.25rem)'
-  const secondHeight = 'calc(100vh - 15.35rem)'
-
   return (
     <>
       <LayoutHeader />
@@ -50,15 +40,15 @@ function PageSystemVariableLayout({
         depth={1}
         tabs={helpers.firstDepthTab(
           ROUTER_PATH.SYSTEM_VARIABLE[endpoint],
-          isMobile,
+          device,
         )}
         loading={
           <Loading
             loading={firstLoading}
-            style={{ height: firstHeight, opacity: 0.8 }}
+            style={{ height: AppPageStyle.tabFirstHeight }}
           />
         }
-        height={firstHeight}
+        height={AppPageStyle.tabFirstHeight}
         {...AppPageStyle.layoutTabFirstDepthProps}>
         <LayoutTab
           depth={2}
@@ -69,10 +59,10 @@ function PageSystemVariableLayout({
           loading={
             <Loading
               loading={secondLoading}
-              style={{ height: secondHeight, opacity: 0.5 }}
+              style={{ height: AppPageStyle.tabSecondHeight }}
             />
           }
-          height={secondHeight}
+          height={AppPageStyle.tabSecondHeight}
           {...AppPageStyle.layoutTabSecondDepthProps}>
           <div className="fade-in">{children}</div>
         </LayoutTab>

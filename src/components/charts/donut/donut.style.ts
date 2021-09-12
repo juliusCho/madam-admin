@@ -15,7 +15,8 @@ const ChartDonutStyle = {
       flex-col
       justify-center
       items-center
-      ${isMobile ? 'border-b border-solid border-mono-gray py-2' : ''}
+      mb-10
+      ${isMobile ? 'border-b border-solid border-mono-gray' : ''}
     `
   },
   chartLabel({ isMobile }: StyleProps) {
