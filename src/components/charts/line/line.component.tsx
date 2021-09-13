@@ -2,12 +2,12 @@ import React from 'react'
 import Chart from 'react-google-charts'
 import Recoil from 'recoil'
 import deviceGlobalStates from '../../../recoil/device'
-import { SearchChartDate } from '../../search/chart-date'
+import { SearchChartDate } from '../../searches/chart-date'
 import ChartLineStyle from './line.style'
 
 export interface ChartLineProps {
   title: string
-  data: Array<Array<Record<string, string> | Array<string | number>>>
+  data: Array<Array<Record<string, string>> | Array<string | number>>
   dateSearch?: {
     type: 'day' | 'days' | 'months'
     date?: Date | Array<Date | undefined>

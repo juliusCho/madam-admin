@@ -1,5 +1,7 @@
 import moment from 'moment'
 import React from 'react'
+import Recoil from 'recoil'
+import deviceGlobalStates from '../../../recoil/device'
 import { ButtonPrevNext } from '../../buttons/prev-next'
 import { XEIcon } from '../../etc/xeicon'
 import { DateTimePicker } from '../../modals/date-picker'
@@ -58,6 +60,8 @@ function SearchChartDate({
   maxDate,
   minDate,
 }: SearchChartDateProps) {
+  const device = Recoil.useRecoilValue(deviceGlobalStates.getDevice)
+
   const [showPicker, setShowPicker] = React.useState(false)
 
   const onClick = () => {
@@ -208,9 +212,10 @@ function SearchChartDate({
       />
       <div className={SearchChartDateStyle.container}>
         <XEIcon
-          {...SearchChartDateStyle.icon('calendar-check')}
+          {...SearchChartDateStyle.icon('calendar-check', device)}
+          testID="components.searches.chartDate.pickerCaller"
           onClick={onClick}
-          className={SearchChartDateStyle.calendarCaller}
+          className={SearchChartDateStyle.calendarCaller({ device })}
         />
         <ButtonPrevNext
           prevDisabled={prevDisabled()}
@@ -218,12 +223,16 @@ function SearchChartDate({
           onClickPrev={onClickPrev}
           onClickNext={onClickNext}
           dividerClassName={SearchChartDateStyle.dividerClassName}
-          prevClassName={SearchChartDateStyle.prevNextClassName}
-          nextClassName={SearchChartDateStyle.prevNextClassName}
-          prevDisabledClassName={SearchChartDateStyle.prevNextDisabledClassName}
-          nextDisabledClassName={SearchChartDateStyle.prevNextDisabledClassName}
-          prevIcon={SearchChartDateStyle.icon('angle-left')}
-          nextIcon={SearchChartDateStyle.icon('angle-right')}
+          prevClassName={SearchChartDateStyle.prevNextClassName({ device })}
+          nextClassName={SearchChartDateStyle.prevNextClassName({ device })}
+          prevDisabledClassName={SearchChartDateStyle.prevNextDisabledClassName(
+            { device },
+          )}
+          nextDisabledClassName={SearchChartDateStyle.prevNextDisabledClassName(
+            { device },
+          )}
+          prevIcon={SearchChartDateStyle.icon('angle-left', device)}
+          nextIcon={SearchChartDateStyle.icon('angle-right', device)}
         />
       </div>
     </>

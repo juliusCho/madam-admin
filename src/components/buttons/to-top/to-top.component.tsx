@@ -28,6 +28,7 @@ function ButtonToTop({ show }: ButtonToTopProps) {
         size={device === 'mobile' || device === 'smallScreen' ? 16 : 25}
         color="text-mono-black hover:text-mono-blackHover active:text-mono-blackActive"
         onClick={onClick}
+        testID="components.buttons.toTop"
       />
     </button>
   )

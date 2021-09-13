@@ -200,7 +200,7 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
                   { type: 'number', label: '가입 수' },
                   { type: 'number', label: '탈퇴 수' },
                 ],
-              ] as Array<Array<Record<string, string> | Array<string | number>>>
+              ] as Array<Array<Record<string, string>> | Array<string | number>>
             ).concat(connectChartData)}
             dateSearch={{
               type: 'days',

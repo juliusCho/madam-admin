@@ -55,7 +55,8 @@ function ButtonPrevNext({
           prevDisabled ? prevDisabledClassName : prevClassName
         } ${prevDisabled ? 'cursor-not-allowed' : ''}`}
         disabled={prevDisabled}
-        onClick={onClickPrev}>
+        onClick={onClickPrev}
+        data-testid="components.buttons.prevNext.prevButton">
         {prevIcon && <XEIcon onClick={onClickPrev} {...prevIcon} />}
         {prevLabel}
       </button>
@@ -66,7 +67,8 @@ function ButtonPrevNext({
           nextDisabled ? nextDisabledClassName : nextClassName
         } ${nextDisabled ? 'cursor-not-allowed' : ''}`}
         disabled={nextDisabled}
-        onClick={onClickNext}>
+        onClick={onClickNext}
+        data-testid="components.buttons.prevNext.nextButton">
         {nextLabel}
         {nextIcon && <XEIcon onClick={onClickNext} {...nextIcon} />}
       </button>
