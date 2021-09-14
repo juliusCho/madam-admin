@@ -6,23 +6,11 @@ import { ChartDonut } from '../../../components/charts/donut'
 import { ChartLine } from '../../../components/charts/line'
 import adminGlobalStates from '../../../recoil/admin'
 import deviceGlobalStates from '../../../recoil/device'
+import { ChartDatePickerOption } from '../../../types'
 import helpers from '../../../utils/helpers'
 import customHooks from '../../../utils/hooks'
 import PageDashboardLayout from '../layout.component'
 import PageDashboardAppUseStyle from './app-use.style'
-
-const yesterday = new Date()
-yesterday.setDate(yesterday.getDate() - 1)
-helpers.setToEndDate(yesterday)
-
-const lastWeek = new Date()
-lastWeek.setDate(lastWeek.getDate() - 7)
-helpers.setToStartDate(lastWeek)
-
-const lastMonth = new Date()
-lastMonth.setDate(lastMonth.getDate() - 1)
-lastMonth.setMonth(lastMonth.getMonth() - 1)
-helpers.setToStartDate(lastMonth)
 
 export interface PageDashboardAppUseProps {}
 
@@ -61,16 +49,18 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
   ])
   const [connectChartDate, setConnectChartDate] = React.useState<
     undefined | Date | Array<Date | undefined>
-  >([lastWeek, yesterday])
+  >([helpers.getLastWeek(), helpers.getYesterday()])
+  const [connectChartDateOption, setConnectChartDateOption] =
+    React.useState<ChartDatePickerOption>('week')
   const [connectChartData, setConnectChartData] = React.useState<
     Array<[string, number, number]>
   >([])
   const [reportChartDate, setReportChartDate] = React.useState<
     undefined | Date | Array<Date | undefined>
-  >([lastMonth, yesterday])
+  >([helpers.getLastMonth(), helpers.getYesterday()])
   const [inviteChartDate, setInviteChartDate] = React.useState<
     undefined | Date | Array<Date | undefined>
-  >([lastMonth, yesterday])
+  >([helpers.getPreviousSixMonth(), helpers.getYesterday()])
 
   const isMounted = customHooks.useIsMounted()
 
@@ -99,10 +89,16 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
     }
   }, [isMounted, fetchPieChartData])
 
-  const onChangeConnectChartDate = (date?: Date | Array<Date | undefined>) => {
+  const onChangeConnectChartDate = (
+    date?: Date | Array<Date | undefined>,
+    inputOption?: ChartDatePickerOption,
+  ) => {
     if (!date) {
-      setConnectChartDate([lastWeek, yesterday])
       return
+    }
+
+    if (inputOption) {
+      setConnectChartDateOption(inputOption)
     }
 
     if (!Array.isArray(date) || date.length === 1) {
@@ -203,11 +199,11 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
               ] as Array<Array<Record<string, string>> | Array<string | number>>
             ).concat(connectChartData)}
             dateSearch={{
-              type: 'days',
+              type: connectChartDateOption,
               date: connectChartDate,
               onChange: onChangeConnectChartDate,
               format: 'YYYY-MM-DD',
-              maxDate: yesterday,
+              maxDate: helpers.getYesterday(),
             }}
             className={PageDashboardAppUseStyle.lineChart({ device })}
           />

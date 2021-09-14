@@ -97,7 +97,7 @@ const helper = {
   },
 }
 
-export interface DateTimePickerProps {
+export interface ModalDateTimePickerProps {
   changeDate:
     | ((date?: Date | Array<Date | undefined>) => void)
     | React.Dispatch<
@@ -114,6 +114,7 @@ export interface DateTimePickerProps {
   calculatedLeft?: string
   datePick?: boolean
   locale?: 'kr' | 'en'
+  viewType?: 'month' | 'year' | 'decade' | 'century'
 }
 
 function DatePicker({
@@ -129,7 +130,8 @@ function DatePicker({
   calculatedLeft, // 화면상의 컴포넌트 표시 y-axis
   datePick = true, // 일자 선택 가능 여부(false면, 월 선택)
   locale,
-}: DateTimePickerProps) {
+  viewType,
+}: ModalDateTimePickerProps) {
   const [show, setShow] = React.useState(false)
   // 세기/년/월/일 선택 화면 중, 기본화면 모드
   const [viewMode, setViewMode] = React.useState<
@@ -612,6 +614,7 @@ DatePicker.defaultProps = {
   calculatedLeft: undefined,
   datePick: undefined,
   locale: 'kr',
+  viewType: 'month',
 }
 
 export default React.memo(DatePicker)

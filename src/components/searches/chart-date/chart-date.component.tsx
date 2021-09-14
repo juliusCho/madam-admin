@@ -2,13 +2,16 @@ import moment from 'moment'
 import React from 'react'
 import Recoil from 'recoil'
 import deviceGlobalStates from '../../../recoil/device'
+import { ChartDatePickerOption } from '../../../types'
+import helpers from '../../../utils/helpers'
 import { ButtonPrevNext } from '../../buttons/prev-next'
 import { XEIcon } from '../../etc/xeicon'
-import { DateTimePicker } from '../../modals/date-picker'
+import { ModalDateTimePicker } from '../../modals/date-picker'
+import { ModalDatePickerOption } from '../../modals/date-picker-option'
 import SearchChartDateStyle from './chart-date.style'
 
 const getPrevNextSequel = (
-  type: 'day' | 'days' | 'months',
+  type: ChartDatePickerOption,
   prevNext: 'prev' | 'next',
   date: Date,
 ) => {
@@ -16,14 +19,29 @@ const getPrevNextSequel = (
     switch (type) {
       case 'day':
         return moment(date).add(-1, 'days').toDate()
-      case 'days':
+      case 'week':
         return [
           moment(date).add(-7, 'days').toDate(),
           moment(date).add(-1, 'days').toDate(),
         ]
-      default:
+      case 'month':
         return [
           moment(date).add(-1, 'days').add(-1, 'months').toDate(),
+          moment(date).add(-1, 'days').toDate(),
+        ]
+      case '3-months':
+        return [
+          moment(date).add(-1, 'days').add(-3, 'months').toDate(),
+          moment(date).add(-1, 'days').toDate(),
+        ]
+      case '6-months':
+        return [
+          moment(date).add(-1, 'days').add(-6, 'months').toDate(),
+          moment(date).add(-1, 'days').toDate(),
+        ]
+      default:
+        return [
+          moment(date).add(-1, 'days').add(-1, 'years').toDate(),
           moment(date).add(-1, 'days').toDate(),
         ]
     }
@@ -31,23 +49,41 @@ const getPrevNextSequel = (
     switch (type) {
       case 'day':
         return moment(date).add(1, 'days').toDate()
-      case 'days':
+      case 'week':
         return [
           moment(date).add(1, 'days').toDate(),
           moment(date).add(7, 'days').toDate(),
         ]
-      default:
+      case 'month':
         return [
           moment(date).add(1, 'days').toDate(),
           moment(date).add(1, 'days').add(1, 'months').toDate(),
+        ]
+      case '3-months':
+        return [
+          moment(date).add(1, 'days').toDate(),
+          moment(date).add(1, 'days').add(3, 'months').toDate(),
+        ]
+      case '6-months':
+        return [
+          moment(date).add(1, 'days').toDate(),
+          moment(date).add(1, 'days').add(6, 'months').toDate(),
+        ]
+      default:
+        return [
+          moment(date).add(1, 'days').toDate(),
+          moment(date).add(1, 'days').add(1, 'years').toDate(),
         ]
     }
   }
 }
 
 export interface SearchChartDateProps {
-  type: 'day' | 'days' | 'months'
-  onChange: (date?: Date | Array<Date | undefined>) => void
+  type: ChartDatePickerOption
+  onChange: (
+    date?: Date | Array<Date | undefined>,
+    type?: ChartDatePickerOption,
+  ) => void
   date: Date | Array<Date | undefined>
   maxDate?: Date
   minDate?: Date
@@ -63,6 +99,7 @@ function SearchChartDate({
   const device = Recoil.useRecoilValue(deviceGlobalStates.getDevice)
 
   const [showPicker, setShowPicker] = React.useState(false)
+  const [showPickerOption, setShowPickerOption] = React.useState(false)
 
   const onClick = () => {
     setShowPicker(true)
@@ -71,7 +108,9 @@ function SearchChartDate({
   const prevDisabled = React.useCallback(() => {
     if (!minDate) return false
 
-    const compareFormat = `YYYYMM${type === 'months' ? '' : 'DD'}`
+    const compareFormat = `YYYY${
+      type === 'year' ? '' : `${type === 'day' || type === 'week' ? '' : 'DD'}`
+    }`
 
     const minDt = Number(moment(minDate).format(compareFormat))
 
@@ -88,7 +127,9 @@ function SearchChartDate({
   const nextDisabled = React.useCallback(() => {
     if (!maxDate) return false
 
-    const compareFormat = `YYYYMM${type === 'months' ? '' : 'DD'}`
+    const compareFormat = `YYYY${
+      type === 'year' ? '' : `${type === 'day' || type === 'week' ? '' : 'DD'}`
+    }`
 
     const maxDt = Number(moment(maxDate).format(compareFormat))
 
@@ -140,7 +181,9 @@ function SearchChartDate({
         : currMinDate,
     )
 
-    const compareFormat = `YYYYMM${type === 'months' ? '' : 'DD'}`
+    const compareFormat = `YYYY${
+      type === 'year' ? '' : `${type === 'week' ? '' : 'DD'}`
+    }`
     const minDtNum = Number(moment(minDt).format(compareFormat))
     const compareDtMinNum = Number(moment(compareDtMin).format(compareFormat))
     const compareDtMaxNum = Number(moment(compareDtMax).format(compareFormat))
@@ -178,7 +221,9 @@ function SearchChartDate({
         : currMaxDate,
     )
 
-    const compareFormat = `YYYYMM${type === 'months' ? '' : 'DD'}`
+    const compareFormat = `YYYY${
+      type === 'year' ? '' : `${type === 'week' ? '' : 'DD'}`
+    }`
     const maxDtNum = Number(moment(maxDt).format(compareFormat))
     const compareDtMinNum = Number(moment(compareDtMin).format(compareFormat))
     const compareDtMaxNum = Number(moment(compareDtMax).format(compareFormat))
@@ -198,7 +243,7 @@ function SearchChartDate({
 
   return (
     <>
-      <DateTimePicker
+      <ModalDateTimePicker
         date={date}
         changeDate={(inputDate?: Date | Array<Date | undefined>) => {
           setShowPicker(false)
@@ -206,17 +251,63 @@ function SearchChartDate({
         }}
         isOpen={showPicker}
         selectRange={type !== 'day'}
-        datePick={type !== 'months'}
+        datePick={type === 'day' || type === 'week'}
         minDate={minDate}
         maxDate={maxDate}
       />
+      <ModalDatePickerOption
+        show={showPickerOption}
+        type={type}
+        changeOption={(optionType) => {
+          setShowPickerOption(false)
+
+          let newDate: Date | undefined | Array<Date | undefined>
+
+          switch (optionType) {
+            case 'day':
+              newDate = [helpers.getYesterday(true), helpers.getYesterday()]
+              break
+            case 'week':
+              newDate = [helpers.getLastWeek(), helpers.getYesterday()]
+              break
+            case 'month':
+              newDate = [helpers.getLastMonth(), helpers.getYesterday()]
+              break
+            case '3-months':
+              newDate = [
+                helpers.getPreviousThreeMonth(),
+                helpers.getYesterday(),
+              ]
+              break
+            case '6-months':
+              newDate = [helpers.getPreviousSixMonth(), helpers.getYesterday()]
+              break
+            case 'year':
+              newDate = [helpers.getLastYear(), helpers.getYesterday()]
+              break
+            default:
+              newDate = date
+              break
+          }
+
+          onChange(newDate, optionType)
+        }}
+      />
       <div className={SearchChartDateStyle.container}>
-        <XEIcon
-          {...SearchChartDateStyle.icon('calendar-check', device)}
-          testID="components.searches.chartDate.pickerCaller"
-          onClick={onClick}
-          className={SearchChartDateStyle.calendarCaller({ device })}
-        />
+        <div className={SearchChartDateStyle.leftCallerContainer}>
+          <XEIcon
+            {...SearchChartDateStyle.icon('calendar-check', device)}
+            testID="components.searches.chartDate.pickerCaller"
+            onClick={onClick}
+            className={SearchChartDateStyle.calendarCaller({ device })}
+          />
+          <XEIcon
+            {...SearchChartDateStyle.icon('bars', device)}
+            testID="components.searches.chartDate.pickerOptionCaller"
+            onClick={() => setShowPickerOption(true)}
+            className={SearchChartDateStyle.calendarCaller({ device })}
+          />
+        </div>
         <ButtonPrevNext
           prevDisabled={prevDisabled()}
           nextDisabled={nextDisabled()}
@@ -231,8 +322,16 @@ function SearchChartDate({
           nextDisabledClassName={SearchChartDateStyle.prevNextDisabledClassName(
             { device },
           )}
-          prevIcon={SearchChartDateStyle.icon('angle-left', device)}
-          nextIcon={SearchChartDateStyle.icon('angle-right', device)}
+          prevIcon={SearchChartDateStyle.icon(
+            'angle-left',
+            device,
+            prevDisabled(),
+          )}
+          nextIcon={SearchChartDateStyle.icon(
+            'angle-right',
+            device,
+            nextDisabled(),
+          )}
         />
       </div>
     </>

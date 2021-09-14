@@ -2,7 +2,7 @@ import moment from 'moment'
 import * as React from 'react'
 import customHooks from '../../../utils/hooks'
 import { XEIcon } from '../../etc/xeicon'
-import { DateTimePicker } from '../../modals/date-picker'
+import { ModalDateTimePicker } from '../../modals/date-picker'
 import InputDateTimeStyle from './date-time.style'
 
 export interface InputDateTimeProps {
@@ -129,7 +129,7 @@ function InputDateTime({
 
   return (
     <>
-      <DateTimePicker
+      <ModalDateTimePicker
         date={dateValue}
         changeDate={onUpdate}
         isOpen={showPicker}

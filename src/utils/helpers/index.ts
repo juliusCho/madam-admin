@@ -222,6 +222,46 @@ export default {
 
     return result
   },
+  getYesterday(isStart?: boolean, date?: Date) {
+    const yesterday = moment(date ?? new Date()).toDate()
+    yesterday.setDate(yesterday.getDate() - 1)
+    this[isStart ? 'setToStartDate' : 'setToEndDate'](yesterday)
+    return yesterday
+  },
+  getLastWeek(date?: Date) {
+    const lastWeek = moment(date ?? new Date()).toDate()
+    lastWeek.setDate(lastWeek.getDate() - 7)
+    this.setToStartDate(lastWeek)
+    return lastWeek
+  },
+  getLastMonth(date?: Date) {
+    const lastMonth = moment(date ?? new Date()).toDate()
+    lastMonth.setDate(lastMonth.getDate() - 1)
+    lastMonth.setMonth(lastMonth.getMonth() - 1)
+    this.setToStartDate(lastMonth)
+    return lastMonth
+  },
+  getPreviousThreeMonth(date?: Date) {
+    const previousThreeMonth = moment(date ?? new Date()).toDate()
+    previousThreeMonth.setDate(previousThreeMonth.getDate() - 1)
+    previousThreeMonth.setMonth(previousThreeMonth.getMonth() - 3)
+    this.setToStartDate(previousThreeMonth)
+    return previousThreeMonth
+  },
+  getPreviousSixMonth(date?: Date) {
+    const previousSixMonth = moment(date ?? new Date()).toDate()
+    previousSixMonth.setDate(previousSixMonth.getDate() - 1)
+    previousSixMonth.setMonth(previousSixMonth.getMonth() - 6)
+    this.setToStartDate(previousSixMonth)
+    return previousSixMonth
+  },
+  getLastYear(date?: Date) {
+    const lastYear = moment(date ?? new Date()).toDate()
+    lastYear.setDate(lastYear.getDate() - 1)
+    lastYear.setFullYear(lastYear.getFullYear() - 1)
+    this.setToStartDate(lastYear)
+    return lastYear
+  },
   setToEndDate(date: Date) {
     date.setHours(23)
     date.setMinutes(59)

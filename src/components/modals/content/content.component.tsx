@@ -55,9 +55,7 @@ function ModalContent({
       onRequestClose={() => onClose('cancel')}
       overlayClassName={ModalContentStyle.container({ backgroundColor })}
       contentLabel={title}
-      className={`modal-content-container bottom-${
-        show ? 'up' : 'down'
-      } ${contentClassName}`}>
+      className={`bottom-${show ? 'up' : 'down'} ${contentClassName}`}>
       {children}
       {(submitText || cancelText) && (
         <div className={ModalContentStyle.buttonArea}>

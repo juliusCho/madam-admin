@@ -11,10 +11,16 @@ const SearchChartDateStyle = {
     px-4
     pb-4
   `,
+  leftCallerContainer: `
+    flex
+    justify-start
+    items-center
+    ml-7
+  `,
   calendarCaller({ device }: StyleProps) {
     return `
-      ml-10
       p-2
+      ml-3
       rounded-full
       border-solid
       border-mono-paleBlack
@@ -58,13 +64,16 @@ const SearchChartDateStyle = {
   icon(
     name: string,
     device: 'mobile' | 'smallScreen' | 'mediumScreen' | 'screen',
+    disabled?: boolean,
   ) {
     return {
       name,
-      color:
-        'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
+      color: disabled
+        ? 'text-mono-gray'
+        : 'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
       size:
         device === 'mobile' || device === 'smallScreen' ? '0.875rem' : '2rem',
+      className: disabled ? 'cursor-not-allowed' : undefined,
     }
   },
 }

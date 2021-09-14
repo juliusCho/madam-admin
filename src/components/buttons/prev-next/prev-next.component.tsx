@@ -57,7 +57,12 @@ function ButtonPrevNext({
         disabled={prevDisabled}
         onClick={onClickPrev}
         data-testid="components.buttons.prevNext.prevButton">
-        {prevIcon && <XEIcon onClick={onClickPrev} {...prevIcon} />}
+        {prevIcon && (
+          <XEIcon
+            onClick={prevDisabled ? undefined : onClickPrev}
+            {...prevIcon}
+          />
+        )}
         {prevLabel}
       </button>
       <div className={`${ButtonPrevNextStyle.divider} ${dividerClassName}`} />
@@ -70,7 +75,12 @@ function ButtonPrevNext({
         onClick={onClickNext}
         data-testid="components.buttons.prevNext.nextButton">
         {nextLabel}
-        {nextIcon && <XEIcon onClick={onClickNext} {...nextIcon} />}
+        {nextIcon && (
+          <XEIcon
+            onClick={nextDisabled ? undefined : onClickNext}
+            {...nextIcon}
+          />
+        )}
       </button>
     </div>
   )
