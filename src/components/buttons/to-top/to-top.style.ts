@@ -10,25 +10,28 @@ const ButtonToTopStyle = {
       : `
       fade-in-half
       z-40
+      flex
+      flex-col
+      justify-center
+      items-center
       fixed
       bottom-10
       right-10
-      rounded-full
-      bg-mono-white
-      shadow-lg
-      hover:bg-mono-whiteHover
-      active:bg-mono-whiteActive
-      border-solid
-      border-mono-black
-      hover:border-mono-blackHover
-      active:border-mono-blackActive
-      ${
-        device === 'mobile' || device === 'smallScreen'
-          ? 'border p-2'
-          : 'border-2 p-4'
-      }
+      rounded-lg
+      opacity-80
+      bg-sub-darkPurple
+      hover:bg-sub-darkPurpleHover
+      active:bg-sub-darkPurpleActive
+      shadow-xl
+      ${device === 'mobile' || device === 'smallScreen' ? 'p-2' : 'p-4'}
     `
   },
+  label: `
+    mt-1
+    text-subMedium
+    font-subMedium
+    text-mono-white
+  `,
 }
 
 export default ButtonToTopStyle

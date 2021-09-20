@@ -1,6 +1,7 @@
 import React from 'react'
 import Modal from 'react-modal'
 import { ChartDatePickerOption } from '../../../types'
+import customHooks from '../../../utils/hooks'
 import ModalDatePickerOptionStyle from './date-picker-option.style'
 
 export interface ModalDatePickerOptionProps {
@@ -18,6 +19,23 @@ function ModalDatePickerOption({
   backgroundColor,
   className,
 }: ModalDatePickerOptionProps) {
+  const [isOpen, setIsOpen] = React.useState(false)
+
+  const isMounted = customHooks.useIsMounted()
+
+  React.useEffect(() => {
+    if (isMounted()) {
+      if (show) {
+        setIsOpen(() => show)
+        return
+      }
+
+      setTimeout(() => {
+        setIsOpen(() => false)
+      }, 250)
+    }
+  }, [isMounted, show])
+
   const getLabel = React.useCallback((optionType: ChartDatePickerOption) => {
     switch (optionType) {
       case 'day':
@@ -51,7 +69,7 @@ function ModalDatePickerOption({
 
   return (
     <Modal
-      isOpen={show}
+      isOpen={isOpen}
       onRequestClose={() => changeOption(type ?? 'day')}
       overlayClassName={ModalDatePickerOptionStyle.container({
         backgroundColor,

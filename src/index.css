@@ -88,7 +88,7 @@ body {
   animation: fadeOut 0.5s ease;
 }
 
-@keyframes fadeInHalf {
+@keyframes fadeInEighty {
   0% {
     opacity: 0;
   }
@@ -96,7 +96,7 @@ body {
     opacity: 0.5;
   }
 }
-@keyframes fadeOutHalf {
+@keyframes fadeOutEighty {
   0% {
     opacity: 0.5;
   }
@@ -106,8 +106,8 @@ body {
 }
 
 .fade-in-half {
-  animation: fadeInHalf 0.5s ease;
+  animation: fadeInEighty 0.5s ease;
 }
 .fade-out-half {
-  animation: fadeOutHalf 0.5s ease;
+  animation: fadeOutEighty 0.5s ease;
 }

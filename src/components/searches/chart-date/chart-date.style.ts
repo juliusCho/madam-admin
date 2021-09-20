@@ -64,13 +64,12 @@ const SearchChartDateStyle = {
   icon(
     name: string,
     device: 'mobile' | 'smallScreen' | 'mediumScreen' | 'screen',
+    color: string,
     disabled?: boolean,
   ) {
     return {
       name,
-      color: disabled
-        ? 'text-mono-gray'
-        : 'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
+      color: disabled ? 'text-mono-gray' : color,
       size:
         device === 'mobile' || device === 'smallScreen' ? '0.875rem' : '2rem',
       className: disabled ? 'cursor-not-allowed' : undefined,

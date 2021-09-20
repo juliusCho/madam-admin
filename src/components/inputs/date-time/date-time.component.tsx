@@ -136,9 +136,9 @@ function InputDateTime({
         timeDisplay={timeSelect}
         selectRange={range}
         timeRange={timeRange}
-        datePick={datePick}
         minDate={minDate}
         maxDate={maxDate}
+        viewType={datePick ? 'month' : 'year'}
       />
       <button
         type="button"

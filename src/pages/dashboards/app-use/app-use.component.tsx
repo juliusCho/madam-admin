@@ -57,10 +57,10 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
   >([])
   const [reportChartDate, setReportChartDate] = React.useState<
     undefined | Date | Array<Date | undefined>
-  >([helpers.getLastMonth(), helpers.getYesterday()])
+  >([helpers.getPreviousTwoMonth(), helpers.getLastMonth()])
   const [inviteChartDate, setInviteChartDate] = React.useState<
     undefined | Date | Array<Date | undefined>
-  >([helpers.getPreviousSixMonth(), helpers.getYesterday()])
+  >([helpers.getPreviousSevenMonth(), helpers.getLastMonth()])
 
   const isMounted = customHooks.useIsMounted()
 
@@ -89,6 +89,246 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
     }
   }, [isMounted, fetchPieChartData])
 
+  const changeChartDate = React.useCallback(
+    (
+      set: React.Dispatch<
+        React.SetStateAction<undefined | Date | Array<undefined | Date>>
+      >,
+      date?: Date | Array<Date | undefined>,
+      inputOption?: ChartDatePickerOption,
+    ) => {
+      switch (inputOption) {
+        case 'day':
+          if (Array.isArray(date)) {
+            if (date.length === 0) {
+              set(() => [helpers.getYesterday(), helpers.getYesterday()])
+              return
+            }
+
+            if (date.length === 1) {
+              const dt = date[0] ?? helpers.getYesterday()
+              set(() => [dt, dt])
+              return
+            }
+
+            const dt = date[0] ?? date[1] ?? helpers.getYesterday()
+            set(() => [dt, dt])
+            return
+          }
+
+          set(() => [date, date])
+          return
+        case 'week':
+          if (Array.isArray(date)) {
+            if (date.length === 0) {
+              set(() => [helpers.getLastWeek(), helpers.getYesterday()])
+              return
+            }
+
+            if (date.length === 1) {
+              if (date[0]) {
+                set(() => [moment(date[0]).add(-6, 'days').toDate(), date[0]])
+                return
+              }
+
+              set(() => [helpers.getLastWeek(), helpers.getYesterday()])
+              return
+            }
+
+            if (date[0]) {
+              if (date[1]) {
+                if (moment(date[1]).diff(moment(date[0]), 'days') <= 6) {
+                  set(() => [moment(date[1]).add(-6, 'days').toDate(), date[1]])
+                  return
+                }
+
+                const endDate = moment(date[0]).toDate()
+                endDate.setDate(endDate.getDate() + 6)
+
+                set(() => [date[0], endDate])
+                return
+              }
+
+              set(() => [moment(date[0]).add(-6, 'days').toDate(), date[0]])
+              return
+            }
+
+            if (date[1]) {
+              set(() => [moment(date[1]).add(-6, 'days').toDate(), date[1]])
+              return
+            }
+
+            set(() => [helpers.getLastWeek(), helpers.getYesterday()])
+            return
+          }
+
+          set(() => [moment(date).add(-6, 'days').toDate(), date])
+          return
+        case 'month':
+          if (Array.isArray(date)) {
+            if (date.length === 0) {
+              set(() => [helpers.getPreviousTwoMonth(), helpers.getLastMonth()])
+              return
+            }
+
+            if (date.length === 1) {
+              if (date[0]) {
+                set(() => [date[0], date[0]])
+                return
+              }
+              set(() => [helpers.getPreviousTwoMonth(), helpers.getLastMonth()])
+              return
+            }
+
+            const dt = date[0] ?? date[1] ?? helpers.getLastMonth()
+            set(() => [dt, dt])
+            return
+          }
+
+          set(() => [date, date])
+          return
+        case '3-months':
+          if (Array.isArray(date)) {
+            if (date.length === 0) {
+              set(() => [
+                helpers.getPreviousFourMonth(),
+                helpers.getLastMonth(),
+              ])
+              return
+            }
+
+            if (date.length === 1) {
+              if (date[0]) {
+                set(() => [moment(date[0]).add(-3, 'months').toDate(), date[0]])
+                return
+              }
+
+              set(() => [
+                helpers.getPreviousFourMonth(),
+                helpers.getLastMonth(),
+              ])
+              return
+            }
+
+            if (date[0]) {
+              if (date[1]) {
+                if (moment(date[1]).diff(moment(date[0]), 'months') <= 3) {
+                  set(() => [
+                    moment(date[1] as Date)
+                      .add(-3, 'months')
+                      .toDate(),
+                    date[1],
+                  ])
+                  return
+                }
+
+                const endDate = moment(date[0]).toDate()
+                endDate.setMonth(endDate.getMonth() + 3)
+
+                set(() => [date[0], endDate])
+                return
+              }
+
+              set(() => [moment(date[0]).add(-3, 'months').toDate(), date[0]])
+              return
+            }
+
+            if (date[1]) {
+              set(() => [moment(date[1]).add(-3, 'months').toDate(), date[1]])
+              return
+            }
+
+            set(() => [helpers.getPreviousFourMonth(), helpers.getLastMonth()])
+            return
+          }
+
+          set(() => [moment(date).add(-3, 'months').toDate(), date])
+          return
+        case '6-months':
+          if (Array.isArray(date)) {
+            if (date.length === 0) {
+              set(() => [
+                helpers.getPreviousSevenMonth(),
+                helpers.getLastMonth(),
+              ])
+              return
+            }
+
+            if (date.length === 1) {
+              if (date[0]) {
+                set(() => [moment(date[0]).add(-6, 'months').toDate(), date[0]])
+                return
+              }
+
+              set(() => [
+                helpers.getPreviousSevenMonth(),
+                helpers.getLastMonth(),
+              ])
+              return
+            }
+
+            if (date[0]) {
+              if (date[1]) {
+                if (moment(date[1]).diff(moment(date[0]), 'months') <= 6) {
+                  set(() => [
+                    moment(date[1]).add(-6, 'months').toDate(),
+                    date[1],
+                  ])
+                  return
+                }
+
+                const endDate = moment(date[0]).toDate()
+                endDate.setMonth(endDate.getMonth() + 6)
+
+                set(() => [date[0], endDate])
+                return
+              }
+
+              set(() => [moment(date[0]).add(-6, 'months').toDate(), date[0]])
+              return
+            }
+
+            if (date[1]) {
+              set(() => [moment(date[1]).add(-6, 'months').toDate(), date[1]])
+              return
+            }
+
+            set(() => [helpers.getPreviousSevenMonth(), helpers.getLastMonth()])
+            return
+          }
+
+          set(() => [moment(date).add(-6, 'months').toDate(), date])
+          return
+        case 'year':
+          if (Array.isArray(date)) {
+            if (date.length === 0) {
+              set(() => [helpers.getPreviousTwoYear(), helpers.getLastYear()])
+              return
+            }
+
+            if (date.length === 1) {
+              if (date[0]) {
+                set(() => [date[0], date[0]])
+              } else {
+                set(() => [helpers.getPreviousTwoYear(), helpers.getLastYear()])
+              }
+              return
+            }
+
+            const dt = date[0] ?? date[1] ?? helpers.getLastYear()
+            set(() => [dt, dt])
+            return
+          }
+
+          set(() => [date, date])
+          break
+        default:
+          break
+      }
+    },
+    [],
+  )
+
   const onChangeConnectChartDate = (
     date?: Date | Array<Date | undefined>,
     inputOption?: ChartDatePickerOption,
@@ -99,22 +339,11 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
 
     if (inputOption) {
       setConnectChartDateOption(inputOption)
-    }
-
-    if (!Array.isArray(date) || date.length === 1) {
-      setConnectChartDate(date)
+      changeChartDate(setConnectChartDate, date, inputOption)
       return
     }
 
-    if (moment(date[1]).diff(moment(date[0]), 'days') <= 6) {
-      setConnectChartDate(date)
-      return
-    }
-
-    const endDate = moment(date[0]).toDate()
-    endDate.setDate(endDate.getDate() + 6)
-
-    setConnectChartDate([date[0], endDate])
+    changeChartDate(setConnectChartDate, date, connectChartDateOption)
   }
 
   const fetchLineChartData = React.useCallback(async () => {
@@ -157,6 +386,30 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
       fetchLineChartData()
     }
   }, [isMounted, fetchLineChartData])
+
+  const connectChartMaxDate = React.useMemo(() => {
+    switch (connectChartDateOption) {
+      case 'day':
+      case 'week':
+        return helpers.getYesterday()
+      case 'year':
+        return helpers.getLastYear()
+      default:
+        return helpers.getLastMonth()
+    }
+  }, [connectChartDateOption])
+
+  const connectChartFormat = React.useMemo(() => {
+    switch (connectChartDateOption) {
+      case 'day':
+      case 'week':
+        return 'YYYY-MM-DD'
+      case 'year':
+        return 'YYYY'
+      default:
+        return 'YYYY-MM'
+    }
+  }, [connectChartDateOption])
 
   return (
     <PageDashboardLayout endpoint="APP_USE">
@@ -202,8 +455,8 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
               type: connectChartDateOption,
               date: connectChartDate,
               onChange: onChangeConnectChartDate,
-              format: 'YYYY-MM-DD',
-              maxDate: helpers.getYesterday(),
+              format: connectChartFormat,
+              maxDate: connectChartMaxDate,
             }}
             className={PageDashboardAppUseStyle.lineChart({ device })}
           />

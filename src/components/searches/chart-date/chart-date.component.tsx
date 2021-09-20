@@ -241,6 +241,18 @@ function SearchChartDate({
     onChange([compareDtMin.toDate(), compareDtMax.toDate()])
   }, [maxDate, getNextDate, date, type, onChange])
 
+  const viewType = React.useMemo(() => {
+    switch (type) {
+      case 'day':
+      case 'week':
+        return 'month'
+      case 'year':
+        return 'decade'
+      default:
+        return 'year'
+    }
+  }, [type])
+
   return (
     <>
       <ModalDateTimePicker
@@ -250,10 +262,12 @@ function SearchChartDate({
           onChange(inputDate)
         }}
         isOpen={showPicker}
-        selectRange={type !== 'day'}
-        datePick={type === 'day' || type === 'week'}
+        selectRange={
+          type === 'week' || type === '3-months' || type === '6-months'
+        }
         minDate={minDate}
         maxDate={maxDate}
+        viewType={viewType}
       />
       <ModalDatePickerOption
         show={showPickerOption}
@@ -296,16 +310,26 @@ function SearchChartDate({
       <div className={SearchChartDateStyle.container}>
         <div className={SearchChartDateStyle.leftCallerContainer}>
           <XEIcon
-            {...SearchChartDateStyle.icon('calendar-check', device)}
+            {...SearchChartDateStyle.icon(
+              'calendar-check',
+              device,
+              'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
+            )}
             testID="components.searches.chartDate.pickerCaller"
             onClick={onClick}
             className={SearchChartDateStyle.calendarCaller({ device })}
           />
           <XEIcon
-            {...SearchChartDateStyle.icon('bars', device)}
+            {...SearchChartDateStyle.icon(
+              'bars',
+              device,
+              'text-mono-white hover:text-mono-whiteHover active:text-mono-whiteActive',
+            )}
             testID="components.searches.chartDate.pickerOptionCaller"
             onClick={() => setShowPickerOption(true)}
-            className={SearchChartDateStyle.calendarCaller({ device })}
+            className={`${SearchChartDateStyle.calendarCaller({
+              device,
+            })} bg-main-navy hover:bg-main-navyHover active:bg-main-navyActive`}
           />
         </div>
         <ButtonPrevNext
@@ -325,11 +349,13 @@ function SearchChartDate({
           prevIcon={SearchChartDateStyle.icon(
             'angle-left',
             device,
+            'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
             prevDisabled(),
           )}
           nextIcon={SearchChartDateStyle.icon(
             'angle-right',
             device,
+            'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
             nextDisabled(),
           )}
         />
