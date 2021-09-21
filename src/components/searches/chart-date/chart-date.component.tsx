@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import moment from 'moment'
 import React from 'react'
 import Recoil from 'recoil'
@@ -15,6 +16,8 @@ const getPrevNextSequel = (
   prevNext: 'prev' | 'next',
   date: Date,
 ) => {
+  let end = new Date()
+
   if (prevNext === 'prev') {
     switch (type) {
       case 'day':
@@ -25,24 +28,30 @@ const getPrevNextSequel = (
           moment(date).add(-1, 'days').toDate(),
         ]
       case 'month':
+        end = moment(date).add(-1, 'months').toDate()
+
         return [
-          moment(date).add(-1, 'days').add(-1, 'months').toDate(),
-          moment(date).add(-1, 'days').toDate(),
+          moment(date).add(-1, 'months').date(1).toDate(),
+          new Date(end.getFullYear(), end.getMonth() + 1, 0),
         ]
       case '3-months':
+        end = moment(date).add(-1, 'months').date(1).toDate()
+
         return [
-          moment(date).add(-1, 'days').add(-3, 'months').toDate(),
-          moment(date).add(-1, 'days').toDate(),
+          moment(date).add(-3, 'months').date(1).toDate(),
+          new Date(end.getFullYear(), end.getMonth() + 1, 0),
         ]
       case '6-months':
+        end = moment(date).add(-1, 'months').toDate()
+
         return [
-          moment(date).add(-1, 'days').add(-6, 'months').toDate(),
-          moment(date).add(-1, 'days').toDate(),
+          moment(date).add(-6, 'months').date(1).toDate(),
+          new Date(end.getFullYear(), end.getMonth() + 1, 0),
         ]
       default:
         return [
-          moment(date).add(-1, 'days').add(-1, 'years').toDate(),
-          moment(date).add(-1, 'days').toDate(),
+          moment(date).add(-1, 'years').month(0).date(1).toDate(),
+          moment(date).add(-1, 'years').month(11).date(31).toDate(),
         ]
     }
   } else {
@@ -55,24 +64,30 @@ const getPrevNextSequel = (
           moment(date).add(7, 'days').toDate(),
         ]
       case 'month':
+        end = moment(date).add(1, 'months').toDate()
+
         return [
-          moment(date).add(1, 'days').toDate(),
-          moment(date).add(1, 'days').add(1, 'months').toDate(),
+          moment(date).add(1, 'months').date(1).toDate(),
+          new Date(end.getFullYear(), end.getMonth() + 1, 0),
         ]
       case '3-months':
+        end = moment(date).add(3, 'months').date(1).toDate()
+
         return [
-          moment(date).add(1, 'days').toDate(),
-          moment(date).add(1, 'days').add(3, 'months').toDate(),
+          moment(date).add(1, 'months').date(1).toDate(),
+          new Date(end.getFullYear(), end.getMonth() + 1, 0),
         ]
       case '6-months':
+        end = moment(date).add(6, 'months').toDate()
+
         return [
-          moment(date).add(1, 'days').toDate(),
-          moment(date).add(1, 'days').add(6, 'months').toDate(),
+          moment(date).add(1, 'months').date(1).toDate(),
+          new Date(end.getFullYear(), end.getMonth() + 1, 0),
         ]
       default:
         return [
-          moment(date).add(1, 'days').toDate(),
-          moment(date).add(1, 'days').add(1, 'years').toDate(),
+          moment(date).add(1, 'years').month(0).date(1).toDate(),
+          moment(date).add(1, 'years').month(11).date(31).toDate(),
         ]
     }
   }
@@ -108,8 +123,8 @@ function SearchChartDate({
   const prevDisabled = React.useCallback(() => {
     if (!minDate) return false
 
-    const compareFormat = `YYYY${
-      type === 'year' ? '' : `${type === 'day' || type === 'week' ? '' : 'DD'}`
+    const compareFormat = `YYYYMM${
+      type === 'day' || type === 'week' || type === 'month' ? 'DD' : ''
     }`
 
     const minDt = Number(moment(minDate).format(compareFormat))
@@ -127,8 +142,8 @@ function SearchChartDate({
   const nextDisabled = React.useCallback(() => {
     if (!maxDate) return false
 
-    const compareFormat = `YYYY${
-      type === 'year' ? '' : `${type === 'day' || type === 'week' ? '' : 'DD'}`
+    const compareFormat = `YYYYMM${
+      type === 'day' || type === 'week' || type === 'month' ? 'DD' : ''
     }`
 
     const maxDt = Number(moment(maxDate).format(compareFormat))
@@ -181,8 +196,8 @@ function SearchChartDate({
         : currMinDate,
     )
 
-    const compareFormat = `YYYY${
-      type === 'year' ? '' : `${type === 'week' ? '' : 'DD'}`
+    const compareFormat = `YYYYMM${
+      type === 'week' || type === 'month' ? 'DD' : ''
     }`
     const minDtNum = Number(moment(minDt).format(compareFormat))
     const compareDtMinNum = Number(moment(compareDtMin).format(compareFormat))
@@ -221,8 +236,8 @@ function SearchChartDate({
         : currMaxDate,
     )
 
-    const compareFormat = `YYYY${
-      type === 'year' ? '' : `${type === 'week' ? '' : 'DD'}`
+    const compareFormat = `YYYYMM${
+      type === 'week' || type === 'month' ? 'DD' : ''
     }`
     const maxDtNum = Number(moment(maxDt).format(compareFormat))
     const compareDtMinNum = Number(moment(compareDtMin).format(compareFormat))

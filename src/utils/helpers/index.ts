@@ -1,6 +1,7 @@
 import moment from 'moment'
 import { ROUTER_PATH } from '../../constants'
 import endpointsConfig from '../../endpoints.config'
+import { ChartDatePickerOption } from '../../types'
 
 export default {
   convertTextToTailwind(text?: string) {
@@ -229,53 +230,66 @@ export default {
   },
   getLastWeek(date?: Date) {
     const lastWeek = moment(date ?? new Date()).toDate()
-    lastWeek.setDate(lastWeek.getDate() - 6)
+    lastWeek.setDate(lastWeek.getDate() - 7)
     return this.setToStartDate(lastWeek)
   },
   getLastMonth(isStart?: boolean, date?: Date) {
-    const lastMonth = moment(date ?? new Date()).toDate()
-    lastMonth.setMonth(lastMonth.getMonth() - 1)
+    let lastMonth = moment(date ?? new Date()).toDate()
+    if (isStart) {
+      lastMonth.setMonth(lastMonth.getMonth() - 1)
+      lastMonth.setDate(1)
+    } else {
+      lastMonth = new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 0)
+    }
     return this[isStart ? 'setToStartDate' : 'setToEndDate'](lastMonth)
   },
   getPreviousTwoMonth(date?: Date) {
     const previousTwoMonth = moment(date ?? new Date()).toDate()
     previousTwoMonth.setMonth(previousTwoMonth.getMonth() - 2)
+    previousTwoMonth.setDate(1)
     return this.setToStartDate(previousTwoMonth)
   },
   getPreviousThreeMonth(date?: Date) {
     const previousThreeMonth = moment(date ?? new Date()).toDate()
-    previousThreeMonth.setDate(previousThreeMonth.getDate() - 1)
     previousThreeMonth.setMonth(previousThreeMonth.getMonth() - 3)
+    previousThreeMonth.setDate(1)
     return this.setToStartDate(previousThreeMonth)
   },
   getPreviousFourMonth(date?: Date) {
     const previousFourMonth = moment(date ?? new Date()).toDate()
-    previousFourMonth.setDate(previousFourMonth.getDate() - 1)
     previousFourMonth.setMonth(previousFourMonth.getMonth() - 4)
+    previousFourMonth.setDate(1)
     return this.setToStartDate(previousFourMonth)
   },
   getPreviousSixMonth(date?: Date) {
     const previousSixMonth = moment(date ?? new Date()).toDate()
-    previousSixMonth.setDate(previousSixMonth.getDate() - 1)
     previousSixMonth.setMonth(previousSixMonth.getMonth() - 6)
+    previousSixMonth.setDate(1)
     return this.setToStartDate(previousSixMonth)
   },
   getPreviousSevenMonth(date?: Date) {
     const previousSevenMonth = moment(date ?? new Date()).toDate()
-    previousSevenMonth.setDate(previousSevenMonth.getDate() - 1)
     previousSevenMonth.setMonth(previousSevenMonth.getMonth() - 7)
+    previousSevenMonth.setDate(1)
     return this.setToStartDate(previousSevenMonth)
   },
   getLastYear(isStart?: boolean, date?: Date) {
     const lastYear = moment(date ?? new Date()).toDate()
-    lastYear.setDate(lastYear.getDate() - 1)
     lastYear.setFullYear(lastYear.getFullYear() - 1)
+    if (isStart) {
+      lastYear.setMonth(0)
+      lastYear.setDate(1)
+    } else {
+      lastYear.setMonth(11)
+      lastYear.setDate(31)
+    }
     return this[isStart ? 'setToStartDate' : 'setToEndDate'](lastYear)
   },
   getPreviousTwoYear(date?: Date) {
     const lastYear = moment(date ?? new Date()).toDate()
-    lastYear.setDate(lastYear.getDate() - 1)
     lastYear.setFullYear(lastYear.getFullYear() - 2)
+    lastYear.setMonth(0)
+    lastYear.setDate(1)
     return this.setToStartDate(lastYear)
   },
   setToEndDate(date: Date) {
@@ -294,14 +308,27 @@ export default {
     dt.setMilliseconds(0)
     return dt
   },
-  getDateRangeArray(range: 'days' | 'months', dates: Date[]) {
+  getDateRangeArray(range: ChartDatePickerOption, dates: Date[]) {
     if (dates.length === 1) {
       return dates
     }
 
-    const num = moment(dates[1]).diff(dates[0], range)
-    const setFnc = range === 'days' ? 'setDate' : 'setMonth'
-    const getFnc = range === 'days' ? 'getDate' : 'getMonth'
+    let num = 0
+    let setFnc: 'setDate' | 'setMonth' = 'setDate'
+    let getFnc: 'getDate' | 'getMonth' = 'getDate'
+
+    switch (range) {
+      case 'day':
+      case 'week':
+      case 'month':
+        num = moment(dates[1]).diff(dates[0], 'days')
+        break
+      default:
+        num = moment(dates[1]).diff(dates[0], 'months')
+        setFnc = 'setMonth'
+        getFnc = 'getMonth'
+        break
+    }
 
     const result: Date[] = [dates[0]]
 

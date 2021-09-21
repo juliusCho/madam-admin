@@ -1,5 +1,7 @@
 import React from 'react'
 import Modal from 'react-modal'
+import Recoil from 'recoil'
+import deviceGlobalStates from '../../../recoil/device'
 import { ChartDatePickerOption } from '../../../types'
 import customHooks from '../../../utils/hooks'
 import ModalDatePickerOptionStyle from './date-picker-option.style'
@@ -8,6 +10,7 @@ export interface ModalDatePickerOptionProps {
   show: boolean
   changeOption: (type: ChartDatePickerOption) => void
   type?: ChartDatePickerOption
+  showOneDay?: boolean
   backgroundColor?: string
   className?: string
 }
@@ -16,9 +19,12 @@ function ModalDatePickerOption({
   show,
   changeOption,
   type,
+  showOneDay,
   backgroundColor,
   className,
 }: ModalDatePickerOptionProps) {
+  const device = Recoil.useRecoilValue(deviceGlobalStates.getDevice)
+
   const [isOpen, setIsOpen] = React.useState(false)
 
   const isMounted = customHooks.useIsMounted()
@@ -77,9 +83,9 @@ function ModalDatePickerOption({
       bodyOpenClassName="rounded-lg"
       className={`bottom-${show ? 'up' : 'down'} ${className}`}>
       <div className={ModalDatePickerOptionStyle.buttonArea}>
-        {Option('day')}
+        {showOneDay && Option('day')}
         {Option('week')}
-        {Option('month')}
+        {device !== 'mobile' && device !== 'smallScreen' && Option('month')}
         {Option('3-months')}
         {Option('6-months')}
         {Option('year')}
@@ -90,6 +96,7 @@ function ModalDatePickerOption({
 
 ModalDatePickerOption.defaultProps = {
   type: 'day',
+  showOneDay: false,
   backgroundColor: 'bg-mono-darkGray',
   className: undefined,
 }

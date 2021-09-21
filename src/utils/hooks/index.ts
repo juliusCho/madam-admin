@@ -44,9 +44,9 @@ const useCheckMobile = (
     const doc = docEl.clientHeight ? docEl : body
 
     if (doc.scrollTop === 0) {
-      setShowToTop(() => true)
-    } else {
       setShowToTop(() => false)
+    } else {
+      setShowToTop(() => true)
     }
   }, [document])
 

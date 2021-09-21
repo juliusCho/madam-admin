@@ -5,7 +5,7 @@ interface StyleProps {
 
 const ButtonToTopStyle = {
   button({ show, device }: StyleProps) {
-    return show
+    return !show
       ? 'fade-out-half'
       : `
       fade-in-half
