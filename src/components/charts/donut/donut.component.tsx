@@ -55,7 +55,10 @@ function ChartDonut({
       })} ${className ?? ''}`}
       style={style}>
       {centerText && (
-        <div className={ChartDonutStyle.centerTextContainer}>
+        <div
+          className={ChartDonutStyle.centerTextContainer({
+            isMobile: device === 'mobile',
+          })}>
           <span
             className={ChartDonutStyle.centerText({
               isSmallScreen: device === 'mobile' || device === 'smallScreen',

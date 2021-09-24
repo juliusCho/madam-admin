@@ -26,7 +26,7 @@ function ButtonToTop({ show }: ButtonToTopProps) {
       <XEIcon
         name="navigation"
         size={device === 'mobile' || device === 'smallScreen' ? 16 : 25}
-        color="text-mono-white hover:text-mono-whiteHover active:text-mono-whiteActive"
+        color="mono-white"
         onClick={onClick}
         testID="components.buttons.toTop"
       />

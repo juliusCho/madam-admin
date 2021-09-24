@@ -17,7 +17,7 @@ const ModalContentStyle = {
       flex 
       justify-center 
       items-center
-      ${helpers.convertColorToTailwind(backgroundColor, true)}
+      ${helpers.convertColorToTailwind('bg', backgroundColor, true)}
     `
   },
   buttonArea: `

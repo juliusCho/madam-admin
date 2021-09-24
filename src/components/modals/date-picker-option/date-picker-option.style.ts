@@ -21,7 +21,7 @@ const ModalDatePickerOptionStyle = {
       flex
       justify-center
       items-center
-      ${helpers.convertColorToTailwind(backgroundColor, true)}
+      ${helpers.convertColorToTailwind('bg', backgroundColor, true)}
     `
   },
   buttonArea: `
@@ -41,15 +41,14 @@ const ModalDatePickerOptionStyle = {
       p-2
       border
       border-solid
-      border-main-navy
-      text-subTitleBig
-      font-subTitleBig
+      ${helpers.convertColorToTailwind('border', 'main-navy')}
+      ${helpers.convertTextToTailwind('subTitleBig')}
       ${
         selected
-          ? `bg-main-navy hover:bg-main-navyHover active:bg-main-navyActive
-            text-mono-white hover:text-mono-whiteHover active:text-mono-whiteActive`
-          : `bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive
-            text-mono-black hover:text-mono-blackHover active:text-mono-blackActive`
+          ? `${helpers.convertColorToTailwind('bg', 'main-navy')}
+            ${helpers.convertColorToTailwind('text', 'mono-white')}`
+          : `${helpers.convertColorToTailwind('bg', 'mono-white')}
+            ${helpers.convertColorToTailwind('text', 'mono-black')}`
       }
     `
   },

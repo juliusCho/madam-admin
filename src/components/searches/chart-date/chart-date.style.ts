@@ -1,3 +1,5 @@
+import helpers from '../../../utils/helpers'
+
 interface StyleProps {
   device: 'mobile' | 'smallScreen' | 'mediumScreen' | 'screen'
 }
@@ -23,9 +25,7 @@ const SearchChartDateStyle = {
       ml-3
       rounded-full
       border-solid
-      border-mono-paleBlack
-      hover:border-mono-paleBlackHover
-      active:border-mono-paleBlackActive
+      ${helpers.convertColorToTailwind('border', 'mono-paleBlack')}
       ${device === 'mobile' || device === 'smallScreen' ? 'border' : 'border-2'}
     `
   },
@@ -37,28 +37,7 @@ const SearchChartDateStyle = {
     return `
       border-solid
       rounded-full
-      border-mono-paleBlack
-      hover:border-mono-paleBlackHover
-      active:border-mono-paleBlackActive
-      text-mono-paleBlack
-      hover:text-mono-paleBlackHover
-      active:text-mono-paleBlackActive
-      ${
-        device === 'mobile' || device === 'smallScreen'
-          ? 'border text-textBig font-textBig'
-          : 'border-2 text-subTitleBig font-subTitleBig'
-      }
-    `
-  },
-  prevNextDisabledClassName({ device }: StyleProps) {
-    return `
-      bg-transparent
-      text-mono-lightGray
-      ${
-        device === 'mobile' || device === 'smallScreen'
-          ? 'text-textBig font-textBig'
-          : 'text-subTitleBig font-subTitleBig'
-      }
+      ${device === 'mobile' || device === 'smallScreen' ? 'border' : 'border-2'}
     `
   },
   icon(
@@ -69,7 +48,7 @@ const SearchChartDateStyle = {
   ) {
     return {
       name,
-      color: disabled ? 'text-mono-gray' : color,
+      color: disabled ? 'mono-gray' : color,
       size:
         device === 'mobile' || device === 'smallScreen' ? '0.875rem' : '2rem',
       className: disabled ? 'cursor-not-allowed' : undefined,

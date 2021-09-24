@@ -42,11 +42,12 @@ const InputTextLineStyle = {
       ${
         disabled
           ? helpers.convertColorToTailwind(
-              disabledColor || 'mono.lightGray',
+              'bg',
+              disabledColor ?? 'mono-lightGray',
               true,
             )
-          : helpers.convertColorToTailwind(color, false)
-      } ${helpers.convertColorToTailwind(borderColor, disabled)}
+          : helpers.convertColorToTailwind('bg', color, false)
+      } ${helpers.convertColorToTailwind('border', borderColor, disabled)}
     `
   },
   input({
@@ -58,8 +59,7 @@ const InputTextLineStyle = {
   }: InputStyleProps) {
     return `
       border-none 
-      text-textSmall 
-      font-textSmall
+      ${helpers.convertTextToTailwind('textSmall')}
       rounded-md 
       h-full 
       w-full 
@@ -69,17 +69,23 @@ const InputTextLineStyle = {
       ${
         disabled
           ? helpers.convertColorToTailwind(
-              disabledPlaceholderColor || 'mono.darkGray',
+              'placeholder',
+              disabledPlaceholderColor ?? 'mono-darkGray',
               true,
             )
-          : helpers.convertColorToTailwind(placeholderColor, false)
+          : helpers.convertColorToTailwind(
+              'placeholder',
+              placeholderColor,
+              false,
+            )
       } ${
       disabled
         ? helpers.convertColorToTailwind(
-            disabledColor || 'mono.lightGray',
+            'text',
+            disabledColor || 'mono-lightGray',
             true,
           )
-        : helpers.convertColorToTailwind(color, false)
+        : helpers.convertColorToTailwind('text', color, false)
     }
     `
   },
@@ -91,8 +97,7 @@ const InputTextLineStyle = {
   axe: `
     bg-transparent 
     z-10 
-    text-textMedium
-    font-textMedium
+    ${helpers.convertTextToTailwind('textMedium')}
   `,
 }
 

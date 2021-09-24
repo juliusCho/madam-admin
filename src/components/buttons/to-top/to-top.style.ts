@@ -1,3 +1,5 @@
+import helpers from '../../../utils/helpers'
+
 interface StyleProps {
   show: boolean
   device: 'mobile' | 'smallScreen' | 'mediumScreen' | 'screen'
@@ -19,18 +21,15 @@ const ButtonToTopStyle = {
       right-10
       rounded-lg
       opacity-80
-      bg-sub-darkPurple
-      hover:bg-sub-darkPurpleHover
-      active:bg-sub-darkPurpleActive
+      ${helpers.convertColorToTailwind('bg', 'sub-darkPurple')}
       shadow-xl
       ${device === 'mobile' || device === 'smallScreen' ? 'p-2' : 'p-4'}
     `
   },
   label: `
     mt-1
-    text-subMedium
-    font-subMedium
-    text-mono-white
+    ${helpers.convertTextToTailwind('subMedium')}
+    ${helpers.convertColorToTailwind('text', 'mono-white')}
   `,
 }
 

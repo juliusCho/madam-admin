@@ -97,7 +97,7 @@ function ModalDatePickerOption({
 ModalDatePickerOption.defaultProps = {
   type: 'day',
   showOneDay: false,
-  backgroundColor: 'bg-mono-darkGray',
+  backgroundColor: 'mono-darkGray',
   className: undefined,
 }
 

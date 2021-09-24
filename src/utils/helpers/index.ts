@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import moment from 'moment'
 import { ROUTER_PATH } from '../../constants'
 import endpointsConfig from '../../endpoints.config'
@@ -9,12 +10,20 @@ export default {
 
     return `text-${text} font-${text}`
   },
-  convertColorToTailwind(color?: string, isNotButtonOrDisabled?: boolean) {
-    if (!color) return ''
+  convertColorToTailwind(
+    type: 'bg' | 'text' | 'border' | 'placeholder',
+    color?: string,
+    isNotButtonOrDisabled?: boolean,
+  ) {
+    if (!color) {
+      return `${type}-transparent`
+    }
 
-    const tc = color.split(' ')
-
-    return `${tc[0]} ${isNotButtonOrDisabled ? '' : `${tc[1]} ${tc[2]}`}`
+    return `${type}-${color}${
+      isNotButtonOrDisabled
+        ? ''
+        : ` hover:${type}-${color}Hover active:${type}-${color}Active`
+    }`
   },
   encode(input: string | number) {
     return btoa(
@@ -209,7 +218,8 @@ export default {
     }
   },
   convertToMoneyFormat(num: number) {
-    const str = String(num)
+    const minus = num < 0 ? '-' : ''
+    const str = String(Math.abs(num))
     let result = ''
 
     let idx = 0
@@ -221,16 +231,18 @@ export default {
       idx += 1
     }
 
-    return result
+    return minus + result
   },
   getYesterday(isStart?: boolean, date?: Date) {
-    const yesterday = moment(date ?? new Date()).toDate()
-    yesterday.setDate(yesterday.getDate() - 1)
+    const yesterday = moment(date ?? new Date())
+      .add(-1, 'days')
+      .toDate()
     return this[isStart ? 'setToStartDate' : 'setToEndDate'](yesterday)
   },
   getLastWeek(date?: Date) {
-    const lastWeek = moment(date ?? new Date()).toDate()
-    lastWeek.setDate(lastWeek.getDate() - 7)
+    const lastWeek = moment(date ?? new Date())
+      .add(-7, 'days')
+      .toDate()
     return this.setToStartDate(lastWeek)
   },
   getLastMonth(isStart?: boolean, date?: Date) {
@@ -243,34 +255,25 @@ export default {
     }
     return this[isStart ? 'setToStartDate' : 'setToEndDate'](lastMonth)
   },
-  getPreviousTwoMonth(date?: Date) {
-    const previousTwoMonth = moment(date ?? new Date()).toDate()
-    previousTwoMonth.setMonth(previousTwoMonth.getMonth() - 2)
-    previousTwoMonth.setDate(1)
-    return this.setToStartDate(previousTwoMonth)
-  },
   getPreviousThreeMonth(date?: Date) {
-    const previousThreeMonth = moment(date ?? new Date()).toDate()
-    previousThreeMonth.setMonth(previousThreeMonth.getMonth() - 3)
-    previousThreeMonth.setDate(1)
+    const previousThreeMonth = moment(date ?? new Date())
+      .add(-3, 'months')
+      .date(1)
+      .toDate()
     return this.setToStartDate(previousThreeMonth)
   },
-  getPreviousFourMonth(date?: Date) {
-    const previousFourMonth = moment(date ?? new Date()).toDate()
-    previousFourMonth.setMonth(previousFourMonth.getMonth() - 4)
-    previousFourMonth.setDate(1)
-    return this.setToStartDate(previousFourMonth)
-  },
   getPreviousSixMonth(date?: Date) {
-    const previousSixMonth = moment(date ?? new Date()).toDate()
-    previousSixMonth.setMonth(previousSixMonth.getMonth() - 6)
-    previousSixMonth.setDate(1)
+    const previousSixMonth = moment(date ?? new Date())
+      .add(-6, 'months')
+      .date(1)
+      .toDate()
     return this.setToStartDate(previousSixMonth)
   },
   getPreviousSevenMonth(date?: Date) {
-    const previousSevenMonth = moment(date ?? new Date()).toDate()
-    previousSevenMonth.setMonth(previousSevenMonth.getMonth() - 7)
-    previousSevenMonth.setDate(1)
+    const previousSevenMonth = moment(date ?? new Date())
+      .add(-7, 'months')
+      .date(1)
+      .toDate()
     return this.setToStartDate(previousSevenMonth)
   },
   getLastYear(isStart?: boolean, date?: Date) {
@@ -286,27 +289,23 @@ export default {
     return this[isStart ? 'setToStartDate' : 'setToEndDate'](lastYear)
   },
   getPreviousTwoYear(date?: Date) {
-    const lastYear = moment(date ?? new Date()).toDate()
-    lastYear.setFullYear(lastYear.getFullYear() - 2)
-    lastYear.setMonth(0)
-    lastYear.setDate(1)
+    const lastYear = moment(date ?? new Date())
+      .add(-2, 'years')
+      .month(0)
+      .date(1)
+      .toDate()
     return this.setToStartDate(lastYear)
   },
   setToEndDate(date: Date) {
-    const dt = moment(date).toDate()
-    dt.setHours(23)
-    dt.setMinutes(59)
-    dt.setSeconds(59)
-    dt.setMilliseconds(59)
-    return dt
+    return moment(date)
+      .hours(23)
+      .minutes(59)
+      .seconds(59)
+      .milliseconds(999)
+      .toDate()
   },
   setToStartDate(date: Date) {
-    const dt = moment(date).toDate()
-    dt.setHours(0)
-    dt.setMinutes(0)
-    dt.setSeconds(0)
-    dt.setMilliseconds(0)
-    return dt
+    return moment(date).hours(0).minutes(0).seconds(0).milliseconds(0).toDate()
   },
   getDateRangeArray(range: ChartDatePickerOption, dates: Date[]) {
     if (dates.length === 1) {
@@ -340,5 +339,244 @@ export default {
 
     result.push(dates[1])
     return result
+  },
+  changeChartDate(
+    set:
+      | React.Dispatch<
+          React.SetStateAction<undefined | Date | Array<undefined | Date>>
+        >
+      | ((date?: Date | Array<undefined | Date>) => void),
+    date?: Date | Array<Date | undefined>,
+    inputOption?: ChartDatePickerOption,
+  ) {
+    switch (inputOption) {
+      case 'day':
+        if (Array.isArray(date)) {
+          if (date.length === 0) {
+            set([this.getYesterday(), this.getYesterday()])
+            return
+          }
+
+          if (date.length === 1) {
+            const dt = date[0] ?? this.getYesterday()
+            set([dt, dt])
+            return
+          }
+
+          const dt = date[0] ?? date[1] ?? this.getYesterday()
+          set([dt, dt])
+          return
+        }
+
+        set([date, date])
+        return
+      case 'week':
+        if (Array.isArray(date)) {
+          if (date.length === 0) {
+            set([this.getLastWeek(), this.getYesterday()])
+            return
+          }
+
+          if (date.length === 1) {
+            if (date[0]) {
+              set([moment(date[0]).add(-6, 'days').toDate(), date[0]])
+              return
+            }
+
+            set([this.getLastWeek(), this.getYesterday()])
+            return
+          }
+
+          if (date[0]) {
+            if (date[1]) {
+              if (moment(date[1]).diff(moment(date[0]), 'days') <= 6) {
+                set([date[0], date[1]])
+                return
+              }
+
+              set([date[0], moment(date[0]).add(6, 'days').toDate()])
+              return
+            }
+
+            set([moment(date[0]).add(-6, 'days').toDate(), date[0]])
+            return
+          }
+
+          if (date[1]) {
+            set([moment(date[1]).add(-6, 'days').toDate(), date[1]])
+            return
+          }
+
+          set([this.getLastWeek(), this.getYesterday()])
+          return
+        }
+
+        set([moment(date).add(-6, 'days').toDate(), date])
+        return
+      case 'month':
+        if (Array.isArray(date)) {
+          if (date.length === 0) {
+            set([this.getLastMonth(true), this.getLastMonth()])
+            return
+          }
+
+          if (date.length === 1) {
+            if (date[0]) {
+              const end = new Date(
+                date[0].getFullYear(),
+                date[0].getMonth() + 1,
+                0,
+              )
+              set([moment(date[0]).date(1).toDate(), end])
+              return
+            }
+            set([this.getLastMonth(true), this.getLastMonth()])
+            return
+          }
+
+          let dt = date[0] ?? date[1] ?? this.getLastMonth()
+          const dtNum = Number(moment(dt).format('YYYYMM'))
+          const maxMonth = Number(moment(this.getLastMonth()).format('YYYYMM'))
+          if (dtNum > maxMonth) {
+            dt = this.getLastMonth()
+          }
+          const end = new Date(dt.getFullYear(), dt.getMonth() + 1, 0)
+          set([moment(dt).date(1).toDate(), end])
+          return
+        }
+
+        const endDt = new Date(
+          (date as Date).getFullYear(),
+          (date as Date).getMonth() + 1,
+          0,
+        )
+        set([moment(date).date(1).toDate(), endDt])
+        return
+      case '3-months':
+        if (Array.isArray(date)) {
+          if (date.length === 0) {
+            set([this.getPreviousThreeMonth(), this.getLastMonth()])
+            return
+          }
+
+          if (date.length === 1) {
+            if (date[0]) {
+              set([moment(date[0]).add(-2, 'months').toDate(), date[0]])
+              return
+            }
+
+            set([this.getPreviousThreeMonth(), this.getLastMonth()])
+            return
+          }
+
+          if (date[0]) {
+            if (date[1]) {
+              if (moment(date[1]).diff(moment(date[0]), 'months') <= 2) {
+                set([date[0], date[1]])
+                return
+              }
+
+              set([date[0], moment(date[0]).add(2, 'months').toDate()])
+              return
+            }
+
+            set([moment(date[0]).add(-2, 'months').toDate(), date[0]])
+            return
+          }
+
+          if (date[1]) {
+            set([moment(date[1]).add(-2, 'months').toDate(), date[1]])
+            return
+          }
+
+          set([this.getPreviousThreeMonth(), this.getLastMonth()])
+          return
+        }
+
+        set([moment(date).add(-2, 'months').toDate(), date])
+        return
+      case '6-months':
+        if (Array.isArray(date)) {
+          if (date.length === 0) {
+            set([this.getPreviousSevenMonth(), this.getLastMonth()])
+            return
+          }
+
+          if (date.length === 1) {
+            if (date[0]) {
+              set([moment(date[0]).add(-5, 'months').toDate(), date[0]])
+              return
+            }
+
+            set([this.getPreviousSevenMonth(), this.getLastMonth()])
+            return
+          }
+
+          if (date[0]) {
+            if (date[1]) {
+              if (moment(date[1]).diff(moment(date[0]), 'months') <= 5) {
+                set([date[0], date[1]])
+                return
+              }
+
+              set([date[0], moment(date[0]).add(5, 'months').toDate()])
+              return
+            }
+
+            set([moment(date[0]).add(-5, 'months').toDate(), date[0]])
+            return
+          }
+
+          if (date[1]) {
+            set([moment(date[1]).add(-5, 'months').toDate(), date[1]])
+            return
+          }
+
+          set([this.getPreviousSevenMonth(), this.getLastMonth()])
+          return
+        }
+
+        set([moment(date).add(-5, 'months').toDate(), date])
+        return
+      case 'year':
+        if (Array.isArray(date)) {
+          if (date.length === 0) {
+            set([this.getPreviousTwoYear(), this.getLastYear()])
+            return
+          }
+
+          if (date.length === 1) {
+            if (date[0]) {
+              set([
+                moment(date[0]).month(0).date(1).toDate(),
+                moment(date[0]).month(11).date(31).toDate(),
+              ])
+            } else {
+              set([this.getPreviousTwoYear(), this.getLastYear()])
+            }
+            return
+          }
+
+          let dt = date[0] ?? date[1] ?? this.getLastYear()
+          const dtNum = Number(moment(dt).format('YYYY'))
+          const maxYear = Number(moment(this.getLastYear()).format('YYYY'))
+          if (dtNum > maxYear) {
+            dt = this.getLastYear()
+          }
+          set([
+            moment(dt).month(0).date(1).toDate(),
+            moment(dt).month(11).date(31).toDate(),
+          ])
+          return
+        }
+
+        set([
+          moment(date).month(0).date(1).toDate(),
+          moment(date).month(11).date(31).toDate(),
+        ])
+        break
+      default:
+        break
+    }
   },
 }

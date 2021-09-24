@@ -32,20 +32,20 @@ const InputDateTimeStyle = {
       h-9
       border
       border-solid
-      bg-mono-lightGray
       ${disabled ? 'cursor-not-allowed' : ''}
       ${
         disabled
           ? helpers.convertColorToTailwind(
-              disabledColor || 'bg-mono-lightGray',
+              'bg',
+              disabledColor ?? 'mono-lightGray',
               true,
             )
-          : helpers.convertColorToTailwind(color)
+          : helpers.convertColorToTailwind('bg', color)
       }
       ${
         disabled
-          ? helpers.convertColorToTailwind(disabledBorderColor, true)
-          : helpers.convertColorToTailwind(borderColor)
+          ? helpers.convertColorToTailwind('border', disabledBorderColor, true)
+          : helpers.convertColorToTailwind('border', borderColor)
       }
     `
   },
@@ -58,23 +58,25 @@ const InputDateTimeStyle = {
   }: LabelStyleProps) {
     if (disabled) {
       return `${helpers.convertColorToTailwind(
-        disabledColor || 'text-mono-lightGray',
+        'text',
+        disabledColor ?? 'mono-lightGray',
         true,
       )} text-textSmall font-textSmall px-2`
     }
     return active
       ? `${helpers.convertColorToTailwind(
+          'text',
           activeColor,
         )} text-textMedium font-textMedium px-2`
       : `${helpers.convertColorToTailwind(
+          'text',
           color,
         )} text-textSmall font-textSmall px-2`
   },
   axe: `
     bg-transparent 
     z-10 
-    text-textMedium
-    font-textMedium
+    ${helpers.convertTextToTailwind('textMedium')}
     mr-3
     px-2
   `,

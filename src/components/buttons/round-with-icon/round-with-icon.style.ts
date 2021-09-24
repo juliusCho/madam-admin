@@ -20,17 +20,20 @@ const ButtonRoundWithIconStyle = {
 
     if (disabled) {
       color = `${helpers.convertColorToTailwind(
-        colorDisabled || '',
+        'bg',
+        colorDisabled,
         disabled,
       )} cursor-not-allowed text-mono-white`
     } else {
       color = active
         ? `${helpers.convertColorToTailwind(
-            colorActive || '',
+            'bg',
+            colorActive,
             false,
           )} text-mono-white`
         : `${helpers.convertColorToTailwind(
-            colorInactive || '',
+            'bg',
+            colorInactive,
             false,
           )} border-solid min-w-px59 m-px border border-mono-gray  text-mono-paleBlack`
     }

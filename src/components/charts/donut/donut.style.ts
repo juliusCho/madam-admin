@@ -24,15 +24,17 @@ const ChartDonutStyle = {
       ? 'text-titleBig font-titleBig text-mono-black'
       : 'text-titleMassive font-titleMassive text-mono-black'
   },
-  centerTextContainer: `
-    absolute
-    flex
-    flex-col
-    justify-center
-    items-center
-    mt-16
-    z-10
-  `,
+  centerTextContainer({ isMobile }: StyleProps) {
+    return `
+      absolute
+      flex
+      flex-col
+      justify-center
+      items-center
+      z-10
+      ${isMobile ? 'mt-8' : 'mt-16'}
+    `
+  },
   centerText({ isSmallScreen, bold }: CenterTextStyleProps) {
     return isSmallScreen
       ? `${

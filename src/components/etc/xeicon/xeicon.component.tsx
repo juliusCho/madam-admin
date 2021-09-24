@@ -43,7 +43,8 @@ function XEIcon({
       }`}>
       <i
         className={`xi-${name} ${helpers.convertColorToTailwind(
-          color || '',
+          'text',
+          color,
           !onClick,
         )}`}
         data-testid={testID}
@@ -60,8 +61,7 @@ XEIcon.defaultProps = {
   style: {},
   className: '',
   size: undefined,
-  color:
-    'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
+  color: 'mono-black',
   onClick: undefined,
   testID: '',
 }

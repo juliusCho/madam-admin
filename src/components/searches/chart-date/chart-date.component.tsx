@@ -328,18 +328,14 @@ function SearchChartDate({
             {...SearchChartDateStyle.icon(
               'calendar-check',
               device,
-              'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
+              'mono-black',
             )}
             testID="components.searches.chartDate.pickerCaller"
             onClick={onClick}
             className={SearchChartDateStyle.calendarCaller({ device })}
           />
           <XEIcon
-            {...SearchChartDateStyle.icon(
-              'bars',
-              device,
-              'text-mono-white hover:text-mono-whiteHover active:text-mono-whiteActive',
-            )}
+            {...SearchChartDateStyle.icon('bars', device, 'mono-white')}
             testID="components.searches.chartDate.pickerOptionCaller"
             onClick={() => setShowPickerOption(true)}
             className={`${SearchChartDateStyle.calendarCaller({
@@ -348,31 +344,49 @@ function SearchChartDate({
           />
         </div>
         <ButtonPrevNext
-          prevDisabled={prevDisabled()}
-          nextDisabled={nextDisabled()}
-          onClickPrev={onClickPrev}
-          onClickNext={onClickNext}
+          prev={{
+            disabled: prevDisabled(),
+            onClick: onClickPrev,
+            icon: SearchChartDateStyle.icon(
+              'angle-left',
+              device,
+              'mono-black',
+              prevDisabled(),
+            ),
+            color: 'mono-black',
+            borderColor: 'mono-paleBlack',
+            backgroundColor: 'mono-white',
+            disabledColor: 'mono-lightGray',
+            fontSize:
+              device === 'mobile' || device === 'smallScreen'
+                ? 'textBig'
+                : 'subTitleBig',
+            extraClassName: prevDisabled()
+              ? undefined
+              : SearchChartDateStyle.prevNextClassName({ device }),
+          }}
+          next={{
+            disabled: nextDisabled(),
+            onClick: onClickNext,
+            icon: SearchChartDateStyle.icon(
+              'angle-right',
+              device,
+              'mono-black',
+              nextDisabled(),
+            ),
+            color: 'mono-black',
+            borderColor: 'mono-paleBlack',
+            backgroundColor: 'mono-white',
+            disabledColor: 'mono-lightGray',
+            fontSize:
+              device === 'mobile' || device === 'smallScreen'
+                ? 'textBig'
+                : 'subTitleBig',
+            extraClassName: nextDisabled()
+              ? undefined
+              : SearchChartDateStyle.prevNextClassName({ device }),
+          }}
           dividerClassName={SearchChartDateStyle.dividerClassName}
-          prevClassName={SearchChartDateStyle.prevNextClassName({ device })}
-          nextClassName={SearchChartDateStyle.prevNextClassName({ device })}
-          prevDisabledClassName={SearchChartDateStyle.prevNextDisabledClassName(
-            { device },
-          )}
-          nextDisabledClassName={SearchChartDateStyle.prevNextDisabledClassName(
-            { device },
-          )}
-          prevIcon={SearchChartDateStyle.icon(
-            'angle-left',
-            device,
-            'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
-            prevDisabled(),
-          )}
-          nextIcon={SearchChartDateStyle.icon(
-            'angle-right',
-            device,
-            'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
-            nextDisabled(),
-          )}
         />
       </div>
     </>

@@ -33,12 +33,14 @@ function ButtonCircle({
       style={{ ...style, width: buttonSize, height: buttonSize }}
       className={`${ButtonCircleStyle.button({
         padding,
-      })} ${className} ${backgroundColor} ${borderWidth}`}
+        backgroundColor,
+      })} ${className} ${borderWidth}`}
       data-testid="components.buttons.circle.button">
       <p
-        className={`${ButtonCircleStyle.text({
+        className={ButtonCircleStyle.text({
           fontSize,
-        })} ${color}`}
+          color,
+        })}
         data-testid="components.buttons.circle.text">
         {children}
       </p>
@@ -51,10 +53,8 @@ ButtonCircle.defaultProps = {
   fontSize: 'textMedium',
   padding: 4,
   borderWidth: 'border',
-  backgroundColor:
-    'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
-  color:
-    'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
+  backgroundColor: 'mono-white',
+  color: 'mono-black',
   style: undefined,
   className: undefined,
 }

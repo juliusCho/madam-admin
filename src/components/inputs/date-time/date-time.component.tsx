@@ -177,7 +177,7 @@ function InputDateTime({
           <XEIcon
             name="close"
             size="0.875rem"
-            color={resetColor || ''}
+            color={resetColor ?? ''}
             className={InputDateTimeStyle.axe}
             onClick={onCancel}
             testID="input.dateTime.close"
@@ -199,23 +199,15 @@ InputDateTime.defaultProps = {
   disabledText: undefined,
   style: {},
   className: '',
-  backgroundColor:
-    'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
-  borderColor:
-    'border-mono-lightGray hover:border-mono-lightGrayHover active:border-mono-lightGrayActive',
-  textColor:
-    'text-main-blue hover:text-main-blueHover active:text-main-blueActive',
-  placeholderColor:
-    'placeholder-mono-darkGray hover:placeholder-mono-darkGrayHover active:placeholder-mono-darkGrayActive',
-  resetColor:
-    'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
+  backgroundColor: 'mono-white',
+  borderColor: 'mono-lightGray',
+  textColor: 'main-blue',
+  placeholderColor: 'mono-darkGray',
+  resetColor: 'mono-black',
   disabled: false,
-  disabledBackgroundColor:
-    'bg-mono-lightGray hover:bg-mono-lightGrayHover active:bg-mono-lightGrayActive',
-  disabledBorderColor:
-    'border-mono-lightGray hover:border-mono-lightGrayHover active:border-mono-lightGrayActive',
-  disabledTextColor:
-    'text-mono-darkGray hover:text-mono-darkGrayHover active:text-mono-darkGrayActive',
+  disabledBackgroundColor: 'mono-lightGray',
+  disabledBorderColor: 'mono-lightGray',
+  disabledTextColor: 'mono-darkGray',
 }
 
 export default React.memo(InputDateTime)

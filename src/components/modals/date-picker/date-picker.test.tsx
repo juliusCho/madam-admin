@@ -24,7 +24,7 @@ describe('Modal DatePicker', () => {
     it('월 선택', () => {
       const changeDate = jest.fn()
       const { getByTestId } = render(
-        <DatePicker changeDate={changeDate} isOpen datePick={false} />,
+        <DatePicker changeDate={changeDate} isOpen viewType="year" />,
       )
 
       setTimeout(() => {

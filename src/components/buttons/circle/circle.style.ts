@@ -2,25 +2,31 @@ import helpers from '../../../utils/helpers'
 
 interface ButtonStyleProps {
   padding?: number
+  backgroundColor?: string
 }
 
 interface TextStyleProps {
   fontSize?: string
+  color?: string
 }
 
 const ButtonCircleStyle = {
-  button({ padding }: ButtonStyleProps) {
+  button({ padding, backgroundColor }: ButtonStyleProps) {
     return `
       flex
       justify-center
       items-center
       rounded-full
       p-${padding || 0}
-      border-mono-black
+      ${helpers.convertColorToTailwind('border', 'mono-black')}
+      ${helpers.convertColorToTailwind('bg', backgroundColor)}
     `
   },
-  text({ fontSize }: TextStyleProps) {
-    return helpers.convertTextToTailwind(fontSize)
+  text({ fontSize, color }: TextStyleProps) {
+    return `
+      ${helpers.convertTextToTailwind(fontSize)}
+      ${helpers.convertColorToTailwind('text', color)}
+    `
   },
 }
 

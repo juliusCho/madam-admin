@@ -71,7 +71,7 @@ function TimePicker({
         />
         <XEIcon
           name={clearIcon?.replace('xi-', '') || ''}
-          color="text-main-blue hover:text-main-blueHover active:text-main-blueActive"
+          color="main-blue"
           size="0.875rem"
           className="time-button"
           onClick={clickedClear}

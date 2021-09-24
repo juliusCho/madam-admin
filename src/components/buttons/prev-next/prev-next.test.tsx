@@ -9,12 +9,8 @@ describe('Component ButtonPrevNext', () => {
     it('display', () => {
       const { getByText } = render(
         <ButtonPrevNext
-          onClickNext={onClickNext}
-          onClickPrev={onClickPrev}
-          prevDisabled={false}
-          nextDisabled={false}
-          prevLabel="prev"
-          nextLabel="next"
+          next={{ onClick: onClickNext, label: 'prev' }}
+          prev={{ onClick: onClickPrev, label: 'next' }}
         />,
       )
 
@@ -28,12 +24,8 @@ describe('Component ButtonPrevNext', () => {
     it('onClick', () => {
       const { getByText } = render(
         <ButtonPrevNext
-          onClickNext={onClickNext}
-          onClickPrev={onClickPrev}
-          prevDisabled={false}
-          nextDisabled={false}
-          prevLabel="prev"
-          nextLabel="next"
+          next={{ onClick: onClickNext, label: 'prev' }}
+          prev={{ onClick: onClickPrev, label: 'next' }}
         />,
       )
 
@@ -52,12 +44,8 @@ describe('Component ButtonPrevNext', () => {
     it('onClick', () => {
       const { getByText } = render(
         <ButtonPrevNext
-          onClickNext={onClickNext}
-          onClickPrev={onClickPrev}
-          prevDisabled
-          nextDisabled
-          prevLabel="prev"
-          nextLabel="next"
+          next={{ onClick: onClickNext, label: 'prev', disabled: true }}
+          prev={{ onClick: onClickPrev, label: 'next', disabled: true }}
         />,
       )
 

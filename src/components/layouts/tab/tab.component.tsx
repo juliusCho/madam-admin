@@ -116,14 +116,10 @@ function LayoutTab({
 
 LayoutTab.defaultProps = {
   fontSize: 'md:text-titleBig md:font-titleBig',
-  selectedColor:
-    'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
-  selectedTextColor:
-    'text-sub-darkPurple hover:text-sub-darkPurpleHover active:text-sub-darkPurpleActive',
-  backgroundColor:
-    'bg-mono-pale hover:bg-mono-paleHover active:bg-mono-paleActive',
-  innerColor:
-    'bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive',
+  selectedColor: 'mono-white',
+  selectedTextColor: 'sub-darkPurple',
+  backgroundColor: 'mono-pale',
+  innerColor: 'mono-white',
   height: 'calc(100vh - 11.25rem)',
 }
 

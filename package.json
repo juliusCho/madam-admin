@@ -6,7 +6,7 @@
   "homepage": "https://madam-19d6d.web.app",
   "author": "Julius Cho <johncrist2000@gmail.com>",
   "scripts": {
-    "css": "npx postcss src/tailwind.css -o src/index.tailwind.css",
+    "css": "bash tailwind-compile.sh",
     "prestart": "npm run css",
     "start": "craco start",
     "prebuild": "cross-env NODE_ENV=production npm run css",

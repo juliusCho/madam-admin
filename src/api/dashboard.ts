@@ -133,7 +133,127 @@ const apiQuitAndJoinCount = async (
   }
 }
 
+const apiReportCount = (
+  token: string,
+  startDate: string,
+  endDate: string,
+  range: ChartDatePickerOption,
+) => {
+  const dateArray = helpers.getDateRangeArray(range, [
+    moment(startDate).toDate(),
+    moment(endDate).toDate(),
+  ])
+  let format = 'YYYY-MM-DD'
+
+  if (range === 'year' || range === '3-months' || range === '6-months') {
+    format = 'YYYY-MM'
+  }
+
+  const result = [
+    { date: '', count: 200 },
+    { date: '', count: 358 },
+    { date: '', count: 690 },
+    { date: '', count: 590 },
+    { date: '', count: 1203 },
+    { date: '', count: 1489 },
+    { date: '', count: 1479 },
+  ]
+
+  const monthResult = [
+    { date: '', count: 200 },
+    { date: '', count: 358 },
+    { date: '', count: 690 },
+    { date: '', count: 590 },
+    { date: '', count: 1203 },
+    { date: '', count: 1489 },
+    { date: '', count: 1479 },
+    { date: '', count: 200 },
+    { date: '', count: 358 },
+    { date: '', count: 690 },
+    { date: '', count: 590 },
+    { date: '', count: 1203 },
+    { date: '', count: 1489 },
+    { date: '', count: 1479 },
+    { date: '', count: 200 },
+    { date: '', count: 358 },
+    { date: '', count: 690 },
+    { date: '', count: 590 },
+    { date: '', count: 1203 },
+    { date: '', count: 1489 },
+    { date: '', count: 1479 },
+    { date: '', count: 200 },
+    { date: '', count: 358 },
+    { date: '', count: 690 },
+    { date: '', count: 590 },
+    { date: '', count: 1203 },
+    { date: '', count: 1489 },
+    { date: '', count: 1479 },
+    { date: '', count: 200 },
+    { date: '', count: 358 },
+    { date: '', count: 690 },
+  ]
+
+  const month3Result = [
+    { date: '', count: 200 },
+    { date: '', count: 358 },
+    { date: '', count: 690 },
+  ]
+
+  const month6Result = [
+    { date: '', count: 200 },
+    { date: '', count: 358 },
+    { date: '', count: 690 },
+    { date: '', count: 590 },
+    { date: '', count: 1203 },
+    { date: '', count: 1489 },
+  ]
+
+  const yearResult = [
+    { date: '', count: 200 },
+    { date: '', count: 358 },
+    { date: '', count: 690 },
+    { date: '', count: 590 },
+    { date: '', count: 1203 },
+    { date: '', count: 1489 },
+    { date: '', count: 1479 },
+    { date: '', count: 200 },
+    { date: '', count: 358 },
+    { date: '', count: 690 },
+    { date: '', count: 590 },
+    { date: '', count: 1203 },
+  ]
+
+  switch (range) {
+    case 'month':
+      return dateArray.map((date, idx) => ({
+        ...monthResult[idx],
+        date: moment(date).format(format),
+      }))
+    case '3-months':
+      return dateArray.map((date, idx) => ({
+        ...month3Result[idx],
+        date: moment(date).format(format),
+      }))
+    case '6-months':
+      return dateArray.map((date, idx) => ({
+        ...month6Result[idx],
+        date: moment(date).format(format),
+      }))
+    case 'year':
+      return dateArray.map((date, idx) => ({
+        ...yearResult[idx],
+        date: moment(date).format(format),
+      }))
+    default:
+      return dateArray.map((date, idx) => ({
+        ...result[idx],
+        date: moment(date).format(format),
+      }))
+  }
+}
+
 export default {
   apiUserCountPerStatus,
   apiQuitAndJoinCount,
+  apiReportCount,
 }

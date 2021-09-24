@@ -31,7 +31,7 @@ const LayoutTabStyle = {
   container({ backgroundColor }: ListStyleProps) {
     return `
       w-screen
-      ${helpers.convertColorToTailwind(backgroundColor || '', true)}
+      ${helpers.convertColorToTailwind('bg', backgroundColor, true)}
     `
   },
   tabList: `
@@ -50,22 +50,16 @@ const LayoutTabStyle = {
       shadow-2xl
       shadow-inner
       ${fontSize}
-      ${fontSize}
-      bg-mono-lightGray
-      hover:bg-mono-lightGrayHover
-      active:bg-mono-lightGrayActive
-      text-mono-gray
-      hover:text-mono-grayHover
-      active:text-mono-grayActive
+      ${helpers.convertColorToTailwind('bg', 'mono-lightGray')}
+      ${helpers.convertColorToTailwind('text', 'mono-gray')}
     `
   },
   selectedTabTitle({ fontSize, selectedColor, selectedTextColor }: StyleProps) {
     return `
       ${tabStyle}
       ${fontSize}
-      ${fontSize}
-      ${helpers.convertColorToTailwind(selectedColor, true)}
-      ${helpers.convertColorToTailwind(selectedTextColor, true)}
+      ${helpers.convertColorToTailwind('bg', selectedColor, true)}
+      ${helpers.convertColorToTailwind('text', selectedTextColor, true)}
     `
   },
   selectedTabUnderline({ selectedColor }: StyleProps) {
@@ -74,14 +68,14 @@ const LayoutTabStyle = {
       left-0
       h-1
       w-full
-      ${helpers.convertColorToTailwind(selectedColor, true)}
+      ${helpers.convertColorToTailwind('bg', selectedColor, true)}
     `
   },
   tabPanel({ selectedColor }: StyleProps) {
     return `
       pt-4
       w-full
-      ${helpers.convertColorToTailwind(selectedColor, true)}
+      ${helpers.convertColorToTailwind('bg', selectedColor, true)}
     `
   },
 }

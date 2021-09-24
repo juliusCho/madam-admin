@@ -3,44 +3,50 @@ import { XEIcon } from '../../etc/xeicon'
 import ButtonPrevNextStyle from './prev-next.style'
 
 export interface ButtonPrevNextProps {
-  onClickPrev: () => void
-  onClickNext: () => void
-  prevDisabled: boolean
-  nextDisabled: boolean
-  prevIcon?: {
-    name: string
-    color: string
-    size: string
+  prev: {
+    onClick: () => void
+    label?: string
+    disabled?: boolean
+    icon?: {
+      name: string
+      color: string
+      size: string | number
+    }
+    backgroundColor?: string
+    disabledBackgroundColor?: string
+    fontSize?: string
+    borderColor?: string
+    disabledBorderColor?: string
+    color?: string
+    disabledColor?: string
+    extraClassName?: string
   }
-  nextIcon?: {
-    name: string
-    color: string
-    size: string
+  next: {
+    onClick: () => void
+    label?: string
+    disabled?: boolean
+    icon?: {
+      name: string
+      color: string
+      size: string | number
+    }
+    backgroundColor?: string
+    disabledBackgroundColor?: string
+    fontSize?: string
+    borderColor?: string
+    disabledBorderColor?: string
+    color?: string
+    disabledColor?: string
+    extraClassName?: string
   }
-  prevLabel?: string
-  nextLabel?: string
-  prevClassName?: string
-  nextClassName?: string
-  prevDisabledClassName?: string
-  nextDisabledClassName?: string
   dividerClassName?: string
   style?: React.CSSProperties
   className?: string
 }
 
 function ButtonPrevNext({
-  onClickPrev,
-  onClickNext,
-  prevDisabled,
-  nextDisabled,
-  prevIcon,
-  nextIcon,
-  prevLabel,
-  nextLabel,
-  prevClassName,
-  nextClassName,
-  prevDisabledClassName,
-  nextDisabledClassName,
+  prev,
+  next,
   dividerClassName,
   style,
   className,
@@ -51,78 +57,58 @@ function ButtonPrevNext({
       style={style}>
       <button
         type="button"
-        className={`${ButtonPrevNextStyle.prevNext} ${
-          prevDisabled ? prevDisabledClassName : prevClassName
-        } ${prevDisabled ? 'cursor-not-allowed' : ''}`}
-        disabled={prevDisabled}
-        onClick={onClickPrev}
+        className={ButtonPrevNextStyle.prevNext({
+          disabled: prev.disabled,
+          backgroundColor: prev.backgroundColor,
+          disabledBackgroundColor: prev.disabledBackgroundColor,
+          fontSize: prev.fontSize,
+          borderColor: prev.borderColor,
+          disabledBorderColor: prev.disabledBorderColor,
+          color: prev.color,
+          disabledColor: prev.disabledColor,
+          extraClassName: prev.extraClassName,
+        })}
+        disabled={prev.disabled}
+        onClick={prev.onClick}
         data-testid="components.buttons.prevNext.prevButton">
-        {prevIcon && (
+        {prev.icon && (
           <XEIcon
-            onClick={prevDisabled ? undefined : onClickPrev}
-            {...prevIcon}
+            onClick={prev.disabled ? undefined : prev.onClick}
+            {...prev.icon}
           />
         )}
-        {prevLabel}
+        {prev.label}
       </button>
       <div className={`${ButtonPrevNextStyle.divider} ${dividerClassName}`} />
       <button
         type="button"
-        className={`${ButtonPrevNextStyle.prevNext} ${
-          nextDisabled ? nextDisabledClassName : nextClassName
-        } ${nextDisabled ? 'cursor-not-allowed' : ''}`}
-        disabled={nextDisabled}
-        onClick={onClickNext}
+        className={ButtonPrevNextStyle.prevNext({
+          disabled: next.disabled,
+          backgroundColor: next.backgroundColor,
+          disabledBackgroundColor: next.disabledBackgroundColor,
+          fontSize: next.fontSize,
+          borderColor: next.borderColor,
+          disabledBorderColor: next.disabledBorderColor,
+          color: next.color,
+          disabledColor: next.disabledColor,
+          extraClassName: next.extraClassName,
+        })}
+        disabled={next.disabled}
+        onClick={next.onClick}
         data-testid="components.buttons.prevNext.nextButton">
-        {nextLabel}
-        {nextIcon && (
+        {next.icon && (
           <XEIcon
-            onClick={nextDisabled ? undefined : onClickNext}
-            {...nextIcon}
+            onClick={next.disabled ? undefined : next.onClick}
+            {...next.icon}
           />
         )}
+        {next.label}
       </button>
     </div>
   )
 }
 
 ButtonPrevNext.defaultProps = {
-  prevIcon: {
-    name: 'angle-left',
-    size: '0.875rem',
-    color: 'mono.black',
-  },
-  nextIcon: {
-    name: 'angle-right',
-    size: '0.875rem',
-    color: 'mono.black',
-  },
-  prevLabel: undefined,
-  nextLabel: undefined,
-  prevClassName: `
-    bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive
-    border border-solid border-mono-black hover:border-mono-blackHover active:border-mono-blackActive
-    text-textBig font-textBig
-    text-mono-black hover:text-mono-blackHover active:text-mono-blackActive
-  `,
-  nextClassName: `
-    bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive
-    border border-solid border-mono-black hover:border-mono-blackHover active:border-mono-blackActive
-    text-textBig font-textBig
-    text-mono-black hover:text-mono-blackHover active:text-mono-blackActive
-  `,
-  prevDisabledClassName: `
-    bg-mono-lightGray
-    border border-solid border-mono-darkGray
-    text-textBig font-textBig
-    text-mono-darkGray
-  `,
-  nextDisabledClassName: `
-    bg-mono-lightGray
-    border border-solid border-mono-darkGray
-    text-textBig font-textBig
-    text-mono-darkGray
-  `,
   dividerClassName: `bg-mono-black`,
   style: {},
   className: undefined,

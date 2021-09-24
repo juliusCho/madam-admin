@@ -189,8 +189,8 @@ function InputTextLine({
       style={style}>
       <div
         className={`${InputTextLineStyle.inputContainer({
-          color: inputColor || '',
-          borderColor: inputBorderColor || 'mono.pale',
+          color: inputColor ?? '',
+          borderColor: inputBorderColor ?? 'mono-pale',
           disabled,
           disabledColor: disabledInputColor,
         })} ${inputClassName}`}
@@ -200,8 +200,8 @@ function InputTextLine({
           ref={inputRef}
           data-testid="input.textLine.input"
           className={`${InputTextLineStyle.input({
-            color: inputTextColor || 'mono.black',
-            placeholderColor: inputPlaceholderColor || 'mono.gray',
+            color: inputTextColor ?? 'mono-black',
+            placeholderColor: inputPlaceholderColor ?? 'mono-gray',
             disabled,
             disabledColor: disabledInputColor,
             disabledPlaceholderColor,
@@ -222,7 +222,7 @@ function InputTextLine({
           <XEIcon
             name="close"
             size={fontSize}
-            color={inputResetColor || 'mono.black'}
+            color={inputResetColor ?? 'mono-black'}
             style={{ backgroundColor: 'transparent' }}
             className={InputTextLineStyle.axe}
             onClick={onCancel}
@@ -245,20 +245,16 @@ InputTextLine.defaultProps = {
   inputStyle: {},
   inputClassName: '',
   inputColor: undefined,
-  inputBorderColor:
-    'border-mono-pale hover:border-mono-paleHover active:border-mono-paleActive',
-  inputTextColor:
-    'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
-  inputPlaceholderColor:
-    'placeholder-mono-gray hover:placeholder-mono-grayHover active:placeholder-mono-grayActive',
-  inputResetColor:
-    'text-mono-black hover:text-mono-blackHover active:text-mono-blackActive',
+  inputBorderColor: 'mono-pale',
+  inputTextColor: 'mono-black`',
+  inputPlaceholderColor: 'mono-gray',
+  inputResetColor: 'mono-black',
   placeholder: '',
   locale: 'kr',
   type: 'text',
   disabled: false,
-  disabledInputColor: 'bg-mono-lightGray',
-  disabledPlaceholderColor: 'placeholder-mono-darkGray',
+  disabledInputColor: 'mono-lightGray',
+  disabledPlaceholderColor: 'mono-darkGray',
   maxLength: 200,
 }
 

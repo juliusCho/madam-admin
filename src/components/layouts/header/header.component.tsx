@@ -176,7 +176,7 @@ function LayoutHeader({}: LayoutHeaderProps) {
         <ButtonRoundWithIcon
           icon="border-color"
           iconSize="0.85rem"
-          colorInactive="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive"
+          colorInactive="mono-white"
           onClick={() => setModalShow(true)}
           className={LayoutHeaderStyle.button}>
           사용자 명 변경
@@ -185,7 +185,7 @@ function LayoutHeader({}: LayoutHeaderProps) {
       <ButtonRoundWithIcon
         icon="log-out"
         onClick={() => setConfirmLogoutShow(true)}
-        colorInactive="bg-mono-white hover:bg-mono-whiteHover active:bg-mono-whiteActive"
+        colorInactive="mono-white"
         style={{
           marginRight: '2rem',
           width:

@@ -1,4 +1,5 @@
 import { fireEvent, render } from '@testing-library/react'
+import { RecoilRoot } from 'recoil'
 import { ChartDatePickerOption } from '../../../types'
 import ModalDatePickerOption from './date-picker-option.component'
 
@@ -9,10 +10,12 @@ describe('Components ModalDatePickerOption', () => {
   })
 
   const { getByText } = render(
-    <ModalDatePickerOption show changeOption={changeOption} type={type} />,
+    <RecoilRoot>
+      <ModalDatePickerOption show changeOption={changeOption} type={type} />\
+    </RecoilRoot>,
   )
 
-  const day = getByText('하루')
+  // const day = getByText('하루')
   const week = getByText('일주일')
   const month = getByText('한달')
   const threeMonths = getByText('3달')
@@ -20,7 +23,7 @@ describe('Components ModalDatePickerOption', () => {
   const year = getByText('일년')
 
   it('display', () => {
-    expect(day).toBeInTheDocument()
+    // expect(day).toBeInTheDocument()
     expect(week).toBeInTheDocument()
     expect(month).toBeInTheDocument()
     expect(threeMonths).toBeInTheDocument()
