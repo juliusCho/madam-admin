@@ -2,6 +2,7 @@ import moment from 'moment'
 import React from 'react'
 import Recoil from 'recoil'
 import { apiDashboard } from '../../../api'
+import { ChartBarLine } from '../../../components/charts/bar-line'
 import { ChartDonut } from '../../../components/charts/donut'
 import { ChartLine } from '../../../components/charts/line'
 import adminGlobalStates from '../../../recoil/admin'
@@ -68,6 +69,9 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
   >([helpers.getPreviousSevenMonth(), helpers.getLastMonth()])
   const [inviteChartDateOption, setInviteChartDateOption] =
     React.useState<ChartDatePickerOption>('6-months')
+  const [inviteChartData, setInviteChartData] = React.useState<
+    Array<[string, number, number]>
+  >([])
 
   const isMounted = customHooks.useIsMounted()
 
@@ -256,7 +260,13 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
           return [moment(date).format(connectChartFormat), 0, 0]
         }),
     )
-  }, [token, connectChartDate, helpers.getDateRangeArray, connectChartFormat])
+  }, [
+    token,
+    connectChartDate,
+    helpers.getDateRangeArray,
+    connectChartFormat,
+    connectChartDateOption,
+  ])
 
   React.useEffect(() => {
     if (isMounted()) {
@@ -304,13 +314,73 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
           return [moment(date).format(reportChartFormat), 0]
         }),
     )
-  }, [token, reportChartDate, helpers.getDateRangeArray, reportChartFormat])
+  }, [
+    token,
+    reportChartDate,
+    helpers.getDateRangeArray,
+    reportChartFormat,
+    reportChartDateOption,
+  ])
 
   React.useEffect(() => {
     if (isMounted()) {
       fetchReportChartData()
     }
   }, [isMounted, fetchReportChartData])
+
+  const fetchInviteChartData = React.useCallback(async () => {
+    if (
+      !inviteChartDate ||
+      !Array.isArray(inviteChartDate) ||
+      inviteChartDate.length === 1
+    )
+      return
+
+    const result = await apiDashboard.apiSendLinkAndJoinCount(
+      token,
+      moment(inviteChartDate[0]).format('YYYY-MM-DD'),
+      moment(inviteChartDate[1]).format('YYYY-MM-DD'),
+      inviteChartDateOption,
+    )
+    if (!result) {
+      setInviteChartData(() => [])
+      return
+    }
+
+    setInviteChartData(() =>
+      helpers
+        .getDateRangeArray(inviteChartDateOption, inviteChartDate as Date[])
+        .filter(
+          (date) =>
+            !!result.find(
+              (res) => res.date === moment(date).format(inviteChartFormat),
+            ),
+        )
+        .map((date) => {
+          const found = result.find(
+            (res) => res.date === moment(date).format(inviteChartFormat),
+          )
+
+          if (found) {
+            return [found.date, found.sendCount, found.joinCount]
+          }
+
+          return [moment(date).format(inviteChartFormat), 0, 0]
+        }),
+    )
+  }, [
+    token,
+    inviteChartDate,
+    helpers.getDateRangeArray,
+    inviteChartFormat,
+    inviteChartDateOption,
+  ])
+
+  React.useEffect(() => {
+    if (isMounted()) {
+      fetchInviteChartData()
+    }
+  }, [isMounted, fetchInviteChartData])
 
   return (
     <PageDashboardLayout endpoint="APP_USE">
@@ -339,7 +409,8 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
                 bold: true,
               },
             ]}
-            className="mt-5"
+            className={`${PageDashboardAppUseStyle.chart({ device })} mt-5`}
+            colors={['purple', 'blue', 'red', 'orange', 'green']}
           />
           <ChartLine
             title="신규 가입 / 탈퇴 수"
@@ -359,7 +430,8 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
               format: connectChartFormat,
               maxDate: connectChartMaxDate,
             }}
-            className={PageDashboardAppUseStyle.lineChart({ device })}
+            className={PageDashboardAppUseStyle.chart({ device })}
+            colors={['blue', 'orange']}
           />
         </div>
         <div className={PageDashboardAppUseStyle.row({ device })}>
@@ -380,7 +452,26 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
               format: reportChartFormat,
               maxDate: reportChartMaxDate,
             }}
-            className={PageDashboardAppUseStyle.lineChart({ device })}
+            className={PageDashboardAppUseStyle.chart({ device })}
+            colors={['red']}
+          />
+          <ChartBarLine
+            title="초대 링크 발송 수 대비 링크를 통한 가입 수"
+            data={(
+              [['날짜', '초대링크 발송', '가입']] as Array<
+                Array<string | number>
+              >
+            ).concat(inviteChartData)}
+            dateSearch={{
+              type: inviteChartDateOption,
+              date: inviteChartDate,
+              onChange: onChangeInviteChartDate,
+              format: inviteChartFormat,
+              maxDate: inviteChartMaxDate,
+            }}
+            lineColumnIdx={1}
+            className={PageDashboardAppUseStyle.chart({ device })}
+            colors={['green', 'blue']}
           />
         </div>
       </div>

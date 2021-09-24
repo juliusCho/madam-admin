@@ -13,6 +13,7 @@ export interface ChartDonutProps {
   title: string
   data: Array<[string, string] | [string, number]>
   centerText?: CenterTextType | CenterTextType[]
+  colors?: string[]
   style?: React.CSSProperties
   className?: string
 }
@@ -21,6 +22,7 @@ function ChartDonut({
   title,
   data,
   centerText,
+  colors,
   style,
   className,
 }: ChartDonutProps) {
@@ -110,6 +112,7 @@ function ChartDonut({
           },
           pieSliceBorderColor: 'white',
           sliceVisibilityThreshold: 0,
+          colors,
         }}
       />
     </div>
@@ -117,6 +120,7 @@ function ChartDonut({
 }
 
 ChartDonut.defaultProps = {
+  colors: undefined,
   centerText: undefined,
   style: {},
   className: undefined,

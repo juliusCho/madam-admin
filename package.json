@@ -5,9 +5,13 @@
   "license": "UNLICENSED",
   "homepage": "https://madam-19d6d.web.app",
   "author": "Julius Cho <johncrist2000@gmail.com>",
+  "description": "App for Madam Administrators",
+  "engines": {
+    "node": "14.x",
+    "npm": "6.14.x"
+  },
   "scripts": {
     "css": "bash tailwind-compile.sh",
-    "prestart": "npm run css",
     "start": "craco start",
     "prebuild": "cross-env NODE_ENV=production npm run css",
     "build": "npm run css && craco build",

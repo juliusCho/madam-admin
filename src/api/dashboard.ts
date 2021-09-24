@@ -252,8 +252,132 @@ const apiReportCount = (
   }
 }
 
+const apiSendLinkAndJoinCount = async (
+  token: string,
+  startDate: string,
+  endDate: string,
+  range: ChartDatePickerOption,
+): Promise<Array<{
+  date: string
+  sendCount: number
+  joinCount: number
+}> | null> => {
+  const dateArray = helpers.getDateRangeArray(range, [
+    moment(startDate).toDate(),
+    moment(endDate).toDate(),
+  ])
+  let format = 'YYYY-MM-DD'
+
+  if (range === 'year' || range === '3-months' || range === '6-months') {
+    format = 'YYYY-MM'
+  }
+
+  const result = [
+    { date: '', sendCount: 200, joinCount: 100 },
+    { date: '', sendCount: 358, joinCount: 3 },
+    { date: '', sendCount: 690, joinCount: 26 },
+    { date: '', sendCount: 590, joinCount: 42 },
+    { date: '', sendCount: 1203, joinCount: 52 },
+    { date: '', sendCount: 1489, joinCount: 3 },
+    { date: '', sendCount: 1479, joinCount: 1 },
+  ]
+
+  const monthResult = [
+    { date: '', sendCount: 200, joinCount: 100 },
+    { date: '', sendCount: 358, joinCount: 3 },
+    { date: '', sendCount: 690, joinCount: 26 },
+    { date: '', sendCount: 590, joinCount: 42 },
+    { date: '', sendCount: 1203, joinCount: 52 },
+    { date: '', sendCount: 1489, joinCount: 3 },
+    { date: '', sendCount: 1479, joinCount: 1 },
+    { date: '', sendCount: 200, joinCount: 100 },
+    { date: '', sendCount: 358, joinCount: 3 },
+    { date: '', sendCount: 690, joinCount: 26 },
+    { date: '', sendCount: 590, joinCount: 42 },
+    { date: '', sendCount: 1203, joinCount: 52 },
+    { date: '', sendCount: 1489, joinCount: 3 },
+    { date: '', sendCount: 1479, joinCount: 1 },
+    { date: '', sendCount: 200, joinCount: 100 },
+    { date: '', sendCount: 358, joinCount: 3 },
+    { date: '', sendCount: 690, joinCount: 26 },
+    { date: '', sendCount: 590, joinCount: 42 },
+    { date: '', sendCount: 1203, joinCount: 52 },
+    { date: '', sendCount: 1489, joinCount: 3 },
+    { date: '', sendCount: 1479, joinCount: 1 },
+    { date: '', sendCount: 200, joinCount: 100 },
+    { date: '', sendCount: 358, joinCount: 3 },
+    { date: '', sendCount: 690, joinCount: 26 },
+    { date: '', sendCount: 590, joinCount: 42 },
+    { date: '', sendCount: 1203, joinCount: 52 },
+    { date: '', sendCount: 1489, joinCount: 3 },
+    { date: '', sendCount: 1479, joinCount: 1 },
+    { date: '', sendCount: 200, joinCount: 100 },
+    { date: '', sendCount: 358, joinCount: 3 },
+    { date: '', sendCount: 690, joinCount: 26 },
+  ]
+
+  const month3Result = [
+    { date: '', sendCount: 200, joinCount: 100 },
+    { date: '', sendCount: 358, joinCount: 3 },
+    { date: '', sendCount: 690, joinCount: 26 },
+  ]
+
+  const month6Result = [
+    { date: '', sendCount: 200, joinCount: 100 },
+    { date: '', sendCount: 358, joinCount: 3 },
+    { date: '', sendCount: 690, joinCount: 26 },
+    { date: '', sendCount: 590, joinCount: 42 },
+    { date: '', sendCount: 1203, joinCount: 52 },
+    { date: '', sendCount: 1489, joinCount: 3 },
+  ]
+
+  const yearResult = [
+    { date: '', sendCount: 200, joinCount: 100 },
+    { date: '', sendCount: 358, joinCount: 3 },
+    { date: '', sendCount: 690, joinCount: 26 },
+    { date: '', sendCount: 590, joinCount: 42 },
+    { date: '', sendCount: 1203, joinCount: 52 },
+    { date: '', sendCount: 1489, joinCount: 3 },
+    { date: '', sendCount: 1479, joinCount: 1 },
+    { date: '', sendCount: 200, joinCount: 100 },
+    { date: '', sendCount: 358, joinCount: 3 },
+    { date: '', sendCount: 690, joinCount: 26 },
+    { date: '', sendCount: 590, joinCount: 42 },
+    { date: '', sendCount: 1203, joinCount: 52 },
+  ]
+
+  switch (range) {
+    case 'month':
+      return dateArray.map((date, idx) => ({
+        ...monthResult[idx],
+        date: moment(date).format(format),
+      }))
+    case '3-months':
+      return dateArray.map((date, idx) => ({
+        ...month3Result[idx],
+        date: moment(date).format(format),
+      }))
+    case '6-months':
+      return dateArray.map((date, idx) => ({
+        ...month6Result[idx],
+        date: moment(date).format(format),
+      }))
+    case 'year':
+      return dateArray.map((date, idx) => ({
+        ...yearResult[idx],
+        date: moment(date).format(format),
+      }))
+    default:
+      return dateArray.map((date, idx) => ({
+        ...result[idx],
+        date: moment(date).format(format),
+      }))
+  }
+}
+
 export default {
   apiUserCountPerStatus,
   apiQuitAndJoinCount,
   apiReportCount,
+  apiSendLinkAndJoinCount,
 }

@@ -18,6 +18,7 @@ export interface ChartBarLineProps {
     maxDate?: Date
     minDate?: Date
   }
+  colors?: string[]
   style?: React.CSSProperties
   className?: string
 }
@@ -27,6 +28,7 @@ function ChartBarLine({
   data,
   lineColumnIdx,
   dateSearch,
+  colors,
   style,
   className,
 }: ChartBarLineProps) {
@@ -93,6 +95,7 @@ function ChartBarLine({
           series: {
             [lineColumnIdx]: { type: 'line' },
           },
+          colors,
         }}
       />
       {dateSearch && (
@@ -109,6 +112,7 @@ function ChartBarLine({
 }
 
 ChartBarLine.defaultProps = {
+  colors: undefined,
   dateSearch: undefined,
   style: {},
   className: undefined,

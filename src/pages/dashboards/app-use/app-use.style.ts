@@ -5,7 +5,8 @@ interface StyleProps {
 const PageDashboardAppUseStyle = {
   container({ device }: StyleProps) {
     return `
-      py-4
+      pt-4
+      pb-10
       w-screen
       h-full
       flex
@@ -30,8 +31,10 @@ const PageDashboardAppUseStyle = {
       }
     `
   },
-  lineChart({ device }: StyleProps) {
-    return device === 'mobile' || device === 'smallScreen' ? 'mt-8' : 'mt-1'
+  chart({ device }: StyleProps) {
+    return device === 'mobile' || device === 'smallScreen'
+      ? 'mt-10'
+      : 'mt-1 mx-4'
   },
 }
 

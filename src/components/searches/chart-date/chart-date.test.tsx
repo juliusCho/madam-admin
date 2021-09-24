@@ -42,7 +42,7 @@ describe('Component SearchChartDate', () => {
         expect(onChange).toHaveBeenCalled()
 
         expect(moment(date).format('YYYYMMDD')).toBe(
-          moment().add('days', 1).format('YYYYMMDD'),
+          moment().add(1, 'days').format('YYYYMMDD'),
         )
       }, 100)
     })
