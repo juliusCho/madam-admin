@@ -351,6 +351,11 @@ export default {
   ) {
     switch (inputOption) {
       case 'day':
+        if (!date) {
+          set([this.getYesterday(), this.getYesterday()])
+          return
+        }
+
         if (Array.isArray(date)) {
           if (date.length === 0) {
             set([this.getYesterday(), this.getYesterday()])
@@ -371,6 +376,11 @@ export default {
         set([date, date])
         return
       case 'week':
+        if (!date) {
+          set([this.getLastWeek(), this.getYesterday()])
+          return
+        }
+
         if (Array.isArray(date)) {
           if (date.length === 0) {
             set([this.getLastWeek(), this.getYesterday()])
@@ -414,6 +424,11 @@ export default {
         set([moment(date).add(-6, 'days').toDate(), date])
         return
       case 'month':
+        if (!date) {
+          set([this.getLastMonth(true), this.getLastMonth()])
+          return
+        }
+
         if (Array.isArray(date)) {
           if (date.length === 0) {
             set([this.getLastMonth(true), this.getLastMonth()])
@@ -453,6 +468,11 @@ export default {
         set([moment(date).date(1).toDate(), endDt])
         return
       case '3-months':
+        if (!date) {
+          set([this.getPreviousThreeMonth(), this.getLastMonth()])
+          return
+        }
+
         if (Array.isArray(date)) {
           if (date.length === 0) {
             set([this.getPreviousThreeMonth(), this.getLastMonth()])
@@ -496,6 +516,11 @@ export default {
         set([moment(date).add(-2, 'months').toDate(), date])
         return
       case '6-months':
+        if (!date) {
+          set([this.getPreviousSevenMonth(), this.getLastMonth()])
+          return
+        }
+
         if (Array.isArray(date)) {
           if (date.length === 0) {
             set([this.getPreviousSevenMonth(), this.getLastMonth()])
@@ -539,6 +564,11 @@ export default {
         set([moment(date).add(-5, 'months').toDate(), date])
         return
       case 'year':
+        if (!date) {
+          set([this.getPreviousTwoYear(), this.getLastYear()])
+          return
+        }
+
         if (Array.isArray(date)) {
           if (date.length === 0) {
             set([this.getPreviousTwoYear(), this.getLastYear()])
