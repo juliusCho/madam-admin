@@ -7,7 +7,7 @@ import { ChartDonut } from '../../../components/charts/donut'
 import { ChartLine } from '../../../components/charts/line'
 import adminGlobalStates from '../../../recoil/admin'
 import deviceGlobalStates from '../../../recoil/device'
-import { ChartDatePickerOption } from '../../../types'
+import { ChartDatePickerOptionType } from '../../../types'
 import helpers from '../../../utils/helpers'
 import customHooks from '../../../utils/hooks'
 import PageDashboardLayout from '../layout.component'
@@ -52,7 +52,7 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
     undefined | Date | Array<Date | undefined>
   >([helpers.getLastWeek(), helpers.getYesterday()])
   const [connectChartDateOption, setConnectChartDateOption] =
-    React.useState<ChartDatePickerOption>('week')
+    React.useState<ChartDatePickerOptionType>('week')
   const [connectChartData, setConnectChartData] = React.useState<
     Array<[string, number, number]>
   >([])
@@ -60,7 +60,7 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
     undefined | Date | Array<Date | undefined>
   >([helpers.getPreviousThreeMonth(), helpers.getLastMonth()])
   const [reportChartDateOption, setReportChartDateOption] =
-    React.useState<ChartDatePickerOption>('3-months')
+    React.useState<ChartDatePickerOptionType>('3-months')
   const [reportChartData, setReportChartData] = React.useState<
     Array<[string, number]>
   >([])
@@ -68,7 +68,7 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
     undefined | Date | Array<Date | undefined>
   >([helpers.getPreviousSevenMonth(), helpers.getLastMonth()])
   const [inviteChartDateOption, setInviteChartDateOption] =
-    React.useState<ChartDatePickerOption>('6-months')
+    React.useState<ChartDatePickerOptionType>('6-months')
   const [inviteChartData, setInviteChartData] = React.useState<
     Array<[string, number, number]>
   >([])
@@ -125,7 +125,7 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
 
   const onChangeConnectChartDate = (
     date?: Date | Array<Date | undefined>,
-    inputOption?: ChartDatePickerOption,
+    inputOption?: ChartDatePickerOptionType,
   ) => {
     if (!date) {
       return
@@ -165,7 +165,7 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
 
   const onChangeReportChartDate = (
     date?: Date | Array<Date | undefined>,
-    inputOption?: ChartDatePickerOption,
+    inputOption?: ChartDatePickerOptionType,
   ) => {
     if (!date) {
       return
@@ -205,7 +205,7 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
 
   const onChangeInviteChartDate = (
     date?: Date | Array<Date | undefined>,
-    inputOption?: ChartDatePickerOption,
+    inputOption?: ChartDatePickerOptionType,
   ) => {
     if (!date) {
       return

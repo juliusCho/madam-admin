@@ -1,11 +1,11 @@
 import { fireEvent, render } from '@testing-library/react'
 import { RecoilRoot } from 'recoil'
-import { ChartDatePickerOption } from '../../../types'
+import { ChartDatePickerOptionType } from '../../../types'
 import ModalDatePickerOption from './date-picker-option.component'
 
 describe('Components ModalDatePickerOption', () => {
-  let type: ChartDatePickerOption = 'day'
-  const changeOption = jest.fn((changedType: ChartDatePickerOption) => {
+  let type: ChartDatePickerOptionType = 'day'
+  const changeOption = jest.fn((changedType: ChartDatePickerOptionType) => {
     type = changedType
   })
 

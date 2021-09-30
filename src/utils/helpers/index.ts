@@ -2,7 +2,7 @@
 import moment from 'moment'
 import { ROUTER_PATH } from '../../constants'
 import endpointsConfig from '../../endpoints.config'
-import { ChartDatePickerOption } from '../../types'
+import { ChartDatePickerOptionType, ScreenOptionType } from '../../types'
 
 export default {
   convertTextToTailwind(text?: string) {
@@ -50,10 +50,7 @@ export default {
     })(navigator.userAgent || navigator.vendor)
     return check
   },
-  firstDepthTab(
-    route: string,
-    device?: 'mobile' | 'smallScreen' | 'mediumScreen' | 'screen',
-  ) {
+  firstDepthTab(route: string, device?: ScreenOptionType) {
     let result = [
       {
         title: '대시보드',
@@ -307,7 +304,7 @@ export default {
   setToStartDate(date: Date) {
     return moment(date).hours(0).minutes(0).seconds(0).milliseconds(0).toDate()
   },
-  getDateRangeArray(range: ChartDatePickerOption, dates: Date[]) {
+  getDateRangeArray(range: ChartDatePickerOptionType, dates: Date[]) {
     if (dates.length === 1) {
       return dates
     }
@@ -347,7 +344,7 @@ export default {
         >
       | ((date?: Date | Array<undefined | Date>) => void),
     date?: Date | Array<Date | undefined>,
-    inputOption?: ChartDatePickerOption,
+    inputOption?: ChartDatePickerOptionType,
   ) {
     switch (inputOption) {
       case 'day':

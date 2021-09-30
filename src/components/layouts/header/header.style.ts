@@ -1,5 +1,7 @@
+import { ScreenOptionType } from '../../../types'
+
 interface StyleProps {
-  device: 'mobile' | 'smallScreen' | 'mediumScreen' | 'screen'
+  device: ScreenOptionType
 }
 
 const LayoutHeaderStyle = {

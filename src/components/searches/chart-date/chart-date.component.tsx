@@ -3,7 +3,10 @@ import moment from 'moment'
 import React from 'react'
 import Recoil from 'recoil'
 import deviceGlobalStates from '../../../recoil/device'
-import { ChartDatePickerOption } from '../../../types'
+import {
+  ChartDatePickerOptionType,
+  CHART_DATE_PICKER_OPTION,
+} from '../../../types'
 import helpers from '../../../utils/helpers'
 import { ButtonPrevNext } from '../../buttons/prev-next'
 import { XEIcon } from '../../etc/xeicon'
@@ -12,7 +15,7 @@ import { ModalDatePickerOption } from '../../modals/date-picker-option'
 import SearchChartDateStyle from './chart-date.style'
 
 const getPrevNextSequel = (
-  type: ChartDatePickerOption,
+  type: ChartDatePickerOptionType,
   prevNext: 'prev' | 'next',
   date: Date,
 ) => {
@@ -94,10 +97,10 @@ const getPrevNextSequel = (
 }
 
 export interface SearchChartDateProps {
-  type: ChartDatePickerOption
+  type: ChartDatePickerOptionType
   onChange: (
     date?: Date | Array<Date | undefined>,
-    type?: ChartDatePickerOption,
+    type?: ChartDatePickerOptionType,
   ) => void
   date: Date | Array<Date | undefined>
   maxDate?: Date
@@ -268,6 +271,49 @@ function SearchChartDate({
     }
   }, [type])
 
+  const changeOption = React.useCallback(
+    (optionType: ChartDatePickerOptionType) => {
+      setShowPickerOption(() => false)
+
+      let newDate: Date | undefined | Array<Date | undefined>
+
+      switch (optionType) {
+        case 'day':
+          newDate = [helpers.getYesterday(true), helpers.getYesterday()]
+          break
+        case 'week':
+          newDate = [helpers.getLastWeek(), helpers.getYesterday()]
+          break
+        case 'month':
+          newDate = [helpers.getLastMonth(), helpers.getYesterday()]
+          break
+        case '3-months':
+          newDate = [helpers.getPreviousThreeMonth(), helpers.getYesterday()]
+          break
+        case '6-months':
+          newDate = [helpers.getPreviousSixMonth(), helpers.getYesterday()]
+          break
+        case 'year':
+          newDate = [helpers.getLastYear(), helpers.getYesterday()]
+          break
+        default:
+          newDate = date
+          break
+      }
+
+      onChange(newDate, optionType)
+    },
+    [
+      helpers.getYesterday,
+      helpers.getLastMonth,
+      helpers.getLastWeek,
+      helpers.getPreviousThreeMonth,
+      helpers.getPreviousSixMonth,
+      helpers.getLastYear,
+      onChange,
+    ],
+  )
+
   return (
     <>
       <ModalDateTimePicker
@@ -287,40 +333,7 @@ function SearchChartDate({
       <ModalDatePickerOption
         show={showPickerOption}
         type={type}
-        changeOption={(optionType) => {
-          setShowPickerOption(false)
-
-          let newDate: Date | undefined | Array<Date | undefined>
-
-          switch (optionType) {
-            case 'day':
-              newDate = [helpers.getYesterday(true), helpers.getYesterday()]
-              break
-            case 'week':
-              newDate = [helpers.getLastWeek(), helpers.getYesterday()]
-              break
-            case 'month':
-              newDate = [helpers.getLastMonth(), helpers.getYesterday()]
-              break
-            case '3-months':
-              newDate = [
-                helpers.getPreviousThreeMonth(),
-                helpers.getYesterday(),
-              ]
-              break
-            case '6-months':
-              newDate = [helpers.getPreviousSixMonth(), helpers.getYesterday()]
-              break
-            case 'year':
-              newDate = [helpers.getLastYear(), helpers.getYesterday()]
-              break
-            default:
-              newDate = date
-              break
-          }
-
-          onChange(newDate, optionType)
-        }}
+        changeOption={changeOption}
       />
       <div className={SearchChartDateStyle.container}>
         <div className={SearchChartDateStyle.leftCallerContainer}>
@@ -328,20 +341,24 @@ function SearchChartDate({
             {...SearchChartDateStyle.icon(
               'calendar-check',
               device,
-              'mono-black',
+              'mono-white',
             )}
             testID="components.searches.chartDate.pickerCaller"
             onClick={onClick}
             className={SearchChartDateStyle.calendarCaller({ device })}
           />
-          <XEIcon
-            {...SearchChartDateStyle.icon('bars', device, 'mono-white')}
-            testID="components.searches.chartDate.pickerOptionCaller"
+          <button
+            type="button"
             onClick={() => setShowPickerOption(true)}
-            className={`${SearchChartDateStyle.calendarCaller({
-              device,
-            })} bg-main-navy hover:bg-main-navyHover active:bg-main-navyActive`}
-          />
+            className={SearchChartDateStyle.optionContainer({ device })}>
+            <XEIcon
+              {...SearchChartDateStyle.icon('bars', device, 'mono-white')}
+              testID="components.searches.chartDate.pickerOptionCaller"
+              onClick={() => setShowPickerOption(true)}
+              className={SearchChartDateStyle.optionCaller}
+            />
+            {CHART_DATE_PICKER_OPTION[type]}
+          </button>
         </div>
         <ButtonPrevNext
           prev={{
@@ -350,12 +367,12 @@ function SearchChartDate({
             icon: SearchChartDateStyle.icon(
               'angle-left',
               device,
-              'mono-black',
+              'mono-white',
               prevDisabled(),
             ),
-            color: 'mono-black',
-            borderColor: 'mono-paleBlack',
-            backgroundColor: 'mono-white',
+            color: 'mono-darkGray',
+            borderColor: 'main-navy',
+            backgroundColor: 'main-blue',
             disabledColor: 'mono-lightGray',
             fontSize:
               device === 'mobile' || device === 'smallScreen'
@@ -371,12 +388,12 @@ function SearchChartDate({
             icon: SearchChartDateStyle.icon(
               'angle-right',
               device,
-              'mono-black',
+              'mono-white',
               nextDisabled(),
             ),
-            color: 'mono-black',
-            borderColor: 'mono-paleBlack',
-            backgroundColor: 'mono-white',
+            color: 'mono-darkGray',
+            borderColor: 'main-navy',
+            backgroundColor: 'main-blue',
             disabledColor: 'mono-lightGray',
             fontSize:
               device === 'mobile' || device === 'smallScreen'

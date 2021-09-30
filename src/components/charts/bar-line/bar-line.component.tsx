@@ -2,7 +2,7 @@ import React from 'react'
 import Chart from 'react-google-charts'
 import Recoil from 'recoil'
 import deviceGlobalStates from '../../../recoil/device'
-import { ChartDatePickerOption } from '../../../types'
+import { ChartDatePickerOptionType } from '../../../types'
 import { SearchChartDate } from '../../searches/chart-date'
 import ChartBarLineStyle from './bar-line.style'
 
@@ -11,7 +11,7 @@ export interface ChartBarLineProps {
   data: Array<Array<string | number>>
   lineColumnIdx: number
   dateSearch?: {
-    type: ChartDatePickerOption
+    type: ChartDatePickerOptionType
     date?: Date | Array<Date | undefined>
     onChange: (date?: Date | Array<Date | undefined>) => void
     format: string

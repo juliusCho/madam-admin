@@ -158,6 +158,9 @@ module.exports = {
       minWidth: () => ({
         fit: 'fit-content',
       }),
+      spacing: {
+        13: '3.25rem',
+      },
     },
   },
   variants: {

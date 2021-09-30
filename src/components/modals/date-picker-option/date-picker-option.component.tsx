@@ -2,14 +2,17 @@ import React from 'react'
 import Modal from 'react-modal'
 import Recoil from 'recoil'
 import deviceGlobalStates from '../../../recoil/device'
-import { ChartDatePickerOption } from '../../../types'
+import {
+  ChartDatePickerOptionType,
+  CHART_DATE_PICKER_OPTION,
+} from '../../../types'
 import customHooks from '../../../utils/hooks'
 import ModalDatePickerOptionStyle from './date-picker-option.style'
 
 export interface ModalDatePickerOptionProps {
   show: boolean
-  changeOption: (type: ChartDatePickerOption) => void
-  type?: ChartDatePickerOption
+  changeOption: (type: ChartDatePickerOptionType) => void
+  type?: ChartDatePickerOptionType
   showOneDay?: boolean
   backgroundColor?: string
   className?: string
@@ -42,32 +45,15 @@ function ModalDatePickerOption({
     }
   }, [isMounted, show])
 
-  const getLabel = React.useCallback((optionType: ChartDatePickerOption) => {
-    switch (optionType) {
-      case 'day':
-        return '하루'
-      case 'week':
-        return '일주일'
-      case 'month':
-        return '한달'
-      case '3-months':
-        return '3달'
-      case '6-months':
-        return '6달'
-      default:
-        return '일년'
-    }
-  }, [])
-
   const Option = React.useCallback(
-    (optionType: ChartDatePickerOption) => (
+    (optionType: ChartDatePickerOptionType) => (
       <button
         type="button"
         onClick={() => changeOption(optionType)}
         className={ModalDatePickerOptionStyle.button({
           selected: type === optionType,
         })}>
-        {getLabel(optionType)}
+        {CHART_DATE_PICKER_OPTION[optionType]}
       </button>
     ),
     [type],

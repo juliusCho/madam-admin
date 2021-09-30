@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { ChartDatePickerOption } from '../types'
+import { ChartDatePickerOptionType } from '../types'
 import helpers from '../utils/helpers'
 
 const apiUserCountPerStatus = async (
@@ -14,7 +14,7 @@ const apiQuitAndJoinCount = async (
   token: string,
   startDate: string,
   endDate: string,
-  range: ChartDatePickerOption,
+  range: ChartDatePickerOptionType,
 ): Promise<Array<{
   date: string
   joinCount: number
@@ -137,7 +137,7 @@ const apiReportCount = (
   token: string,
   startDate: string,
   endDate: string,
-  range: ChartDatePickerOption,
+  range: ChartDatePickerOptionType,
 ) => {
   const dateArray = helpers.getDateRangeArray(range, [
     moment(startDate).toDate(),
@@ -256,7 +256,7 @@ const apiSendLinkAndJoinCount = async (
   token: string,
   startDate: string,
   endDate: string,
-  range: ChartDatePickerOption,
+  range: ChartDatePickerOptionType,
 ): Promise<Array<{
   date: string
   sendCount: number

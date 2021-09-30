@@ -1,8 +1,9 @@
+import { ScreenOptionType } from '../../../types'
 import helpers from '../../../utils/helpers'
 
 interface StyleProps {
   show: boolean
-  device: 'mobile' | 'smallScreen' | 'mediumScreen' | 'screen'
+  device: ScreenOptionType
 }
 
 const ButtonToTopStyle = {
