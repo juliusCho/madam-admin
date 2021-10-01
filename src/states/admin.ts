@@ -1,6 +1,6 @@
 import Recoil from 'recoil'
 import { recoilPersist } from 'recoil-persist'
-import { AdminType } from '../types'
+import { AdminType } from '~/types'
 
 const { persistAtom } = recoilPersist()
 

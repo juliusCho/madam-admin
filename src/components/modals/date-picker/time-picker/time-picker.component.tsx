@@ -1,7 +1,7 @@
 import moment from 'moment'
 import TmPicker from 'rc-time-picker'
 import * as React from 'react'
-import { XEIcon } from '../../../etc/xeicon'
+import { XEIcon } from '~/components/etc/xeicon'
 import './time-picker.style.scss'
 
 export interface TimePickerProps {

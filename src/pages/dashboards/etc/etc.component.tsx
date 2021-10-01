@@ -1,5 +1,5 @@
 import React from 'react'
-import PageDashboardLayout from '../layout.component'
+import PageDashboardLayout from '~/pages/dashboards/layout.component'
 
 export interface PageDashboardEtcProps {}
 

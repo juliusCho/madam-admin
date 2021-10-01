@@ -1,5 +1,5 @@
 import React from 'react'
-import XEIcon from '../../etc/xeicon/xeicon.component'
+import XEIcon from '~/components/etc/xeicon/xeicon.component'
 import ButtonRoundWithIconStyle from './round-with-icon.style'
 
 export interface ButtonRoundWithIconProps {

@@ -1,5 +1,5 @@
-import { ScreenOptionType } from '../../../types'
-import helpers from '../../../utils/helpers'
+import { ScreenOptionType } from '~/types'
+import helpers from '~/utils/helpers'
 
 interface StyleProps {
   show: boolean

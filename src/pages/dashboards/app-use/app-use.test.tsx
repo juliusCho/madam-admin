@@ -1,5 +1,5 @@
-import { ROUTER_PATH } from '../../../constants'
-import { renderPage } from '../../../__fixtures__'
+import { ROUTER_PATH } from '~/constants/etc'
+import { renderPage } from '~/__fixtures__'
 import DashboardAppUse from './app-use.component'
 
 describe('Page DashboardAppUse', () => {

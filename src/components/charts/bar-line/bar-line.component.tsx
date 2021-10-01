@@ -1,9 +1,9 @@
 import React from 'react'
 import Chart from 'react-google-charts'
 import Recoil from 'recoil'
-import deviceGlobalStates from '../../../recoil/device'
-import { ChartDatePickerOptionType } from '../../../types'
-import { SearchChartDate } from '../../searches/chart-date'
+import { SearchChartDate } from '~/components/searches/chart-date'
+import deviceGlobalStates from '~/states/device'
+import { ChartDatePickerOptionType } from '~/types'
 import ChartBarLineStyle from './bar-line.style'
 
 export interface ChartBarLineProps {
@@ -81,7 +81,7 @@ function ChartBarLine({
             position: 'top',
             textStyle: {
               fontSize:
-                device === 'mobile' || device === 'smallScreen' ? 8 : 16,
+                device === 'mobile' || device === 'smallScreen' ? 15 : 20,
             },
           },
           animation: {
@@ -96,6 +96,11 @@ function ChartBarLine({
             [lineColumnIdx]: { type: 'line' },
           },
           colors,
+          hAxis: {
+            textStyle: {
+              fontSize: 12,
+            },
+          },
         }}
       />
       {dateSearch && (

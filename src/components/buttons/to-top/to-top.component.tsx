@@ -1,7 +1,7 @@
 import React from 'react'
 import Recoil from 'recoil'
-import deviceGlobalStates from '../../../recoil/device'
-import { XEIcon } from '../../etc/xeicon'
+import { XEIcon } from '~/components/etc/xeicon'
+import deviceGlobalStates from '~/states/device'
 import ButtonToTopStyle from './to-top.style'
 
 export interface ButtonToTopProps {

@@ -1,4 +1,4 @@
-import { ScreenOptionType } from '../../../types'
+import { ScreenOptionType } from '~/types'
 
 interface StyleProps {
   device: ScreenOptionType

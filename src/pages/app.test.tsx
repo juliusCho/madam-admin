@@ -2,8 +2,8 @@ import { render } from '@testing-library/react'
 import { createMemoryHistory } from 'history'
 import { Router } from 'react-router'
 import Recoil from 'recoil'
-import { ROUTER_PATH } from '../constants'
-import { AdminType } from '../types'
+import { ROUTER_PATH } from '~/constants/etc'
+import { AdminType } from '~/types'
 import App from './app.component'
 
 describe('app 테스트', () => {

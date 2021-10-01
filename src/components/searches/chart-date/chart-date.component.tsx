@@ -2,16 +2,13 @@
 import moment from 'moment'
 import React from 'react'
 import Recoil from 'recoil'
-import deviceGlobalStates from '../../../recoil/device'
-import {
-  ChartDatePickerOptionType,
-  CHART_DATE_PICKER_OPTION,
-} from '../../../types'
-import helpers from '../../../utils/helpers'
-import { ButtonPrevNext } from '../../buttons/prev-next'
-import { XEIcon } from '../../etc/xeicon'
-import { ModalDateTimePicker } from '../../modals/date-picker'
-import { ModalDatePickerOption } from '../../modals/date-picker-option'
+import { ButtonPrevNext } from '~/components/buttons/prev-next'
+import { XEIcon } from '~/components/etc/xeicon'
+import { ModalDateTimePicker } from '~/components/modals/date-picker'
+import { ModalDatePickerOption } from '~/components/modals/date-picker-option'
+import deviceGlobalStates from '~/states/device'
+import { ChartDatePickerOptionType, CHART_DATE_PICKER_OPTION } from '~/types'
+import helpers from '~/utils/helpers'
 import SearchChartDateStyle from './chart-date.style'
 
 const getPrevNextSequel = (
@@ -314,6 +311,20 @@ function SearchChartDate({
     ],
   )
 
+  const dateRange = React.useMemo(() => {
+    if (!Array.isArray(date) || date.length < 2) return ''
+    if (!date[0] || !date[1]) return ''
+
+    if (type === 'day' || type === 'week' || type === 'month') {
+      return `${moment(date[0]).format('YYYY.MM.DD')} ~ ${moment(
+        date[1],
+      ).format('YYYY.MM.DD')}`
+    }
+    return `${moment(date[0]).format('YYYY.MM')} ~ ${moment(date[1]).format(
+      'YYYY.MM',
+    )}`
+  }, [device, type, date])
+
   return (
     <>
       <ModalDateTimePicker
@@ -357,7 +368,14 @@ function SearchChartDate({
               onClick={() => setShowPickerOption(true)}
               className={SearchChartDateStyle.optionCaller}
             />
-            {CHART_DATE_PICKER_OPTION[type]}
+            {`${CHART_DATE_PICKER_OPTION[type]}${
+              device === 'mobile' || device === 'smallScreen' ? '' : ' :'
+            }`}
+            {(device === 'mediumScreen' || device === 'screen') && (
+              <p className={SearchChartDateStyle.optionDateLabel}>
+                {dateRange}
+              </p>
+            )}
           </button>
         </div>
         <ButtonPrevNext

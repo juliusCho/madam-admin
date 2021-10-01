@@ -1,6 +1,6 @@
 import React from 'react'
 import Swal, { SweetAlertResult } from 'sweetalert2'
-import customHooks from '../../../utils/hooks'
+import customHooks from '~/utils/hooks'
 
 type IconType = 'error' | 'success' | 'warning' | 'info'
 

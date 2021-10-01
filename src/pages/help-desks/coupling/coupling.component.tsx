@@ -1,5 +1,5 @@
 import React from 'react'
-import PageHelpDeskLayout from '../layout.component'
+import PageHelpDeskLayout from '~/pages/help-desks/layout.component'
 
 export interface PageHelpDeskCouplingProps {}
 

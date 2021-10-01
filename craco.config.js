@@ -13,5 +13,22 @@ module.exports = {
         },
       ],
     ],
+    plugins: [
+      [
+        'module-resolver',
+        {
+          alias: {
+            '~': './src',
+          },
+        },
+      ],
+    ],
+  },
+  jest: {
+    configure: {
+      moduleNameMapper: {
+        '~/(.*)': '<rootDir>/src/$1',
+      },
+    },
   },
 }

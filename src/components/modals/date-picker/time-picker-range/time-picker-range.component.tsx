@@ -1,6 +1,6 @@
 import moment from 'moment'
 import * as React from 'react'
-import customHooks from '../../../../utils/hooks'
+import customHooks from '~/utils/hooks'
 import { TimePicker } from '../time-picker'
 import TimePickerRangeStyle from './time-picker-range.style'
 

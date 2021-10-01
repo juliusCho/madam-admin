@@ -1,5 +1,5 @@
 import React from 'react'
-import PageUserLayout from '../layout.component'
+import PageUserLayout from '~/pages/users/layout.component'
 
 export interface PageUserPhotoProps {}
 

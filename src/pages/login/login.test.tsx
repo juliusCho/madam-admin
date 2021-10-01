@@ -1,7 +1,7 @@
 import { fireEvent } from '@testing-library/dom'
+import { ROUTER_PATH } from '~/constants/etc'
+import { renderPage } from '~/__fixtures__'
 import { PageLogin } from '.'
-import { ROUTER_PATH } from '../../constants'
-import { renderPage } from '../../__fixtures__'
 
 describe('Pages Login', () => {
   const { getByTestId, getByText } = renderPage(ROUTER_PATH.LOGIN, PageLogin)

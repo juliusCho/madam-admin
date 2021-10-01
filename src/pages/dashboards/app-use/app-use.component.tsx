@@ -1,16 +1,16 @@
 import moment from 'moment'
 import React from 'react'
 import Recoil from 'recoil'
-import { apiDashboard } from '../../../api'
-import { ChartBarLine } from '../../../components/charts/bar-line'
-import { ChartDonut } from '../../../components/charts/donut'
-import { ChartLine } from '../../../components/charts/line'
-import adminGlobalStates from '../../../recoil/admin'
-import deviceGlobalStates from '../../../recoil/device'
-import { ChartDatePickerOptionType } from '../../../types'
-import helpers from '../../../utils/helpers'
-import customHooks from '../../../utils/hooks'
-import PageDashboardLayout from '../layout.component'
+import { apiDashboard } from '~/api'
+import { ChartBarLine } from '~/components/charts/bar-line'
+import { ChartDonut } from '~/components/charts/donut'
+import { ChartLine } from '~/components/charts/line'
+import PageDashboardLayout from '~/pages/dashboards/layout.component'
+import adminGlobalStates from '~/states/admin'
+import deviceGlobalStates from '~/states/device'
+import { ChartDatePickerOptionType } from '~/types'
+import helpers from '~/utils/helpers'
+import customHooks from '~/utils/hooks'
 import PageDashboardAppUseStyle from './app-use.style'
 
 export interface PageDashboardAppUseProps {}
@@ -456,7 +456,7 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
             colors={['red']}
           />
           <ChartBarLine
-            title="초대 링크 발송 수 대비 링크를 통한 가입 수"
+            title="초대 링크 발송 대비 가입 수"
             data={(
               [['날짜', '초대링크 발송', '가입']] as Array<
                 Array<string | number>

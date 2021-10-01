@@ -1,8 +1,8 @@
 import React from 'react'
 import Recoil from 'recoil'
-import etcGlobalState from '../../../recoil/etc'
-import customHooks from '../../../utils/hooks'
-import XEIcon from '../../etc/xeicon/xeicon.component'
+import XEIcon from '~/components/etc/xeicon/xeicon.component'
+import etcGlobalState from '~/states/etc'
+import customHooks from '~/utils/hooks'
 import InputTextLineStyle from './text-line.style'
 
 const seperateMeasurement = (num: string | number) => {

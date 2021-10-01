@@ -1,5 +1,5 @@
 import React from 'react'
-import { XEIcon } from '../../etc/xeicon'
+import { XEIcon } from '~/components/etc/xeicon'
 import ButtonPrevNextStyle from './prev-next.style'
 
 export interface ButtonPrevNextProps {

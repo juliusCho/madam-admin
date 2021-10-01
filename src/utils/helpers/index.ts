@@ -1,8 +1,8 @@
 /* eslint-disable no-case-declarations */
 import moment from 'moment'
-import { ROUTER_PATH } from '../../constants'
-import endpointsConfig from '../../endpoints.config'
-import { ChartDatePickerOptionType, ScreenOptionType } from '../../types'
+import { ROUTER_PATH } from '~/constants/etc'
+import endpointsConfig from '~/endpoints.config'
+import { ChartDatePickerOptionType, ScreenOptionType } from '~/types'
 
 export default {
   convertTextToTailwind(text?: string) {

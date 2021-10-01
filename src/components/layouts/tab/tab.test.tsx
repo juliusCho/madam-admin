@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
+import { LabelMadam } from '~/components/labels/madam'
 import { LayoutTab } from '.'
-import { LabelMadam } from '../../labels/madam'
 
 describe('Components LayoutTab', () => {
   it('display', () => {

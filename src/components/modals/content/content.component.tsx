@@ -1,7 +1,7 @@
 import React from 'react'
 import Modal from 'react-modal'
-import customHooks from '../../../utils/hooks'
-import { ButtonRoundWithIcon } from '../../buttons/round-with-icon'
+import { ButtonRoundWithIcon } from '~/components/buttons/round-with-icon'
+import customHooks from '~/utils/hooks'
 import ModalContentStyle from './content.style'
 
 export interface ModalContentProps {
@@ -93,7 +93,7 @@ ModalContent.defaultProps = {
   cancelText: undefined,
   onSubmit: undefined,
   onCancel: undefined,
-  backgroundColor: 'mono-darkGray',
+  backgroundColor: 'mono-black',
   contentClassName: undefined,
 }
 

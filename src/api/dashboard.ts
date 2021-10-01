@@ -1,6 +1,6 @@
 import moment from 'moment'
-import { ChartDatePickerOptionType } from '../types'
-import helpers from '../utils/helpers'
+import { ChartDatePickerOptionType } from '~/types'
+import helpers from '~/utils/helpers'
 
 const apiUserCountPerStatus = async (
   token: string,

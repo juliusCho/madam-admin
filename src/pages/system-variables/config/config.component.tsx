@@ -1,5 +1,5 @@
 import React from 'react'
-import PageSystemVariableLayout from '../layout.component'
+import PageSystemVariableLayout from '~/pages/system-variables/layout.component'
 
 export interface PageSystemVariableConfigProps {}
 

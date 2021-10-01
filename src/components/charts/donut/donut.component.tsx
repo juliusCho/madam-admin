@@ -1,7 +1,7 @@
 import React from 'react'
 import Chart from 'react-google-charts'
 import Recoil from 'recoil'
-import deviceGlobalState from '../../../recoil/device'
+import deviceGlobalState from '~/states/device'
 import ChartDonutStyle from './donut.style'
 
 type CenterTextType = {
@@ -47,7 +47,7 @@ function ChartDonut({
   }, [device])
 
   const fontSize = React.useCallback(() => {
-    return device === 'mobile' || device === 'smallScreen' ? 8 : 16
+    return device === 'mobile' || device === 'smallScreen' ? 10.5 : 17
   }, [device])
 
   return (

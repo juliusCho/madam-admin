@@ -7,6 +7,11 @@ module.exports = {
     'plugin:@typescript-eslint/recommended', // @typescript-eslint/recommended의 추천 룰 사용
     'plugin:prettier/recommended',
   ],
+  settings: {
+    'import/resolver': {
+      'babel-module': {},
+    },
+  },
   plugins: ['prettier', 'react', '@typescript-eslint', 'react-hooks'], // 해당 플러그인을 사용할것이라고 등록
   env: {
     browser: true,
@@ -31,6 +36,16 @@ module.exports = {
     '@typescript-eslint/no-empty-interface': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/naming-convention': 'off',
+    'import/no-extraneous-dependencies': 'off',
+    'import/no-named-as-default': 'off',
+    'import/no-named-as-default-member': 'off',
+    'import/no-useless-path-segments': 'off',
+    'import/order': 'off',
+    'import/export': 'off',
+    'import/extensions': 'off',
+    'import/no-duplicates': 'off',
+    'import/no-self-import': 'off',
+    'import/no-cycle': 'off',
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/jsx-props-no-spreading': 'off',

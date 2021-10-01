@@ -1,8 +1,8 @@
 import moment from 'moment'
 import * as React from 'react'
-import customHooks from '../../../utils/hooks'
-import { XEIcon } from '../../etc/xeicon'
-import { ModalDateTimePicker } from '../../modals/date-picker'
+import { XEIcon } from '~/components/etc/xeicon'
+import { ModalDateTimePicker } from '~/components/modals/date-picker'
+import customHooks from '~/utils/hooks'
 import InputDateTimeStyle from './date-time.style'
 
 export interface InputDateTimeProps {

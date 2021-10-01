@@ -6,10 +6,10 @@ import {
   MAX_MEDIUM_SCREEN,
   MAX_SMALL_SCREEN,
   ROUTER_PATH,
-} from '../../constants'
-import adminGlobalStates from '../../recoil/admin'
-import deviceGlobalStates from '../../recoil/device'
-import etcGlobalStates from '../../recoil/etc'
+} from '~/constants/etc'
+import adminGlobalStates from '~/states/admin'
+import deviceGlobalStates from '~/states/device'
+import etcGlobalStates from '~/states/etc'
 
 const useIsMounted = () => {
   const isMountedRef = React.useRef(true)

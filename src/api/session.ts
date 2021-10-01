@@ -1,4 +1,4 @@
-import { AdminType } from '../types'
+import { AdminType } from '~/types'
 
 const apiLogin = async (uid: string): Promise<string | null> => {
   return uid

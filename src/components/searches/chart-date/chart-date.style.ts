@@ -1,5 +1,5 @@
-import { ScreenOptionType } from '../../../types'
-import helpers from '../../../utils/helpers'
+import { ScreenOptionType } from '~/types'
+import helpers from '~/utils/helpers'
 
 interface StyleProps {
   device: ScreenOptionType
@@ -22,7 +22,7 @@ const SearchChartDateStyle = {
   `,
   optionContainer({ device }: StyleProps) {
     return `
-      ml-3
+      ml-2
       relative
       flex
       justify-center
@@ -30,18 +30,18 @@ const SearchChartDateStyle = {
       rounded-full
       ${
         device === 'mobile' || device === 'smallScreen'
-          ? 'text-textBig font-textBig h-7 w-24 pl-5 py-3.5 border'
-          : 'text-subTitleBig font-subTitleBig h-13 w-32 pl-10 border-2 '
+          ? 'text-textMedium font-textMedium h-7 w-24 pl-5 py-3.5 border'
+          : 'text-subTitleMedium font-subTitleMedium h-13 w-72 pl-10 border-2 '
       }
       ${helpers.convertColorToTailwind('border', 'main-red')}
       ${helpers.convertColorToTailwind('text', 'mono-black')}
-      ${helpers.convertColorToTailwind('bg', 'sub-babyPink')}
+      ${helpers.convertColorToTailwind('bg', 'mono-white')}
     `
   },
   calendarCaller({ device }: StyleProps) {
     return `
       p-2
-      ml-3
+      ml-2
       rounded-full
       border-solid
       ${helpers.convertColorToTailwind('border', 'main-darkNavy')}
@@ -57,6 +57,12 @@ const SearchChartDateStyle = {
     top-0
     left-0
     ${helpers.convertColorToTailwind('bg', 'main-red')}
+  `,
+  optionDateLabel: `
+    ml-2
+    text-textSmall
+    font-textSmall
+    ${helpers.convertColorToTailwind('text', 'mono-paleBlack')}
   `,
   dividerClassName: `
     bg-transparent

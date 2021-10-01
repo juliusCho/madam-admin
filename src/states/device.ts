@@ -1,5 +1,5 @@
 import Recoil from 'recoil'
-import helpers from '../utils/helpers'
+import helpers from '~/utils/helpers'
 
 const isMediumScreen = Recoil.atom({
   key: 'isMediumScreen',

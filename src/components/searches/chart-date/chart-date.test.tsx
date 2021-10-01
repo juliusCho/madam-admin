@@ -10,18 +10,20 @@ describe('Component SearchChartDate', () => {
       date = changedDate
     })
 
-    const { getByTestId } = render(
+    const { getByTestId, getByText } = render(
       <RecoilRoot>
-        <SearchChartDate type="day" onChange={onChange} date={date} />
+        <SearchChartDate type="week" onChange={onChange} date={date} />
       </RecoilRoot>,
     )
 
     const caller = getByTestId('components.searches.chartDate.pickerCaller')
+    const option = getByText('일주일 :')
     const prevButton = getByTestId('components.buttons.prevNext.prevButton')
     const nextButton = getByTestId('components.buttons.prevNext.nextButton')
 
     it('display', () => {
       expect(caller).toBeInTheDocument()
+      expect(option).toBeInTheDocument()
       expect(prevButton).toBeInTheDocument()
       expect(nextButton).toBeInTheDocument()
     })

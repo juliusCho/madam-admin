@@ -3,7 +3,7 @@ import { useHistory } from 'react-router'
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs'
 import 'react-tabs/style/react-tabs.scss'
 import Recoil from 'recoil'
-import etcGlobalStates from '../../../recoil/etc'
+import etcGlobalStates from '~/states/etc'
 import LayoutTabStyle from './tab.style'
 
 export interface LayoutTabProps {
