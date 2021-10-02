@@ -12,7 +12,12 @@ describe('Component SearchChartDate', () => {
 
     const { getByTestId, getByText } = render(
       <RecoilRoot>
-        <SearchChartDate type="week" onChange={onChange} date={date} />
+        <SearchChartDate
+          type="week"
+          onChange={onChange}
+          date={date}
+          typeShow={{}}
+        />
       </RecoilRoot>,
     )
 
@@ -60,6 +65,7 @@ describe('Component SearchChartDate', () => {
           onChange={onChange}
           date={new Date()}
           maxDate={new Date()}
+          typeShow={{}}
         />
       </RecoilRoot>,
     )

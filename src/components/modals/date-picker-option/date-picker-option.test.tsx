@@ -11,11 +11,21 @@ describe('Components ModalDatePickerOption', () => {
 
   const { getByText } = render(
     <RecoilRoot>
-      <ModalDatePickerOption show changeOption={changeOption} type={type} />\
+      <ModalDatePickerOption
+        show
+        changeOption={changeOption}
+        type={type}
+        showOneDay
+        showWeek
+        showMonth
+        show3Month
+        show6Month
+        showYear
+      />
     </RecoilRoot>,
   )
 
-  // const day = getByText('하루')
+  const day = getByText('하루')
   const week = getByText('일주일')
   const month = getByText('한달')
   const threeMonths = getByText('3달')
@@ -23,7 +33,7 @@ describe('Components ModalDatePickerOption', () => {
   const year = getByText('일년')
 
   it('display', () => {
-    // expect(day).toBeInTheDocument()
+    expect(day).toBeInTheDocument()
     expect(week).toBeInTheDocument()
     expect(month).toBeInTheDocument()
     expect(threeMonths).toBeInTheDocument()

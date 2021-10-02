@@ -2,7 +2,11 @@ import { ScreenOptionType } from '~/types'
 import helpers from '~/utils/helpers'
 
 interface StyleProps {
-  device: ScreenOptionType
+  device?: ScreenOptionType
+}
+
+interface AdditionalStyleProps extends StyleProps {
+  disabled?: boolean
 }
 
 const SearchChartDateStyle = {
@@ -20,7 +24,7 @@ const SearchChartDateStyle = {
     items-center
     ml-7
   `,
-  optionContainer({ device }: StyleProps) {
+  optionContainer({ device, disabled }: AdditionalStyleProps) {
     return `
       ml-2
       relative
@@ -28,14 +32,15 @@ const SearchChartDateStyle = {
       justify-center
       items-center
       rounded-full
+      ${disabled ? 'cursor-not-allowed' : ''}
       ${
         device === 'mobile' || device === 'smallScreen'
           ? 'text-textMedium font-textMedium h-7 w-24 pl-5 py-3.5 border'
           : 'text-subTitleMedium font-subTitleMedium h-13 w-72 pl-10 border-2 '
       }
-      ${helpers.convertColorToTailwind('border', 'main-red')}
-      ${helpers.convertColorToTailwind('text', 'mono-black')}
-      ${helpers.convertColorToTailwind('bg', 'mono-white')}
+      ${helpers.convertColorToTailwind('border', 'main-red', disabled)}
+      ${helpers.convertColorToTailwind('text', 'mono-black', disabled)}
+      ${helpers.convertColorToTailwind('bg', 'mono-white', disabled)}
     `
   },
   calendarCaller({ device }: StyleProps) {
@@ -49,21 +54,26 @@ const SearchChartDateStyle = {
       ${device === 'mobile' || device === 'smallScreen' ? 'border' : 'border-2'}
     `
   },
-  optionCaller: `
-    p-2
-    rounded-full
-    absolute
-    z-10
-    top-0
-    left-0
-    ${helpers.convertColorToTailwind('bg', 'main-red')}
-  `,
-  optionDateLabel: `
-    ml-2
-    text-textSmall
-    font-textSmall
-    ${helpers.convertColorToTailwind('text', 'mono-paleBlack')}
-  `,
+  optionCaller({ disabled }: AdditionalStyleProps) {
+    return `
+      p-2
+      rounded-full
+      absolute
+      z-10
+      top-0
+      left-0
+      ${helpers.convertColorToTailwind('bg', 'main-red', disabled)}
+      ${disabled ? 'cursor-not-allowed' : ''}
+    `
+  },
+  optionDateLabel({ disabled }: AdditionalStyleProps) {
+    return `
+      ml-2
+      text-textSmall
+      font-textSmall
+      ${helpers.convertColorToTailwind('text', 'mono-paleBlack', disabled)}
+    `
+  },
   dividerClassName: `
     bg-transparent
     mx-2
@@ -86,7 +96,6 @@ const SearchChartDateStyle = {
       color: disabled ? 'mono-gray' : color,
       size:
         device === 'mobile' || device === 'smallScreen' ? '0.75rem' : '2rem',
-      className: disabled ? 'cursor-not-allowed' : undefined,
     }
   },
 }

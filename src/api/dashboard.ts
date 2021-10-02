@@ -1,10 +1,14 @@
 import moment from 'moment'
-import { ChartDatePickerOptionType } from '~/types'
+import {
+  ChartDatePickerOptionType,
+  MADAM_REQUEST_STATUS,
+  USER_STATUS,
+} from '~/types'
 import helpers from '~/utils/helpers'
 
 const apiUserCountPerStatus = async (
   token: string,
-): Promise<Record<string, number> | null> => {
+): Promise<Record<USER_STATUS, number> | null> => {
   const result = { ACTIVE: 13, INACTIVE: 1, REST: 3, BAN: 7, QUIT: 2 }
 
   return result
@@ -133,12 +137,15 @@ const apiQuitAndJoinCount = async (
   }
 }
 
-const apiReportCount = (
+const apiReportCount = async (
   token: string,
   startDate: string,
   endDate: string,
   range: ChartDatePickerOptionType,
-) => {
+): Promise<Array<{
+  date: string
+  count: number
+}> | null> => {
   const dateArray = helpers.getDateRangeArray(range, [
     moment(startDate).toDate(),
     moment(endDate).toDate(),
@@ -375,9 +382,683 @@ const apiSendLinkAndJoinCount = async (
   }
 }
 
+const apiMadamRequestStatusPerWeek = async (
+  token: string,
+  startDate: string,
+  endDate: string,
+): Promise<Record<MADAM_REQUEST_STATUS, number> | null> => {
+  const result = { REQUEST: 13, ACCEPT: 1, REJECT: 3, COMPLETE: 7, TIMEOUT: 2 }
+
+  return result
+}
+
+const apiMadamRequestCount = async (
+  token: string,
+  startDate: string,
+  endDate: string,
+  range: ChartDatePickerOptionType,
+): Promise<Array<{
+  date: string
+  requestCount: number
+  acceptCount: number
+  rejectCount: number
+  completeCount: number
+  timeoutCount: number
+}> | null> => {
+  const dateArray = helpers.getDateRangeArray(range, [
+    moment(startDate).toDate(),
+    moment(endDate).toDate(),
+  ])
+  let format = 'YYYY-MM-DD'
+
+  if (range === 'year' || range === '3-months' || range === '6-months') {
+    format = 'YYYY-MM'
+  }
+
+  const result = [
+    {
+      date: '',
+      requestCount: 200,
+      acceptCount: 180,
+      rejectCount: 20,
+      completeCount: 140,
+      timeoutCount: 40,
+    },
+    {
+      date: '',
+      requestCount: 358,
+      acceptCount: 308,
+      rejectCount: 50,
+      completeCount: 288,
+      timeoutCount: 20,
+    },
+    {
+      date: '',
+      requestCount: 690,
+      acceptCount: 690,
+      rejectCount: 0,
+      completeCount: 90,
+      timeoutCount: 600,
+    },
+    {
+      date: '',
+      requestCount: 590,
+      acceptCount: 420,
+      rejectCount: 170,
+      completeCount: 420,
+      timeoutCount: 0,
+    },
+    {
+      date: '',
+      requestCount: 1203,
+      acceptCount: 393,
+      rejectCount: 810,
+      completeCount: 390,
+      timeoutCount: 3,
+    },
+    {
+      date: '',
+      requestCount: 1489,
+      acceptCount: 760,
+      rejectCount: 729,
+      completeCount: 710,
+      timeoutCount: 50,
+    },
+    {
+      date: '',
+      requestCount: 1479,
+      acceptCount: 920,
+      rejectCount: 559,
+      completeCount: 140,
+      timeoutCount: 780,
+    },
+  ]
+
+  const monthResult = [
+    {
+      date: '',
+      requestCount: 200,
+      acceptCount: 180,
+      rejectCount: 20,
+      completeCount: 140,
+      timeoutCount: 40,
+    },
+    {
+      date: '',
+      requestCount: 358,
+      acceptCount: 308,
+      rejectCount: 50,
+      completeCount: 288,
+      timeoutCount: 20,
+    },
+    {
+      date: '',
+      requestCount: 690,
+      acceptCount: 690,
+      rejectCount: 0,
+      completeCount: 90,
+      timeoutCount: 600,
+    },
+    {
+      date: '',
+      requestCount: 590,
+      acceptCount: 420,
+      rejectCount: 170,
+      completeCount: 420,
+      timeoutCount: 0,
+    },
+    {
+      date: '',
+      requestCount: 1203,
+      acceptCount: 393,
+      rejectCount: 810,
+      completeCount: 390,
+      timeoutCount: 3,
+    },
+    {
+      date: '',
+      requestCount: 1489,
+      acceptCount: 760,
+      rejectCount: 729,
+      completeCount: 710,
+      timeoutCount: 50,
+    },
+    {
+      date: '',
+      requestCount: 1479,
+      acceptCount: 920,
+      rejectCount: 559,
+      completeCount: 140,
+      timeoutCount: 780,
+    },
+    {
+      date: '',
+      requestCount: 200,
+      acceptCount: 180,
+      rejectCount: 20,
+      completeCount: 140,
+      timeoutCount: 40,
+    },
+    {
+      date: '',
+      requestCount: 358,
+      acceptCount: 308,
+      rejectCount: 50,
+      completeCount: 288,
+      timeoutCount: 20,
+    },
+    {
+      date: '',
+      requestCount: 690,
+      acceptCount: 690,
+      rejectCount: 0,
+      completeCount: 90,
+      timeoutCount: 600,
+    },
+    {
+      date: '',
+      requestCount: 590,
+      acceptCount: 420,
+      rejectCount: 170,
+      completeCount: 420,
+      timeoutCount: 0,
+    },
+    {
+      date: '',
+      requestCount: 1203,
+      acceptCount: 393,
+      rejectCount: 810,
+      completeCount: 390,
+      timeoutCount: 3,
+    },
+    {
+      date: '',
+      requestCount: 1489,
+      acceptCount: 760,
+      rejectCount: 729,
+      completeCount: 710,
+      timeoutCount: 50,
+    },
+    {
+      date: '',
+      requestCount: 1479,
+      acceptCount: 920,
+      rejectCount: 559,
+      completeCount: 140,
+      timeoutCount: 780,
+    },
+    {
+      date: '',
+      requestCount: 200,
+      acceptCount: 180,
+      rejectCount: 20,
+      completeCount: 140,
+      timeoutCount: 40,
+    },
+    {
+      date: '',
+      requestCount: 358,
+      acceptCount: 308,
+      rejectCount: 50,
+      completeCount: 288,
+      timeoutCount: 20,
+    },
+    {
+      date: '',
+      requestCount: 690,
+      acceptCount: 690,
+      rejectCount: 0,
+      completeCount: 90,
+      timeoutCount: 600,
+    },
+    {
+      date: '',
+      requestCount: 590,
+      acceptCount: 420,
+      rejectCount: 170,
+      completeCount: 420,
+      timeoutCount: 0,
+    },
+    {
+      date: '',
+      requestCount: 1203,
+      acceptCount: 393,
+      rejectCount: 810,
+      completeCount: 390,
+      timeoutCount: 3,
+    },
+    {
+      date: '',
+      requestCount: 1489,
+      acceptCount: 760,
+      rejectCount: 729,
+      completeCount: 710,
+      timeoutCount: 50,
+    },
+    {
+      date: '',
+      requestCount: 1479,
+      acceptCount: 920,
+      rejectCount: 559,
+      completeCount: 140,
+      timeoutCount: 780,
+    },
+    {
+      date: '',
+      requestCount: 200,
+      acceptCount: 180,
+      rejectCount: 20,
+      completeCount: 140,
+      timeoutCount: 40,
+    },
+    {
+      date: '',
+      requestCount: 358,
+      acceptCount: 308,
+      rejectCount: 50,
+      completeCount: 288,
+      timeoutCount: 20,
+    },
+    {
+      date: '',
+      requestCount: 690,
+      acceptCount: 690,
+      rejectCount: 0,
+      completeCount: 90,
+      timeoutCount: 600,
+    },
+    {
+      date: '',
+      requestCount: 590,
+      acceptCount: 420,
+      rejectCount: 170,
+      completeCount: 420,
+      timeoutCount: 0,
+    },
+    {
+      date: '',
+      requestCount: 1203,
+      acceptCount: 393,
+      rejectCount: 810,
+      completeCount: 390,
+      timeoutCount: 3,
+    },
+    {
+      date: '',
+      requestCount: 1489,
+      acceptCount: 760,
+      rejectCount: 729,
+      completeCount: 710,
+      timeoutCount: 50,
+    },
+    {
+      date: '',
+      requestCount: 1479,
+      acceptCount: 920,
+      rejectCount: 559,
+      completeCount: 140,
+      timeoutCount: 780,
+    },
+    {
+      date: '',
+      requestCount: 1203,
+      acceptCount: 393,
+      rejectCount: 810,
+      completeCount: 390,
+      timeoutCount: 3,
+    },
+    {
+      date: '',
+      requestCount: 1489,
+      acceptCount: 760,
+      rejectCount: 729,
+      completeCount: 710,
+      timeoutCount: 50,
+    },
+    {
+      date: '',
+      requestCount: 1479,
+      acceptCount: 920,
+      rejectCount: 559,
+      completeCount: 140,
+      timeoutCount: 780,
+    },
+  ]
+
+  const month3Result = [
+    {
+      date: '',
+      requestCount: 200,
+      acceptCount: 180,
+      rejectCount: 20,
+      completeCount: 140,
+      timeoutCount: 40,
+    },
+    {
+      date: '',
+      requestCount: 358,
+      acceptCount: 308,
+      rejectCount: 50,
+      completeCount: 288,
+      timeoutCount: 20,
+    },
+    {
+      date: '',
+      requestCount: 690,
+      acceptCount: 690,
+      rejectCount: 0,
+      completeCount: 90,
+      timeoutCount: 600,
+    },
+  ]
+
+  const month6Result = [
+    {
+      date: '',
+      requestCount: 200,
+      acceptCount: 180,
+      rejectCount: 20,
+      completeCount: 140,
+      timeoutCount: 40,
+    },
+    {
+      date: '',
+      requestCount: 358,
+      acceptCount: 308,
+      rejectCount: 50,
+      completeCount: 288,
+      timeoutCount: 20,
+    },
+    {
+      date: '',
+      requestCount: 690,
+      acceptCount: 690,
+      rejectCount: 0,
+      completeCount: 90,
+      timeoutCount: 600,
+    },
+    {
+      date: '',
+      requestCount: 590,
+      acceptCount: 420,
+      rejectCount: 170,
+      completeCount: 420,
+      timeoutCount: 0,
+    },
+    {
+      date: '',
+      requestCount: 1203,
+      acceptCount: 393,
+      rejectCount: 810,
+      completeCount: 390,
+      timeoutCount: 3,
+    },
+    {
+      date: '',
+      requestCount: 1489,
+      acceptCount: 760,
+      rejectCount: 729,
+      completeCount: 710,
+      timeoutCount: 50,
+    },
+  ]
+
+  const yearResult = [
+    {
+      date: '',
+      requestCount: 200,
+      acceptCount: 180,
+      rejectCount: 20,
+      completeCount: 140,
+      timeoutCount: 40,
+    },
+    {
+      date: '',
+      requestCount: 358,
+      acceptCount: 308,
+      rejectCount: 50,
+      completeCount: 288,
+      timeoutCount: 20,
+    },
+    {
+      date: '',
+      requestCount: 690,
+      acceptCount: 690,
+      rejectCount: 0,
+      completeCount: 90,
+      timeoutCount: 600,
+    },
+    {
+      date: '',
+      requestCount: 590,
+      acceptCount: 420,
+      rejectCount: 170,
+      completeCount: 420,
+      timeoutCount: 0,
+    },
+    {
+      date: '',
+      requestCount: 1203,
+      acceptCount: 393,
+      rejectCount: 810,
+      completeCount: 390,
+      timeoutCount: 3,
+    },
+    {
+      date: '',
+      requestCount: 1489,
+      acceptCount: 760,
+      rejectCount: 729,
+      completeCount: 710,
+      timeoutCount: 50,
+    },
+    {
+      date: '',
+      requestCount: 1479,
+      acceptCount: 920,
+      rejectCount: 559,
+      completeCount: 140,
+      timeoutCount: 780,
+    },
+    {
+      date: '',
+      requestCount: 690,
+      acceptCount: 690,
+      rejectCount: 0,
+      completeCount: 90,
+      timeoutCount: 600,
+    },
+    {
+      date: '',
+      requestCount: 590,
+      acceptCount: 420,
+      rejectCount: 170,
+      completeCount: 420,
+      timeoutCount: 0,
+    },
+    {
+      date: '',
+      requestCount: 1203,
+      acceptCount: 393,
+      rejectCount: 810,
+      completeCount: 390,
+      timeoutCount: 3,
+    },
+    {
+      date: '',
+      requestCount: 1489,
+      acceptCount: 760,
+      rejectCount: 729,
+      completeCount: 710,
+      timeoutCount: 50,
+    },
+    {
+      date: '',
+      requestCount: 1479,
+      acceptCount: 920,
+      rejectCount: 559,
+      completeCount: 140,
+      timeoutCount: 780,
+    },
+  ]
+
+  switch (range) {
+    case 'month':
+      return dateArray.map((date, idx) => ({
+        ...monthResult[idx],
+        date: moment(date).format(format),
+      }))
+    case '3-months':
+      return dateArray.map((date, idx) => ({
+        ...month3Result[idx],
+        date: moment(date).format(format),
+      }))
+    case '6-months':
+      return dateArray.map((date, idx) => ({
+        ...month6Result[idx],
+        date: moment(date).format(format),
+      }))
+    case 'year':
+      return dateArray.map((date, idx) => ({
+        ...yearResult[idx],
+        date: moment(date).format(format),
+      }))
+    default:
+      return dateArray.map((date, idx) => ({
+        ...result[idx],
+        date: moment(date).format(format),
+      }))
+  }
+}
+
+const apiPointsPerMadam = async (
+  token: string,
+  offset: number,
+  count: number,
+): Promise<{
+  data: Array<{ madam: string; point: number }>
+  isEnd?: boolean
+} | null> => {
+  let tmp: Array<{ madam: string; point: number }> = [
+    {
+      madam: moment()
+        .add(offset - 4, 'weeks')
+        .format('YYYY-MM-DD'),
+      point: 2114,
+    },
+    {
+      madam: moment()
+        .add(offset - 3, 'weeks')
+        .format('YYYY-MM-DD'),
+      point: 3613,
+    },
+    {
+      madam: moment()
+        .add(offset - 2, 'weeks')
+        .format('YYYY-MM-DD'),
+      point: 4321,
+    },
+    {
+      madam: moment()
+        .add(offset - 1, 'weeks')
+        .format('YYYY-MM-DD'),
+      point: 4820,
+    },
+  ]
+
+  const result: Record<
+    string,
+    boolean | Array<{ madam: string; point: number }>
+  > = {
+    data: [...tmp],
+  }
+
+  if (count >= 10) {
+    tmp = [
+      {
+        madam: moment()
+          .add(offset - 10, 'weeks')
+          .format('YYYY-MM-DD'),
+        point: 1422,
+      },
+      {
+        madam: moment()
+          .add(offset - 9, 'weeks')
+          .format('YYYY-MM-DD'),
+        point: 1583,
+      },
+      {
+        madam: moment()
+          .add(offset - 8, 'weeks')
+          .format('YYYY-MM-DD'),
+        point: 1865,
+      },
+      {
+        madam: moment()
+          .add(offset - 7, 'weeks')
+          .format('YYYY-MM-DD'),
+        point: 2114,
+      },
+      {
+        madam: moment()
+          .add(offset - 6, 'weeks')
+          .format('YYYY-MM-DD'),
+        point: 1613,
+      },
+      {
+        madam: moment()
+          .add(offset - 5, 'weeks')
+          .format('YYYY-MM-DD'),
+        point: 1742,
+      },
+      ...tmp,
+    ]
+
+    result.data = [...tmp]
+  }
+
+  if (count >= 20) {
+    result.data = [
+      ...tmp.map((data, idx) => ({
+        ...data,
+        madam: moment()
+          .add(offset - (idx + 11), 'weeks')
+          .format('YYYY-MM-DD'),
+      })),
+      ...tmp,
+    ]
+  }
+
+  if (count >= 30) {
+    result.data = [
+      ...tmp.map((data, idx) => ({
+        ...data,
+        madam: moment()
+          .add(offset - (idx + 21), 'weeks')
+          .format('YYYY-MM-DD'),
+      })),
+      ...tmp.map((data, idx) => ({
+        ...data,
+        madam: moment()
+          .add(offset - (idx + 11), 'weeks')
+          .format('YYYY-MM-DD'),
+      })),
+      ...tmp,
+    ]
+  }
+
+  return { ...result, isEnd: false } as {
+    data: Array<{ madam: string; point: number }>
+    isEnd?: boolean
+  }
+}
+
 export default {
   apiUserCountPerStatus,
   apiQuitAndJoinCount,
   apiReportCount,
   apiSendLinkAndJoinCount,
+  apiMadamRequestStatusPerWeek,
+  apiMadamRequestCount,
+  apiPointsPerMadam,
 }

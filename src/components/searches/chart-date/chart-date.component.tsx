@@ -100,6 +100,15 @@ export interface SearchChartDateProps {
     type?: ChartDatePickerOptionType,
   ) => void
   date: Date | Array<Date | undefined>
+  optionDisabled?: boolean
+  typeShow: {
+    showOneDay?: boolean
+    showWeek?: boolean
+    showMonth?: boolean
+    show3Month?: boolean
+    show6Month?: boolean
+    showYear?: boolean
+  }
   maxDate?: Date
   minDate?: Date
 }
@@ -108,6 +117,8 @@ function SearchChartDate({
   type,
   onChange,
   date,
+  optionDisabled,
+  typeShow,
   maxDate,
   minDate,
 }: SearchChartDateProps) {
@@ -344,6 +355,7 @@ function SearchChartDate({
       <ModalDatePickerOption
         show={showPickerOption}
         type={type}
+        {...typeShow}
         changeOption={changeOption}
       />
       <div className={SearchChartDateStyle.container}>
@@ -360,19 +372,35 @@ function SearchChartDate({
           />
           <button
             type="button"
+            disabled={optionDisabled}
             onClick={() => setShowPickerOption(true)}
-            className={SearchChartDateStyle.optionContainer({ device })}>
+            className={SearchChartDateStyle.optionContainer({
+              device,
+              disabled: optionDisabled,
+            })}>
             <XEIcon
-              {...SearchChartDateStyle.icon('bars', device, 'mono-white')}
+              {...SearchChartDateStyle.icon(
+                'bars',
+                device,
+                'mono-white',
+                optionDisabled,
+              )}
               testID="components.searches.chartDate.pickerOptionCaller"
-              onClick={() => setShowPickerOption(true)}
-              className={SearchChartDateStyle.optionCaller}
+              onClick={
+                optionDisabled ? undefined : () => setShowPickerOption(true)
+              }
+              className={SearchChartDateStyle.optionCaller({
+                disabled: optionDisabled,
+              })}
             />
             {`${CHART_DATE_PICKER_OPTION[type]}${
               device === 'mobile' || device === 'smallScreen' ? '' : ' :'
             }`}
             {(device === 'mediumScreen' || device === 'screen') && (
-              <p className={SearchChartDateStyle.optionDateLabel}>
+              <p
+                className={SearchChartDateStyle.optionDateLabel({
+                  disabled: optionDisabled,
+                })}>
                 {dateRange}
               </p>
             )}
@@ -388,7 +416,6 @@ function SearchChartDate({
               'mono-white',
               prevDisabled(),
             ),
-            color: 'mono-darkGray',
             borderColor: 'main-navy',
             backgroundColor: 'main-blue',
             disabledColor: 'mono-lightGray',
@@ -409,7 +436,6 @@ function SearchChartDate({
               'mono-white',
               nextDisabled(),
             ),
-            color: 'mono-darkGray',
             borderColor: 'main-navy',
             backgroundColor: 'main-blue',
             disabledColor: 'mono-lightGray',
@@ -429,6 +455,7 @@ function SearchChartDate({
 }
 
 SearchChartDate.defaultProps = {
+  optionDisabled: false,
   date: undefined,
   maxDate: undefined,
   minDate: undefined,

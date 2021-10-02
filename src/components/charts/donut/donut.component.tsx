@@ -1,7 +1,9 @@
 import React from 'react'
 import Chart from 'react-google-charts'
 import Recoil from 'recoil'
+import { SearchChartDate } from '~/components/searches/chart-date'
 import deviceGlobalState from '~/states/device'
+import { ChartDatePickerOptionType } from '~/types'
 import ChartDonutStyle from './donut.style'
 
 type CenterTextType = {
@@ -13,6 +15,14 @@ export interface ChartDonutProps {
   title: string
   data: Array<[string, string] | [string, number]>
   centerText?: CenterTextType | CenterTextType[]
+  dateSearch?: {
+    type: ChartDatePickerOptionType
+    date?: Date | Array<Date | undefined>
+    onChange: (date?: Date | Array<Date | undefined>) => void
+    format: string
+    maxDate?: Date
+    minDate?: Date
+  }
   colors?: string[]
   style?: React.CSSProperties
   className?: string
@@ -22,6 +32,7 @@ function ChartDonut({
   title,
   data,
   centerText,
+  dateSearch,
   colors,
   style,
   className,
@@ -41,13 +52,13 @@ function ChartDonut({
           height: 300,
         }
       : {
-          width: 500,
-          height: 420,
+          width: 550,
+          height: dateSearch ? 350 : 420,
         }
-  }, [device])
+  }, [device, dateSearch])
 
   const fontSize = React.useCallback(() => {
-    return device === 'mobile' || device === 'smallScreen' ? 10.5 : 17
+    return device === 'mobile' || device === 'smallScreen' ? 8 : 13
   }, [device])
 
   return (
@@ -60,6 +71,7 @@ function ChartDonut({
         <div
           className={ChartDonutStyle.centerTextContainer({
             isMobile: device === 'mobile',
+            dateSearch: !!dateSearch,
           })}>
           <span
             className={ChartDonutStyle.centerText({
@@ -115,11 +127,25 @@ function ChartDonut({
           colors,
         }}
       />
+      {dateSearch && (
+        <SearchChartDate
+          type={dateSearch.type}
+          onChange={dateSearch.onChange}
+          date={dateSearch.date}
+          maxDate={dateSearch.maxDate}
+          minDate={dateSearch.minDate}
+          typeShow={{
+            showWeek: true,
+          }}
+          optionDisabled
+        />
+      )}
     </div>
   )
 }
 
 ChartDonut.defaultProps = {
+  dateSearch: undefined,
   colors: undefined,
   centerText: undefined,
   style: {},

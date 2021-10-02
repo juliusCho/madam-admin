@@ -5,10 +5,11 @@ import { apiDashboard } from '~/api'
 import { ChartBarLine } from '~/components/charts/bar-line'
 import { ChartDonut } from '~/components/charts/donut'
 import { ChartLine } from '~/components/charts/line'
+import { USER_STATUS_LABEL } from '~/constants/etc'
 import PageDashboardLayout from '~/pages/dashboards/layout.component'
 import adminGlobalStates from '~/states/admin'
 import deviceGlobalStates from '~/states/device'
-import { ChartDatePickerOptionType } from '~/types'
+import { ChartDatePickerOptionType, USER_STATUS } from '~/types'
 import helpers from '~/utils/helpers'
 import customHooks from '~/utils/hooks'
 import PageDashboardAppUseStyle from './app-use.style'
@@ -21,33 +22,13 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
 
   const [pieChartData, setPieChartData] = React.useState<
     Array<{ status: string; count: number; label: string }>
-  >([
-    {
-      status: 'REST',
-      label: '휴면',
+  >(
+    Object.values(USER_STATUS).map((status) => ({
+      status,
+      label: USER_STATUS_LABEL[status],
       count: 0,
-    },
-    {
-      status: 'ACTIVE',
-      label: '활성',
-      count: 0,
-    },
-    {
-      status: 'BAN',
-      label: '정지',
-      count: 0,
-    },
-    {
-      status: 'QUIT',
-      label: '탈퇴',
-      count: 0,
-    },
-    {
-      status: 'INACTIVE',
-      label: '비활성',
-      count: 0,
-    },
-  ])
+    })),
+  )
   const [connectChartDate, setConnectChartDate] = React.useState<
     undefined | Date | Array<Date | undefined>
   >([helpers.getLastWeek(), helpers.getYesterday()])

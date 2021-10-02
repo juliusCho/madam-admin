@@ -2,6 +2,10 @@ interface StyleProps {
   isMobile: boolean
 }
 
+interface CenterStyleProps extends StyleProps {
+  dateSearch?: boolean
+}
+
 interface CenterTextStyleProps {
   isSmallScreen: boolean
   bold?: boolean
@@ -24,7 +28,11 @@ const ChartDonutStyle = {
       ? 'text-titleBig font-titleBig text-mono-black'
       : 'text-titleMassive font-titleMassive text-mono-black'
   },
-  centerTextContainer({ isMobile }: StyleProps) {
+  centerTextContainer({ isMobile, dateSearch }: CenterStyleProps) {
+    let mt = isMobile ? 'mt-8' : 'mt-16'
+    if (dateSearch) {
+      mt = isMobile ? 'mt-1' : 'mt-6'
+    }
     return `
       absolute
       flex
@@ -32,7 +40,7 @@ const ChartDonutStyle = {
       justify-center
       items-center
       z-10
-      ${isMobile ? 'mt-8' : 'mt-16'}
+      ${mt}
     `
   },
   centerText({ isSmallScreen, bold }: CenterTextStyleProps) {

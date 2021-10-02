@@ -1,4 +1,4 @@
-export enum UserStatus {
+export enum USER_STATUS {
   REST = 'REST',
   ACTIVE = 'ACTIVE',
   BAN = 'BAN',
@@ -13,7 +13,7 @@ export type UserType = {
   password?: string
   passwordQuestion?: string
   passwordAnswer?: string
-  status: UserStatus
+  status: USER_STATUS
   createdAt: string
   lastUsedAt?: string
   quitAt?: string
@@ -21,4 +21,12 @@ export type UserType = {
   luckyDrawn?: boolean
   modifierEmail?: string
   modifiedAt?: string
+}
+
+export enum MADAM_REQUEST_STATUS {
+  REQUEST = 'REQUEST',
+  ACCEPT = 'ACCEPT',
+  REJECT = 'REJECT',
+  COMPLETE = 'COMPLETE',
+  TIMEOUT = 'TIMEOUT',
 }

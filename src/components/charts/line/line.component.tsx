@@ -79,7 +79,7 @@ function ChartLine({
             position: 'top',
             textStyle: {
               fontSize:
-                device === 'mobile' || device === 'smallScreen' ? 15 : 20,
+                device === 'mobile' || device === 'smallScreen' ? 8 : 13,
             },
           },
           animation: {
@@ -104,6 +104,13 @@ function ChartLine({
           date={dateSearch.date}
           maxDate={dateSearch.maxDate}
           minDate={dateSearch.minDate}
+          typeShow={{
+            showWeek: true,
+            showMonth: true,
+            show3Month: true,
+            show6Month: true,
+            showYear: true,
+          }}
         />
       )}
     </div>

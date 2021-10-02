@@ -64,3 +64,19 @@ export const ROUTER_TITLE = {
 
 export const MAX_SMALL_SCREEN = 767
 export const MAX_MEDIUM_SCREEN = 1242
+
+export const USER_STATUS_LABEL = {
+  REST: '휴면',
+  ACTIVE: '활성',
+  BAN: '정지',
+  QUIT: '탈퇴',
+  INACTIVE: '비활성',
+}
+
+export const MADAM_REQUEST_STATUS_LABEL = {
+  REQUEST: '의뢰 요청',
+  ACCEPT: '승낙',
+  REJECT: '거절',
+  COMPLETE: '처리 완료',
+  TIMEOUT: '처리 시간 만료',
+}

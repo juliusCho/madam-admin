@@ -11,6 +11,11 @@ export interface ModalDatePickerOptionProps {
   changeOption: (type: ChartDatePickerOptionType) => void
   type?: ChartDatePickerOptionType
   showOneDay?: boolean
+  showWeek?: boolean
+  showMonth?: boolean
+  show3Month?: boolean
+  show6Month?: boolean
+  showYear?: boolean
   backgroundColor?: string
   className?: string
 }
@@ -20,6 +25,11 @@ function ModalDatePickerOption({
   changeOption,
   type,
   showOneDay,
+  showWeek,
+  showMonth,
+  show3Month,
+  show6Month,
+  showYear,
   backgroundColor,
   className,
 }: ModalDatePickerOptionProps) {
@@ -67,11 +77,14 @@ function ModalDatePickerOption({
       className={`bottom-${show ? 'up' : 'down'} ${className}`}>
       <div className={ModalDatePickerOptionStyle.buttonArea}>
         {showOneDay && Option('day')}
-        {Option('week')}
-        {device !== 'mobile' && device !== 'smallScreen' && Option('month')}
-        {Option('3-months')}
-        {Option('6-months')}
-        {Option('year')}
+        {showWeek && Option('week')}
+        {showMonth &&
+          device !== 'mobile' &&
+          device !== 'smallScreen' &&
+          Option('month')}
+        {show3Month && Option('3-months')}
+        {show6Month && Option('6-months')}
+        {showYear && Option('year')}
       </div>
     </Modal>
   )
@@ -80,6 +93,11 @@ function ModalDatePickerOption({
 ModalDatePickerOption.defaultProps = {
   type: 'day',
   showOneDay: false,
+  showWeek: false,
+  showMonth: false,
+  show3Month: false,
+  show6Month: false,
+  showYear: false,
   backgroundColor: 'mono-darkGray',
   className: undefined,
 }
