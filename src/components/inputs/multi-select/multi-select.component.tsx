@@ -2,7 +2,7 @@ import React from 'react'
 import Select, { ActionMeta, SingleValue } from 'react-select'
 import makeAnimated from 'react-select/animated'
 import customHooks from '~/utils/hooks'
-import InputSingleSelectStyle from './single-select.style'
+import InputMultiSelectStyle from './multi-select.style'
 
 const animatedComponents = makeAnimated()
 
@@ -13,10 +13,10 @@ type OptionType = {
   isSelected?: boolean
 }
 
-export interface InputSingleSelectProps {
+export interface InputMultiSelectProps {
   options: OptionType[]
-  onChange: (value?: string | number) => void
-  value?: string | number
+  onChange: (value?: Array<string | number>) => void
+  value?: Array<string | number>
   disabled?: boolean
   placeholder?: string
   isClearable?: boolean
@@ -24,7 +24,7 @@ export interface InputSingleSelectProps {
   fontSize?: string | number
 }
 
-function InputSingleSelect({
+function InputMultiSelect({
   options,
   onChange,
   value,
@@ -33,18 +33,19 @@ function InputSingleSelect({
   isClearable,
   width,
   fontSize,
-}: InputSingleSelectProps) {
-  const [selected, setSelected] = React.useState<OptionType | undefined>(
-    options.find((option) => option.value === value),
+}: InputMultiSelectProps) {
+  const [selected, setSelected] = React.useState<OptionType[] | undefined>(
+    options.filter((option) => value?.some((val) => val === option.value)),
   )
 
   const isMounted = customHooks.useIsMounted()
 
   React.useEffect(() => {
     if (!isMounted()) return
-    if (value === selected?.value) return
+    if (selected?.some((sel) => !value?.some((val) => sel.value === val)))
+      return
 
-    onChange(selected?.value)
+    onChange(selected?.map((sel) => sel.value))
   }, [isMounted, selected, onChange, value])
 
   const onChangeOption = (
@@ -54,7 +55,9 @@ function InputSingleSelect({
     switch (actionMeta.action) {
       case 'select-option':
         if (selectedOption) {
-          setSelected(selectedOption)
+          setSelected((oldList) =>
+            oldList ? oldList?.concat(selectedOption) : [selectedOption],
+          )
         } else {
           setSelected(undefined)
         }
@@ -69,19 +72,18 @@ function InputSingleSelect({
     <Select<OptionType>
       value={selected}
       options={options}
-      isMulti={false}
       onChange={onChangeOption}
       isDisabled={disabled}
       placeholder={placeholder}
       isClearable={isClearable}
       isSearchable
       components={animatedComponents}
-      styles={InputSingleSelectStyle({ width, fontSize })}
+      styles={InputMultiSelectStyle({ width, fontSize })}
     />
   )
 }
 
-InputSingleSelect.defaultProps = {
+InputMultiSelect.defaultProps = {
   value: undefined,
   disabled: false,
   placeholder: undefined,
@@ -90,4 +92,4 @@ InputSingleSelect.defaultProps = {
   fontSize: undefined,
 }
 
-export default React.memo(InputSingleSelect)
+export default React.memo(InputMultiSelect)

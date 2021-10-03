@@ -38,11 +38,25 @@ describe('Component ChartLineByDataset', () => {
     expect(nextButton).toBeInTheDocument()
   })
 
-  xit('next button 비활성화', () => {
+  it('next button 비활성화', () => {
     fireEvent.click(nextButton)
 
     setTimeout(() => {
       expect(onClickNext).not.toHaveBeenCalled()
+    }, 100)
+  })
+
+  it('prev button 후에 next button click', () => {
+    fireEvent.click(prevButton)
+
+    setTimeout(() => {
+      expect(onClickPrev).toHaveBeenCalled()
+
+      fireEvent.click(nextButton)
+
+      setTimeout(() => {
+        expect(onClickNext).toHaveBeenCalled()
+      }, 100)
     }, 100)
   })
 })

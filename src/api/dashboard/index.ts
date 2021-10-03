@@ -1019,10 +1019,10 @@ const apiPointsPerMadam = async (
 
   if (count >= 20) {
     result.data = [
-      ...tmp.map((data, idx) => ({
+      ...tmp.map((data) => ({
         ...data,
-        madam: moment()
-          .add(offset - (idx + 11), 'weeks')
+        madam: moment(data.madam)
+          .add(offset - 10, 'weeks')
           .format('YYYY-MM-DD'),
       })),
       ...tmp,
@@ -1031,16 +1031,16 @@ const apiPointsPerMadam = async (
 
   if (count >= 30) {
     result.data = [
-      ...tmp.map((data, idx) => ({
+      ...tmp.map((data) => ({
         ...data,
-        madam: moment()
-          .add(offset - (idx + 21), 'weeks')
+        madam: moment(data.madam)
+          .add(offset - 20, 'weeks')
           .format('YYYY-MM-DD'),
       })),
-      ...tmp.map((data, idx) => ({
+      ...tmp.map((data) => ({
         ...data,
-        madam: moment()
-          .add(offset - (idx + 11), 'weeks')
+        madam: moment(data.madam)
+          .add(offset - 10, 'weeks')
           .format('YYYY-MM-DD'),
       })),
       ...tmp,

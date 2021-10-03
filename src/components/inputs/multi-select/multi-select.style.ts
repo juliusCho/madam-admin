@@ -5,7 +5,7 @@ interface StyleProps {
   fontSize?: string | number
 }
 
-const InputSingleSelectStyle = ({ width, fontSize }: StyleProps) => ({
+const InputMultiSelectStyle = ({ width, fontSize }: StyleProps) => ({
   container: (provided: CSSObjectWithLabel) => ({
     ...provided,
     width,
@@ -38,4 +38,4 @@ const InputSingleSelectStyle = ({ width, fontSize }: StyleProps) => ({
   }),
 })
 
-export default InputSingleSelectStyle
+export default InputMultiSelectStyle

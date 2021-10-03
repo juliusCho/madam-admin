@@ -4,7 +4,6 @@ import Recoil from 'recoil'
 import { ButtonPrevNext } from '~/components/buttons/prev-next'
 import { InputSingleSelect } from '~/components/inputs/single-select'
 import deviceGlobalStates from '~/states/device'
-import customHooks from '~/utils/hooks'
 import ChartLineByDatasetStyle from './line-by-dataset.style'
 
 export interface ChartLineByDatasetProps {
@@ -38,17 +37,9 @@ function ChartLineByDataset({
 }: ChartLineByDatasetProps) {
   const device = Recoil.useRecoilValue(deviceGlobalStates.getDevice)
 
-  const [displayCount, setDisplayCount] = React.useState(0)
-
-  const isMounted = customHooks.useIsMounted()
-
-  React.useEffect(() => {
-    if (isMounted()) {
-      if (displayCounts.length > 0) {
-        setDisplayCount(() => displayCounts[0])
-      }
-    }
-  }, [isMounted, displayCounts])
+  const [displayCount, setDisplayCount] = React.useState(
+    Number(displayCounts[0]),
+  )
 
   const chartLayoutProps = React.useCallback(() => {
     if (device === 'mobile') {
@@ -72,12 +63,12 @@ function ChartLineByDataset({
     return displayCounts.map((value) => ({
       value,
       label: String(value),
-      selected: value === displayCount,
+      isSelected: value === displayCount,
     }))
   }, [displayCounts, displayCount])
 
   const onChangeDisplayCount = (value?: number | string) => {
-    if (typeof value === 'string') return
+    if (Number.isNaN(value)) return
 
     onChangeDisplayDataCount(Number(value))
     setDisplayCount(Number(value))
@@ -139,6 +130,12 @@ function ChartLineByDataset({
             value={displayCount}
             options={options}
             onChange={onChangeDisplayCount}
+            width={
+              device === 'mobile' || device === 'smallScreen'
+                ? '100px'
+                : '150px'
+            }
+            fontSize="15px"
           />
         </div>
         <ButtonPrevNext

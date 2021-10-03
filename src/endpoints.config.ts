@@ -9,4 +9,7 @@ export default {
     measurementId: process.env.REACT_APP_MEASUREMENT_ID ?? '',
   },
   snsKeySecret: process.env.REACT_APP_SNS_KEY_SECRET ?? '',
+  test: {
+    uid: process.env.REACT_APP_TEST_UID ?? '',
+  },
 }

@@ -41,7 +41,7 @@ const ChartLineByDatasetStyle = {
     text-subTitleMedium
     font-subTitleMedium
     text-mono-paleBlack
-    mr-2
+    mr-3
   `,
   icon(
     name: string,
