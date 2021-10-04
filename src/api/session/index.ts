@@ -1,4 +1,4 @@
-import { AdminType } from '~/types'
+import Admin from '~/classes/admin'
 
 const apiLogin = async (uid: string): Promise<string | null> => {
   return uid
@@ -12,10 +12,7 @@ const apiGetAdminInfo = async (token: string, uid: string) => {
   }
 }
 
-const apiChangeName = async (
-  token: string,
-  user: AdminType,
-): Promise<boolean> => {
+const apiChangeName = async (token: string, user: Admin): Promise<boolean> => {
   return true
 }
 

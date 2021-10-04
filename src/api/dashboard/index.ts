@@ -1,9 +1,11 @@
 import moment from 'moment'
 import {
   ChartDatePickerOptionType,
+  GENDER,
   MADAM_REQUEST_STATUS,
+  SEXUAL_PREFERENCE,
   USER_STATUS,
-} from '~/types'
+} from '~/enums'
 import helpers from '~/utils/helpers'
 
 const apiUserCountPerStatus = async (
@@ -1053,6 +1055,22 @@ const apiPointsPerMadam = async (
   }
 }
 
+const apiUserCountPerGender = async (
+  token: string,
+): Promise<Record<GENDER, number> | null> => {
+  const result = { MALE: 48291, FEMALE: 29308 }
+
+  return result
+}
+
+const apiUserCountPerSexualPreference = async (
+  token: string,
+): Promise<Record<SEXUAL_PREFERENCE, number> | null> => {
+  const result = { STRAIGHT: 45231, HOMOSEXUAL: 2931, BISEXUAL: 9204 }
+
+  return result
+}
+
 export default {
   apiUserCountPerStatus,
   apiQuitAndJoinCount,
@@ -1061,4 +1079,6 @@ export default {
   apiMadamRequestStatusPerWeek,
   apiMadamRequestCount,
   apiPointsPerMadam,
+  apiUserCountPerGender,
+  apiUserCountPerSexualPreference,
 }

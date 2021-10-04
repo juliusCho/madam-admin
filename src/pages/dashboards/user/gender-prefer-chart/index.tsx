@@ -1,9 +1,8 @@
 import React from 'react'
-import apiDashboard from '~/api/dashboard'
+import { apiDashboard } from '~/api'
 import { ChartDonut } from '~/components/charts/donut'
-import { USER_STATUS_LABEL } from '~/constants/app'
-import { USER_STATUS } from '~/enums'
-import helpers from '~/utils/helpers'
+import { SEXUAL_PREFERENCE_LABEL } from '~/constants/app'
+import { SEXUAL_PREFERENCE } from '~/enums'
 import customHooks from '~/utils/hooks'
 
 interface Props {
@@ -11,13 +10,13 @@ interface Props {
   className: string
 }
 
-function UserStatusChart({ token, className }: Props) {
+function GenderPreferChart({ token, className }: Props) {
   const [data, setData] = React.useState<
     Array<{ status: string; count: number; label: string }>
   >(
-    Object.values(USER_STATUS).map((status) => ({
+    Object.values(SEXUAL_PREFERENCE).map((status) => ({
       status,
-      label: USER_STATUS_LABEL[status],
+      label: SEXUAL_PREFERENCE_LABEL[status],
       count: 0,
     })),
   )
@@ -25,7 +24,7 @@ function UserStatusChart({ token, className }: Props) {
   const isMounted = customHooks.useIsMounted()
 
   const fetchData = React.useCallback(async () => {
-    const result = await apiDashboard.apiUserCountPerStatus(token)
+    const result = await apiDashboard.apiUserCountPerSexualPreference(token)
 
     if (!result) {
       setData((oldList) => oldList.map((old) => ({ ...old, count: 0 })))
@@ -41,7 +40,7 @@ function UserStatusChart({ token, className }: Props) {
         return { ...old, count: 0 }
       }),
     )
-  }, [token, apiDashboard.apiUserCountPerStatus])
+  }, [token, apiDashboard.apiUserCountPerSexualPreference])
 
   React.useEffect(() => {
     if (isMounted()) {
@@ -51,25 +50,16 @@ function UserStatusChart({ token, className }: Props) {
 
   return (
     <ChartDonut
-      title="사용자 상태별 비율"
+      title="이성/동성/양성애자 비율"
       data={(
-        [['사용자 상태', '사용자 수']] as Array<
+        [['성 정체성', '사용자 수']] as Array<
           [string, string] | [string, number]
         >
       ).concat(data.map((datum) => [datum.label, datum.count]))}
-      centerText={[
-        { text: '전체 사용자' },
-        {
-          text: `총 [${helpers.convertToMoneyFormat(
-            data.map((datum) => datum.count).reduce((a, b) => a + b),
-          )}]명`,
-          bold: true,
-        },
-      ]}
       className={className}
-      colors={['purple', 'blue', 'red', 'orange', 'green']}
+      colors={['green', 'orange', 'purple']}
     />
   )
 }
 
-export default React.memo(UserStatusChart)
+export default React.memo(GenderPreferChart)

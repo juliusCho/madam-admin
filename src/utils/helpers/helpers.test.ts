@@ -24,6 +24,13 @@ describe('Helpers', () => {
     expect(helpers.decode(helpers.encode('aaa'))).toBe('aaa')
   })
 
+  it('validateEmail', () => {
+    expect(helpers.validateEmail('joanav')).toBeFalsy()
+    expect(helpers.validateEmail('joanav@')).toBeFalsy()
+    expect(helpers.validateEmail('joanav@se')).toBeFalsy()
+    expect(helpers.validateEmail('joanav@se.com')).toBeTruthy()
+  })
+
   it('firstDepthTab', () => {
     const routersOnWeb = helpers.firstDepthTab(ROUTER_PATH.DASHBOARD.APP_USE)
     const routersOnMobile = helpers.firstDepthTab(

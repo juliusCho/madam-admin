@@ -2,7 +2,7 @@ import moment from 'moment'
 import React from 'react'
 import apiDashboard from '~/api/dashboard'
 import { ChartBarLine } from '~/components/charts/bar-line'
-import { ChartDatePickerOptionType } from '~/types'
+import { ChartDatePickerOptionType } from '~/enums'
 import helpers from '~/utils/helpers'
 import customHooks from '~/utils/hooks'
 

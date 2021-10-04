@@ -2,7 +2,7 @@
 import moment from 'moment'
 import { ROUTER_PATH } from '~/constants/etc'
 import endpointsConfig from '~/endpoints.config'
-import { ChartDatePickerOptionType, ScreenOptionType } from '~/types'
+import { ChartDatePickerOptionType, ScreenOptionType } from '~/enums'
 
 export default {
   convertTextToTailwind(text?: string) {
@@ -49,6 +49,11 @@ export default {
       }
     })(navigator.userAgent || navigator.vendor)
     return check
+  },
+  validateEmail(email: string) {
+    return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+      email,
+    )
   },
   firstDepthTab(route: string, device?: ScreenOptionType) {
     let result = [

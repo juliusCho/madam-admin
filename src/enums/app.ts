@@ -1,0 +1,70 @@
+export enum USER_STATUS {
+  REST = 'REST',
+  ACTIVE = 'ACTIVE',
+  BAN = 'BAN',
+  QUIT = 'QUIT',
+  INACTIVE = 'INACTIVE',
+}
+
+export enum MADAM_REQUEST_STATUS {
+  REQUEST = 'REQUEST',
+  ACCEPT = 'ACCEPT',
+  REJECT = 'REJECT',
+  COMPLETE = 'COMPLETE',
+  TIMEOUT = 'TIMEOUT',
+}
+
+export enum GENDER {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+}
+
+export enum USER_BLOCK_TYPE {
+  PHOTO = 'PHOTO',
+  PROFILE = 'PROFILE',
+  CHAT = 'CHAT',
+  ETC = 'ETC',
+}
+
+export enum USER_BLOCK_APPROVED_REASON {
+  NONE = 'NONE',
+  APPROVE = 'APPROVE',
+  DISMISS = 'DISMISS',
+}
+
+export enum PROFILE_PHOTO_TYPE {
+  DEFAULT = 'DEFAULT',
+  THUMBNAIL = 'THUMBNAIL',
+  MAIN = 'MAIN',
+}
+
+export enum COUPLE_ACTION {
+  NONE = 'NONE',
+  LIKE = 'LIKE',
+  SUPER = 'SUPER',
+  MADAM = 'MADAM',
+  HATE = 'HATE',
+  BLOCK = 'BLOCK',
+  DELETE = 'DELETE',
+}
+
+export enum INQUIRY_TYPE {
+  INQUIRY = 'INQUIRY',
+  REQUEST = 'REQUEST',
+  ETC = 'ETC',
+}
+
+export enum SEXUAL_PREFERENCE {
+  STRAIGHT = 'STRAIGHT',
+  HOMOSEXUAL = 'HOMOSEXUAL',
+  BISEXUAL = 'BISEXUAL',
+}
+
+export enum PROFILE_EXTRA_ITEM_TYPE {
+  TEXT = 'TEXT',
+  NUMBER = 'NUMBER',
+  TEXT_AREA = 'TEXT_AREA',
+  SELECT = 'SELECT',
+  MULTI_SELECT = 'MULTI_SELECT',
+  RADIO = 'RADIO',
+}

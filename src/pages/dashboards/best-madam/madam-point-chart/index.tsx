@@ -1,14 +1,16 @@
 import React from 'react'
 import { apiDashboard } from '~/api'
 import { ChartLineByDataset } from '~/components/charts/line-by-dataset'
+import { ScreenOptionType } from '~/enums'
 import customHooks from '~/utils/hooks'
 
 interface Props {
+  device: ScreenOptionType
   token: string
   className: string
 }
 
-function MadamPointChart({ token, className }: Props) {
+function MadamPointChart({ device, token, className }: Props) {
   const [data, setData] = React.useState<{
     isEnd?: boolean
     data: Array<[string, number]>
@@ -63,7 +65,11 @@ function MadamPointChart({ token, className }: Props) {
           ],
         ] as Array<Array<Record<string, string>> | Array<string | number>>
       ).concat(data.data)}
-      displayCounts={[4, 10, 20, 30]}
+      displayCounts={
+        device === 'mobile' || device === 'smallScreen'
+          ? [4, 10]
+          : [4, 10, 20, 30]
+      }
       onChangeDisplayDataCount={onChangeDisplayCount}
       prev={{
         onClick: () => onClickPrevNext('prev'),

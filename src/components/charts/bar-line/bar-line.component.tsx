@@ -2,8 +2,8 @@ import React from 'react'
 import Chart from 'react-google-charts'
 import Recoil from 'recoil'
 import { SearchChartDate } from '~/components/searches/chart-date'
+import { ChartDatePickerOptionType } from '~/enums'
 import deviceGlobalStates from '~/states/device'
-import { ChartDatePickerOptionType } from '~/types'
 import ChartBarLineStyle from './bar-line.style'
 
 export interface ChartBarLineProps {

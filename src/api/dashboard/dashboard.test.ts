@@ -1,6 +1,11 @@
 import moment from 'moment'
 import endpoints from '~/endpoints.config'
-import { MADAM_REQUEST_STATUS, USER_STATUS } from '~/types'
+import {
+  GENDER,
+  MADAM_REQUEST_STATUS,
+  SEXUAL_PREFERENCE,
+  USER_STATUS,
+} from '~/enums'
 import api from '.'
 import { apiSession } from '..'
 
@@ -618,5 +623,43 @@ describe('API Dashboard', () => {
 
       expect(result.data.length).toBe(30)
     })
+  })
+
+  it('apiUserCountPerGender', async () => {
+    const result = await api.apiUserCountPerGender(token)
+
+    expect(result).not.toBeNull()
+    if (!result) return
+
+    expect(Object.keys(result).some((key) => !(key in GENDER))).toBeFalsy()
+    expect(
+      Object.values(result).some((value) => typeof value !== 'number'),
+    ).toBeFalsy()
+  })
+
+  it('apiUserCountPerGender', async () => {
+    const result = await api.apiUserCountPerGender(token)
+
+    expect(result).not.toBeNull()
+    if (!result) return
+
+    expect(Object.keys(result).some((key) => !(key in GENDER))).toBeFalsy()
+    expect(
+      Object.values(result).some((value) => typeof value !== 'number'),
+    ).toBeFalsy()
+  })
+
+  it('apiUserCountPerSexualPreference', async () => {
+    const result = await api.apiUserCountPerSexualPreference(token)
+
+    expect(result).not.toBeNull()
+    if (!result) return
+
+    expect(
+      Object.keys(result).some((key) => !(key in SEXUAL_PREFERENCE)),
+    ).toBeFalsy()
+    expect(
+      Object.values(result).some((value) => typeof value !== 'number'),
+    ).toBeFalsy()
   })
 })

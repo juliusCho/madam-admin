@@ -19,6 +19,7 @@ export default function PageDashboardBestMadam({}: PageDashboardBestMadamProps) 
       <div className={PageDashboardBestMadamStyle.container({ device })}>
         <div className={PageDashboardBestMadamStyle.row({ device })}>
           <MadamPointChart
+            device={device}
             token={token}
             className={PageDashboardBestMadamStyle.chart({ device })}
           />

@@ -4,6 +4,7 @@ import { RouterProps } from 'react-router'
 import { useTitle } from 'react-use'
 import Recoil from 'recoil'
 import { apiSession } from '~/api'
+import Admin from '~/classes/admin'
 import { ButtonCircle } from '~/components/buttons/circle'
 import { LabelMadam } from '~/components/labels/madam'
 import { ROUTER_PATH, ROUTER_TITLE } from '~/constants/etc'
@@ -59,7 +60,7 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
       }
 
       setToken(() => token)
-      setAdmin(() => admin)
+      setAdmin(() => new Admin(admin.email, admin.name, admin.name))
     })
   }, [isMounted, auth, firebase])
 
