@@ -1,6 +1,7 @@
 import React from 'react'
 import Select, { ActionMeta, SingleValue } from 'react-select'
 import makeAnimated from 'react-select/animated'
+import { ScreenOptionType } from '~/enums'
 import customHooks from '~/utils/hooks'
 import InputSingleSelectStyle from './single-select.style'
 
@@ -22,6 +23,7 @@ export interface InputSingleSelectProps {
   isClearable?: boolean
   width?: string | number
   fontSize?: string | number
+  device?: ScreenOptionType
 }
 
 function InputSingleSelect({
@@ -33,6 +35,7 @@ function InputSingleSelect({
   isClearable,
   width,
   fontSize,
+  device,
 }: InputSingleSelectProps) {
   const [selected, setSelected] = React.useState<OptionType | undefined>(
     options.find((option) => option.value === value),
@@ -76,7 +79,7 @@ function InputSingleSelect({
       isClearable={isClearable}
       isSearchable
       components={animatedComponents}
-      styles={InputSingleSelectStyle({ width, fontSize })}
+      styles={InputSingleSelectStyle({ width, fontSize, device })}
     />
   )
 }
@@ -88,6 +91,7 @@ InputSingleSelect.defaultProps = {
   isClearable: false,
   width: undefined,
   fontSize: undefined,
+  device: undefined,
 }
 
 export default React.memo(InputSingleSelect)

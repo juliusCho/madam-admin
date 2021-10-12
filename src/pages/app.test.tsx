@@ -2,12 +2,12 @@ import { render } from '@testing-library/react'
 import { createMemoryHistory } from 'history'
 import { Router } from 'react-router'
 import Recoil from 'recoil'
-import Admin from '~/classes/admin'
 import { ROUTER_PATH } from '~/constants/etc'
+import { AdminType } from '~/models/admin'
 import App from './app.component'
 
 describe('app 테스트', () => {
-  const testAdminState = Recoil.atom<Admin | null>({
+  const testAdminState = Recoil.atom<AdminType | null>({
     key: 'testAdminState',
     default: null,
   })
@@ -16,7 +16,7 @@ describe('app 테스트', () => {
     default: '',
   })
 
-  const testUser = new Admin('test', 'test', 'test')
+  const testUser = { email: 'test', uid: 'test', name: 'test' }
 
   it('recoil state', () => {
     const initialSnapshot = Recoil.snapshot_UNSTABLE()

@@ -2,7 +2,6 @@ import React from 'react'
 import { useHistory } from 'react-router'
 import Recoil from 'recoil'
 import { apiSession } from '~/api'
-import Admin from '~/classes/admin'
 import { ButtonRoundWithIcon } from '~/components/buttons/round-with-icon'
 import { InputTextLine } from '~/components/inputs/text-line'
 import { LabelMadam } from '~/components/labels/madam'
@@ -57,7 +56,7 @@ function LayoutHeader({}: LayoutHeaderProps) {
       time: 1000,
     }))
 
-    const newAdmin = new Admin({ ...admin, name: adminName })
+    const newAdmin = { ...admin, name: adminName }
 
     setAdmin(newAdmin)
     const boo = await apiSession.apiChangeName(token, newAdmin)

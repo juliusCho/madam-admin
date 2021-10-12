@@ -1,5 +1,4 @@
 import apiSession from '~/api/session'
-import PageNation from '~/classes/page-nation'
 import endpoints from '~/endpoints.config'
 import api from '.'
 
@@ -16,10 +15,10 @@ describe('API SystemVariables', () => {
 
   describe('apiGetProfileExtraItems', () => {
     it('전체 조회', async () => {
-      const result = await api.apiGetProfileExtraItems(
-        token,
-        new PageNation(10, 1),
-      )
+      const result = await api.apiGetProfileExtraItems(token, {
+        size: 10,
+        page: 1,
+      })
 
       expect(result).not.toBeNull()
     })

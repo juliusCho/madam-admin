@@ -123,19 +123,22 @@ function ChartLineByDataset({
       />
       <div className={ChartLineByDatasetStyle.selectContainer}>
         <div className={ChartLineByDatasetStyle.comboBoxContainer}>
-          <p className={ChartLineByDatasetStyle.comboBoxLabel}>
+          <p className={ChartLineByDatasetStyle.comboBoxLabel({ device })}>
             필드 표시 개수
           </p>
           <InputSingleSelect
             value={displayCount}
             options={options}
             onChange={onChangeDisplayCount}
+            device={device}
             width={
               device === 'mobile' || device === 'smallScreen'
                 ? '100px'
                 : '150px'
             }
-            fontSize="15px"
+            fontSize={
+              device === 'mobile' || device === 'smallScreen' ? '12px' : '15px'
+            }
           />
         </div>
         <ButtonPrevNext

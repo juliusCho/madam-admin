@@ -36,13 +36,19 @@ const ChartLineByDatasetStyle = {
     justify-start
     items-center
     ml-5
+    mb-2
   `,
-  comboBoxLabel: `
-    text-subTitleMedium
-    font-subTitleMedium
-    text-mono-paleBlack
-    mr-3
-  `,
+  comboBoxLabel({ device }: DeviceStyleProps) {
+    return `
+      text-mono-paleBlack
+      mr-3
+      ${
+        device === 'mobile' || device === 'smallScreen'
+          ? 'text-textMedium font-textMedium'
+          : 'text-subTitleMedium font-subTitleMedium'
+      }
+    `
+  },
   icon(
     name: string,
     device: ScreenOptionType,
