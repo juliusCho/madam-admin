@@ -12,6 +12,7 @@ interface CenterTextStyleProps {
 }
 
 const ChartDonutStyle = {
+  loader: `rounded-full`,
   chart({ isMobile }: StyleProps) {
     return `
       relative

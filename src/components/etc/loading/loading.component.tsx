@@ -5,13 +5,16 @@ export interface LoadingProps {
   loading: boolean
   style?: React.CSSProperties
   testID?: string
+  className?: string
 }
 
-function Loading({ loading, style, testID }: LoadingProps) {
+function Loading({ loading, style, testID, className }: LoadingProps) {
   return (
     <div
       data-testid={testID}
-      className={`loading-container ${!loading ? 'hidden' : 'flex'}`}
+      className={`loading-container ${
+        !loading ? 'hidden' : 'flex'
+      } ${className}`}
       style={style}>
       {loading && (
         <div className="icon-spinner-container">
@@ -28,6 +31,7 @@ function Loading({ loading, style, testID }: LoadingProps) {
 Loading.defaultProps = {
   style: {},
   testID: '',
+  className: '',
 }
 
 export default React.memo(Loading)

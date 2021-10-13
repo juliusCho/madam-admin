@@ -9,6 +9,7 @@ interface DeviceStyleProps {
 }
 
 const ChartLineByDatasetStyle = {
+  loader: `rounded-full`,
   chart({ isMobile }: StyleProps) {
     return `
       relative

@@ -2,6 +2,7 @@ import React from 'react'
 import Chart from 'react-google-charts'
 import Recoil from 'recoil'
 import { ButtonPrevNext } from '~/components/buttons/prev-next'
+import { Loading } from '~/components/etc/loading'
 import { InputSingleSelect } from '~/components/inputs/single-select'
 import deviceGlobalStates from '~/states/device'
 import ChartLineByDatasetStyle from './line-by-dataset.style'
@@ -89,6 +90,7 @@ function ChartLineByDataset({
       <Chart
         {...chartLayoutProps()}
         chartType="LineChart"
+        loader={<Loading loading className={ChartLineByDatasetStyle.loader} />}
         data={data}
         options={{
           backgroundColor: 'transparent',

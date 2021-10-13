@@ -4,7 +4,7 @@ interface StyleProps {
   device: ScreenOptionType
 }
 
-const PageDashboardAppUseStyle = {
+const PageDashboardStyle = {
   container({ device }: StyleProps) {
     return `
       pt-4
@@ -40,4 +40,4 @@ const PageDashboardAppUseStyle = {
   },
 }
 
-export default PageDashboardAppUseStyle
+export default PageDashboardStyle

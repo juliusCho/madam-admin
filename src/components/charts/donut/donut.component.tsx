@@ -1,6 +1,7 @@
 import React from 'react'
 import Chart from 'react-google-charts'
 import Recoil from 'recoil'
+import { Loading } from '~/components/etc/loading'
 import { SearchChartDate } from '~/components/searches/chart-date'
 import { ChartDatePickerOptionType } from '~/enums'
 import deviceGlobalState from '~/states/device'
@@ -102,6 +103,7 @@ function ChartDonut({
       <Chart
         {...chartLayoutProps()}
         chartType="PieChart"
+        loader={<Loading loading className={ChartDonutStyle.loader} />}
         data={data}
         options={{
           pieSliceTextStyle: {

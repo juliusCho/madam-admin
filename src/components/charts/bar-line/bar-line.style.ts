@@ -3,6 +3,7 @@ interface StyleProps {
 }
 
 const ChartBarLineStyle = {
+  loader: `rounded-full`,
   chart({ isMobile }: StyleProps) {
     return `
       relative

@@ -3,7 +3,7 @@ import Recoil from 'recoil'
 import PageDashboardLayout from '~/pages/dashboards/layout.component'
 import adminGlobalStates from '~/states/admin'
 import deviceGlobalStates from '~/states/device'
-import PageDashboardAppUseStyle from './app-use.style'
+import PageDashboardStyle from '../layout.style'
 import InviteJoinChart from './invite-join-chart'
 import JoinQuitChart from './join-quit-chart'
 import ReportChart from './report-chart'
@@ -17,25 +17,25 @@ export default function PageDashboardAppUse({}: PageDashboardAppUseProps) {
 
   return (
     <PageDashboardLayout endpoint="APP_USE">
-      <div className={PageDashboardAppUseStyle.container({ device })}>
-        <div className={PageDashboardAppUseStyle.row({ device })}>
+      <div className={PageDashboardStyle.container({ device })}>
+        <div className={PageDashboardStyle.row({ device })}>
           <UserStatusChart
             token={token}
-            className={`${PageDashboardAppUseStyle.chart({ device })} mt-5`}
+            className={`${PageDashboardStyle.chart({ device })} mt-5`}
           />
           <JoinQuitChart
             token={token}
-            className={PageDashboardAppUseStyle.chart({ device })}
+            className={PageDashboardStyle.chart({ device })}
           />
         </div>
-        <div className={PageDashboardAppUseStyle.row({ device })}>
+        <div className={PageDashboardStyle.row({ device })}>
           <ReportChart
             token={token}
-            className={PageDashboardAppUseStyle.chart({ device })}
+            className={PageDashboardStyle.chart({ device })}
           />
           <InviteJoinChart
             token={token}
-            className={PageDashboardAppUseStyle.chart({ device })}
+            className={PageDashboardStyle.chart({ device })}
           />
         </div>
       </div>

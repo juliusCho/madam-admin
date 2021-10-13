@@ -1,6 +1,7 @@
 import React from 'react'
 import Chart from 'react-google-charts'
 import Recoil from 'recoil'
+import { Loading } from '~/components/etc/loading'
 import { SearchChartDate } from '~/components/searches/chart-date'
 import { ChartDatePickerOptionType } from '~/enums'
 import deviceGlobalStates from '~/states/device'
@@ -65,6 +66,7 @@ function ChartLine({
       <Chart
         {...chartLayoutProps()}
         chartType="LineChart"
+        loader={<Loading loading className={ChartLineStyle.loader} />}
         data={data}
         options={{
           backgroundColor: 'transparent',

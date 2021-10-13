@@ -1071,6 +1071,55 @@ const apiUserCountPerSexualPreference = async (
   return result
 }
 
+type GeocodeResultType = {
+  address_components: { long_name: string; short_name: string }[]
+  types: string[]
+}
+
+const apiCountryCount = async (
+  token: string,
+): Promise<Array<{ code: string; label: string; count: number }>> => {
+  return [{ code: 'KR', label: '대한민국', count: 104340 }]
+
+  // window.navigator.geolocation.getCurrentPosition(
+  //   async (position) => {
+  //     const { latitude, longitude } = position.coords
+
+  //     (await axios
+  //       .get<{ results: GeocodeResultType[] }>(
+  //         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${endpoints.firebase.apiKey}`,
+  //       )
+  //       .then((res) => {
+  //         if (res.status === 200) {
+  //           const foundRow = res.data.results.find((item) =>
+  //             item.types.some((type) => type === 'country'),
+  //           )
+  //           if (!foundRow) {
+  //             return []
+  //           }
+
+  //           return [
+  //             {
+  //               code: foundRow.address_components[0].short_name,
+  //               label: foundRow.address_components[0].short_name,
+  //             },
+  //           ]
+  //         }
+
+  //         console.log('error Reverse Geocode API', res.statusText)
+  //         return []
+  //       })
+  //       .catch((e) => {
+  //         console.log('error Reverse Geocode API', e)
+  //         return []
+  //       })) as Array<{ code: string; label: string; count: number }>
+  //   },
+  //   (err) => {
+  //     console.log('error Navigator Geolocation API', err)
+  //   },
+  // )
+}
+
 export default {
   apiUserCountPerStatus,
   apiQuitAndJoinCount,
@@ -1081,4 +1130,5 @@ export default {
   apiPointsPerMadam,
   apiUserCountPerGender,
   apiUserCountPerSexualPreference,
+  apiCountryCount,
 }
