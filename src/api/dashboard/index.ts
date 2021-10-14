@@ -1120,6 +1120,41 @@ const apiCountryCount = async (
   // )
 }
 
+const apiInterestsCount = async (
+  token: string,
+  isLike: boolean,
+): Promise<Array<{ id: string; label: string; count: number }> | null> => {
+  return [
+    { id: '1', label: isLike ? '사랑' : '증오', count: 24543 },
+    { id: '2', label: isLike ? '연애' : '이별', count: 3535 },
+    { id: '3', label: isLike ? '결혼' : '이혼', count: 76435 },
+    { id: '4', label: isLike ? '애인' : '바람', count: 57763 },
+  ]
+}
+
+const apiDynamicProfileItemCount = async (
+  token: string,
+  id: string,
+): Promise<Array<{ label: string; count: number }>> => {
+  const result = [
+    { count: 24543 },
+    { count: 3535 },
+    { count: 76435 },
+    { count: 57763 },
+  ]
+
+  switch (id) {
+    case '1':
+      return result.map((res) => ({ ...res, label: 'ISTJ' }))
+    case '2':
+      return result.map((res) => ({ ...res, label: '무교' }))
+    case '3':
+      return result.map((res) => ({ ...res, label: 'B형' }))
+    default:
+      return result.map((res) => ({ ...res, label: '물고기자리' }))
+  }
+}
+
 export default {
   apiUserCountPerStatus,
   apiQuitAndJoinCount,
@@ -1131,4 +1166,6 @@ export default {
   apiUserCountPerGender,
   apiUserCountPerSexualPreference,
   apiCountryCount,
+  apiInterestsCount,
+  apiDynamicProfileItemCount,
 }
