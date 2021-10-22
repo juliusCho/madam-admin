@@ -28,3 +28,4 @@ yarn.debug
 *.svg
 *.lock
 *.txt
+*.rules

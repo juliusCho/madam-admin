@@ -24,6 +24,7 @@
     "baseUrl": "."
   },
   "include": [
-    "src"
+    "src",
+    "firestore.rules"
   ]
 }

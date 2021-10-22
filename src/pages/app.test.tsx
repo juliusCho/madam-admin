@@ -11,9 +11,9 @@ describe('app 테스트', () => {
     key: 'testAdminState',
     default: null,
   })
-  const testTokenState = Recoil.atom({
-    key: 'testTokenState',
-    default: '',
+  const testVerifiedState = Recoil.atom({
+    key: 'testVerifiedState',
+    default: false,
   })
 
   const testUser = { email: 'test', uid: 'test', name: 'test' }
@@ -24,19 +24,21 @@ describe('app 테스트', () => {
     expect(initialSnapshot.getLoadable(testAdminState).valueOrThrow()).toBe(
       null,
     )
-    expect(initialSnapshot.getLoadable(testTokenState).valueOrThrow()).toBe('')
+    expect(
+      initialSnapshot.getLoadable(testVerifiedState).valueOrThrow(),
+    ).toBeFalsy()
 
     const changedSnapshot = Recoil.snapshot_UNSTABLE(({ set }) => {
       set(testAdminState, testUser)
-      set(testTokenState, 'ok')
+      set(testVerifiedState, true)
     })
 
     expect(
       changedSnapshot.getLoadable(testAdminState).valueOrThrow(),
     ).toStrictEqual(testUser)
-    expect(changedSnapshot.getLoadable(testTokenState).valueOrThrow()).not.toBe(
-      '',
-    )
+    expect(
+      changedSnapshot.getLoadable(testVerifiedState).valueOrThrow(),
+    ).toBeTruthy()
   })
 
   describe('init Router', () => {
@@ -53,7 +55,7 @@ describe('app 테스트', () => {
     it('not logged in', () => {
       Recoil.snapshot_UNSTABLE(({ set }) => {
         set(testAdminState, null)
-        set(testTokenState, '')
+        set(testVerifiedState, false)
       })
 
       setTimeout(() => {
@@ -63,7 +65,7 @@ describe('app 테스트', () => {
     it('logged in', () => {
       Recoil.snapshot_UNSTABLE(({ set }) => {
         set(testAdminState, testUser)
-        set(testTokenState, 'ok')
+        set(testVerifiedState, true)
       })
 
       setTimeout(() => {

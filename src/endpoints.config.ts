@@ -7,9 +7,12 @@ export default {
     messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID ?? '',
     appId: process.env.REACT_APP_FIREBASE_APP_ID ?? '',
     measurementId: process.env.REACT_APP_MEASUREMENT_ID ?? '',
+    siteKey: process.env.REACT_APP_SITE_KEY ?? '',
   },
   snsKeySecret: process.env.REACT_APP_SNS_KEY_SECRET ?? '',
   test: {
     uid: process.env.REACT_APP_TEST_UID ?? '',
+    email: process.env.REACT_APP_TEST_EMAIL ?? '',
+    name: process.env.REACT_APP_TEST_NAME ?? '',
   },
 }

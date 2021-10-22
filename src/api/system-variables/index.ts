@@ -4,7 +4,6 @@ import { PageNationType } from '~/models/page-nation'
 import { ProfileExtraItemType } from '~/models/profile-extra-item'
 
 const apiGetProfileExtraItems = async (
-  token: string,
   pageNation?: PageNationType,
   profileExtraItem?: ProfileExtraItemType,
 ): Promise<ProfileExtraItemType[] | null> => {

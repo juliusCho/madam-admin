@@ -1,5 +1,4 @@
 import moment from 'moment'
-import endpoints from '~/endpoints.config'
 import {
   GENDER,
   MADAM_REQUEST_STATUS,
@@ -7,21 +6,10 @@ import {
   USER_STATUS,
 } from '~/enums'
 import api from '.'
-import { apiSession } from '..'
 
 describe('API Dashboard', () => {
-  let token = ''
-
-  beforeAll(async () => {
-    token = (await apiSession.apiLogin(endpoints.test.uid)) ?? ''
-  })
-
-  afterAll(() => {
-    apiSession.apiLogout()
-  })
-
   it('apiUserCountPerStatus', async () => {
-    const result = await api.apiUserCountPerStatus(token)
+    const result = await api.apiUserCountPerStatus()
 
     expect(result).not.toBeNull()
     if (!result) return
@@ -37,12 +25,7 @@ describe('API Dashboard', () => {
       const startDate = moment().hour(0).add(-7, 'days').format('YYYY-MM-DD')
       const endDate = moment().hour(0).add(-1, 'days').format('YYYY-MM-DD')
 
-      const result = await api.apiQuitAndJoinCount(
-        token,
-        startDate,
-        endDate,
-        'week',
-      )
+      const result = await api.apiQuitAndJoinCount(startDate, endDate, 'week')
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -78,12 +61,7 @@ describe('API Dashboard', () => {
         new Date(end.getFullYear(), end.getMonth(), 0),
       ).format('YYYY-MM-DD')
 
-      const result = await api.apiQuitAndJoinCount(
-        token,
-        startDate,
-        endDate,
-        'month',
-      )
+      const result = await api.apiQuitAndJoinCount(startDate, endDate, 'month')
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -99,7 +77,6 @@ describe('API Dashboard', () => {
       const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
 
       const result = await api.apiQuitAndJoinCount(
-        token,
         startDate,
         endDate,
         '3-months',
@@ -118,7 +95,6 @@ describe('API Dashboard', () => {
       const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
 
       const result = await api.apiQuitAndJoinCount(
-        token,
         startDate,
         endDate,
         '6-months',
@@ -146,12 +122,7 @@ describe('API Dashboard', () => {
         .month(11)
         .format('YYYY-MM')
 
-      const result = await api.apiQuitAndJoinCount(
-        token,
-        startDate,
-        endDate,
-        'year',
-      )
+      const result = await api.apiQuitAndJoinCount(startDate, endDate, 'year')
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -167,7 +138,7 @@ describe('API Dashboard', () => {
       const startDate = moment().hour(0).add(-7, 'days').format('YYYY-MM-DD')
       const endDate = moment().hour(0).add(-1, 'days').format('YYYY-MM-DD')
 
-      const result = await api.apiReportCount(token, startDate, endDate, 'week')
+      const result = await api.apiReportCount(startDate, endDate, 'week')
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -194,12 +165,7 @@ describe('API Dashboard', () => {
         new Date(end.getFullYear(), end.getMonth(), 0),
       ).format('YYYY-MM-DD')
 
-      const result = await api.apiReportCount(
-        token,
-        startDate,
-        endDate,
-        'month',
-      )
+      const result = await api.apiReportCount(startDate, endDate, 'month')
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -214,12 +180,7 @@ describe('API Dashboard', () => {
       const startDate = moment().hour(0).add(-3, 'months').format('YYYY-MM')
       const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
 
-      const result = await api.apiReportCount(
-        token,
-        startDate,
-        endDate,
-        '3-months',
-      )
+      const result = await api.apiReportCount(startDate, endDate, '3-months')
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -233,12 +194,7 @@ describe('API Dashboard', () => {
       const startDate = moment().hour(0).add(-6, 'months').format('YYYY-MM')
       const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
 
-      const result = await api.apiReportCount(
-        token,
-        startDate,
-        endDate,
-        '6-months',
-      )
+      const result = await api.apiReportCount(startDate, endDate, '6-months')
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -262,7 +218,7 @@ describe('API Dashboard', () => {
         .month(11)
         .format('YYYY-MM')
 
-      const result = await api.apiReportCount(token, startDate, endDate, 'year')
+      const result = await api.apiReportCount(startDate, endDate, 'year')
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -279,7 +235,6 @@ describe('API Dashboard', () => {
       const endDate = moment().hour(0).add(-1, 'days').format('YYYY-MM-DD')
 
       const result = await api.apiSendLinkAndJoinCount(
-        token,
         startDate,
         endDate,
         'week',
@@ -320,7 +275,6 @@ describe('API Dashboard', () => {
       ).format('YYYY-MM-DD')
 
       const result = await api.apiSendLinkAndJoinCount(
-        token,
         startDate,
         endDate,
         'month',
@@ -340,7 +294,6 @@ describe('API Dashboard', () => {
       const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
 
       const result = await api.apiSendLinkAndJoinCount(
-        token,
         startDate,
         endDate,
         '3-months',
@@ -359,7 +312,6 @@ describe('API Dashboard', () => {
       const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
 
       const result = await api.apiSendLinkAndJoinCount(
-        token,
         startDate,
         endDate,
         '6-months',
@@ -388,7 +340,6 @@ describe('API Dashboard', () => {
         .format('YYYY-MM')
 
       const result = await api.apiSendLinkAndJoinCount(
-        token,
         startDate,
         endDate,
         'year',
@@ -405,7 +356,6 @@ describe('API Dashboard', () => {
 
   it('apiMadamRequestStatusPerWeek', async () => {
     const result = await api.apiMadamRequestStatusPerWeek(
-      token,
       moment().format('YYYY-MM-DD'),
       moment().format('YYYY-MM-DD'),
     )
@@ -426,12 +376,7 @@ describe('API Dashboard', () => {
       const startDate = moment().hour(0).add(-7, 'days').format('YYYY-MM-DD')
       const endDate = moment().hour(0).add(-1, 'days').format('YYYY-MM-DD')
 
-      const result = await api.apiMadamRequestCount(
-        token,
-        startDate,
-        endDate,
-        'week',
-      )
+      const result = await api.apiMadamRequestCount(startDate, endDate, 'week')
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -488,12 +433,7 @@ describe('API Dashboard', () => {
         new Date(end.getFullYear(), end.getMonth(), 0),
       ).format('YYYY-MM-DD')
 
-      const result = await api.apiMadamRequestCount(
-        token,
-        startDate,
-        endDate,
-        'month',
-      )
+      const result = await api.apiMadamRequestCount(startDate, endDate, 'month')
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -509,7 +449,6 @@ describe('API Dashboard', () => {
       const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
 
       const result = await api.apiMadamRequestCount(
-        token,
         startDate,
         endDate,
         '3-months',
@@ -528,7 +467,6 @@ describe('API Dashboard', () => {
       const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
 
       const result = await api.apiMadamRequestCount(
-        token,
         startDate,
         endDate,
         '6-months',
@@ -556,12 +494,7 @@ describe('API Dashboard', () => {
         .month(11)
         .format('YYYY-MM')
 
-      const result = await api.apiMadamRequestCount(
-        token,
-        startDate,
-        endDate,
-        'year',
-      )
+      const result = await api.apiMadamRequestCount(startDate, endDate, 'year')
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -574,7 +507,7 @@ describe('API Dashboard', () => {
 
   describe('apiPointsPerMadam', () => {
     it('4개', async () => {
-      const result = await api.apiPointsPerMadam(token, 0, 4)
+      const result = await api.apiPointsPerMadam(0, 4)
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -598,7 +531,7 @@ describe('API Dashboard', () => {
     })
 
     it('10개', async () => {
-      const result = await api.apiPointsPerMadam(token, 0, 10)
+      const result = await api.apiPointsPerMadam(0, 10)
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -607,7 +540,7 @@ describe('API Dashboard', () => {
     })
 
     it('20개', async () => {
-      const result = await api.apiPointsPerMadam(token, 0, 20)
+      const result = await api.apiPointsPerMadam(0, 20)
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -616,7 +549,7 @@ describe('API Dashboard', () => {
     })
 
     it('30개', async () => {
-      const result = await api.apiPointsPerMadam(token, 0, 30)
+      const result = await api.apiPointsPerMadam(0, 30)
 
       expect(result).not.toBeNull()
       if (!result) return
@@ -626,7 +559,7 @@ describe('API Dashboard', () => {
   })
 
   it('apiUserCountPerGender', async () => {
-    const result = await api.apiUserCountPerGender(token)
+    const result = await api.apiUserCountPerGender()
 
     expect(result).not.toBeNull()
     if (!result) return
@@ -638,7 +571,7 @@ describe('API Dashboard', () => {
   })
 
   it('apiUserCountPerGender', async () => {
-    const result = await api.apiUserCountPerGender(token)
+    const result = await api.apiUserCountPerGender()
 
     expect(result).not.toBeNull()
     if (!result) return
@@ -650,7 +583,7 @@ describe('API Dashboard', () => {
   })
 
   it('apiUserCountPerSexualPreference', async () => {
-    const result = await api.apiUserCountPerSexualPreference(token)
+    const result = await api.apiUserCountPerSexualPreference()
 
     expect(result).not.toBeNull()
     if (!result) return

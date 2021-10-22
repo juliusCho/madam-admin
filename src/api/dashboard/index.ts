@@ -8,16 +8,16 @@ import {
 } from '~/enums'
 import helpers from '~/utils/helpers'
 
-const apiUserCountPerStatus = async (
-  token: string,
-): Promise<Record<USER_STATUS, number> | null> => {
+const apiUserCountPerStatus = async (): Promise<Record<
+  USER_STATUS,
+  number
+> | null> => {
   const result = { ACTIVE: 13, INACTIVE: 1, REST: 3, BAN: 7, QUIT: 2 }
 
   return result
 }
 
 const apiQuitAndJoinCount = async (
-  token: string,
   startDate: string,
   endDate: string,
   range: ChartDatePickerOptionType,
@@ -140,7 +140,6 @@ const apiQuitAndJoinCount = async (
 }
 
 const apiReportCount = async (
-  token: string,
   startDate: string,
   endDate: string,
   range: ChartDatePickerOptionType,
@@ -262,7 +261,6 @@ const apiReportCount = async (
 }
 
 const apiSendLinkAndJoinCount = async (
-  token: string,
   startDate: string,
   endDate: string,
   range: ChartDatePickerOptionType,
@@ -385,7 +383,6 @@ const apiSendLinkAndJoinCount = async (
 }
 
 const apiMadamRequestStatusPerWeek = async (
-  token: string,
   startDate: string,
   endDate: string,
 ): Promise<Record<MADAM_REQUEST_STATUS, number> | null> => {
@@ -395,7 +392,6 @@ const apiMadamRequestStatusPerWeek = async (
 }
 
 const apiMadamRequestCount = async (
-  token: string,
   startDate: string,
   endDate: string,
   range: ChartDatePickerOptionType,
@@ -934,7 +930,6 @@ const apiMadamRequestCount = async (
 }
 
 const apiPointsPerMadam = async (
-  token: string,
   offset: number,
   count: number,
 ): Promise<{
@@ -1055,17 +1050,19 @@ const apiPointsPerMadam = async (
   }
 }
 
-const apiUserCountPerGender = async (
-  token: string,
-): Promise<Record<GENDER, number> | null> => {
+const apiUserCountPerGender = async (): Promise<Record<
+  GENDER,
+  number
+> | null> => {
   const result = { MALE: 48291, FEMALE: 29308 }
 
   return result
 }
 
-const apiUserCountPerSexualPreference = async (
-  token: string,
-): Promise<Record<SEXUAL_PREFERENCE, number> | null> => {
+const apiUserCountPerSexualPreference = async (): Promise<Record<
+  SEXUAL_PREFERENCE,
+  number
+> | null> => {
   const result = { STRAIGHT: 45231, HOMOSEXUAL: 2931, BISEXUAL: 9204 }
 
   return result
@@ -1076,9 +1073,9 @@ type GeocodeResultType = {
   types: string[]
 }
 
-const apiCountryCount = async (
-  token: string,
-): Promise<Array<{ code: string; label: string; count: number }>> => {
+const apiCountryCount = async (): Promise<
+  Array<{ code: string; label: string; count: number }>
+> => {
   return [{ code: 'KR', label: '대한민국', count: 104340 }]
 
   // window.navigator.geolocation.getCurrentPosition(
@@ -1121,7 +1118,6 @@ const apiCountryCount = async (
 }
 
 const apiInterestsCount = async (
-  token: string,
   isLike: boolean,
 ): Promise<Array<{ id: string; label: string; count: number }> | null> => {
   return [
@@ -1133,7 +1129,6 @@ const apiInterestsCount = async (
 }
 
 const apiDynamicProfileItemCount = async (
-  token: string,
   id: string,
 ): Promise<Array<{ label: string; count: number }>> => {
   const result = [

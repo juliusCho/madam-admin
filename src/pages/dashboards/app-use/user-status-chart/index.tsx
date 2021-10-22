@@ -7,11 +7,10 @@ import helpers from '~/utils/helpers'
 import customHooks from '~/utils/hooks'
 
 interface Props {
-  token: string
   className: string
 }
 
-function UserStatusChart({ token, className }: Props) {
+function UserStatusChart({ className }: Props) {
   const [data, setData] = React.useState<
     Array<{ status: string; count: number; label: string }>
   >(
@@ -25,7 +24,7 @@ function UserStatusChart({ token, className }: Props) {
   const isMounted = customHooks.useIsMounted()
 
   const fetchData = React.useCallback(async () => {
-    const result = await apiDashboard.apiUserCountPerStatus(token)
+    const result = await apiDashboard.apiUserCountPerStatus()
 
     if (!result) {
       setData((oldList) => oldList.map((old) => ({ ...old, count: 0 })))
@@ -41,7 +40,7 @@ function UserStatusChart({ token, className }: Props) {
         return { ...old, count: 0 }
       }),
     )
-  }, [token, apiDashboard.apiUserCountPerStatus])
+  }, [apiDashboard.apiUserCountPerStatus])
 
   React.useEffect(() => {
     if (isMounted()) {

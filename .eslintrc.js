@@ -50,6 +50,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/jsx-props-no-spreading': 'off',
     'no-underscore-dangle': 'off',
+    'no-path-concat': 'off',
   },
   ignorePatterns: [
     'build/',
@@ -65,5 +66,6 @@ module.exports = {
     '*.scss',
     '*.txt',
     '.*ignore',
+    '*.rules',
   ],
 }

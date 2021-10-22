@@ -1,22 +1,40 @@
-import 'firebase/analytics'
-import firebase from 'firebase/app'
-import 'firebase/app-check'
-import 'firebase/auth'
-import 'firebase/database'
-import 'firebase/storage'
+import 'firebase/compat/analytics'
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/app-check'
+import 'firebase/compat/auth'
+import 'firebase/compat/database'
+import 'firebase/compat/firestore'
+import 'firebase/compat/storage'
 import endpoint from './endpoints.config'
+import {
+  firestoreTestAuthenticate,
+  initializeFirestoreTestEnv,
+} from './__fixtures__'
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-firebase.initializeApp(endpoint.firebase)
+let auth: any
+let firestore: any
 
-const appCheck = firebase.appCheck()
+if (process.env.NODE_ENV === 'test') {
+  const testEnv = initializeFirestoreTestEnv()
 
-appCheck.activate('6LeldDAcAAAAAFhaPmGhoKXSPrTNruGkTSocFD-8', true)
+  testEnv.then((res) => {
+    firestore = firestoreTestAuthenticate(res).firestore()
+    auth = (firestore as firebase.firestore.Firestore).app.auth()
+  })
+} else {
+  firebase.initializeApp(endpoint.firebase)
 
-const auth = firebase.auth()
+  firestore = firebase.firestore()
 
-if (process.env.NODE_ENV !== 'test') {
+  const appCheck = firebase.appCheck()
+
+  appCheck.activate(endpoint.firebase.siteKey, true)
+
+  auth = firebase.auth()
+
   auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
 }
 
-export default auth
+export const db = firestore as firebase.firestore.Firestore
+
+export default auth as firebase.auth.Auth

@@ -35,7 +35,6 @@ import customHooks from '~/utils/hooks'
 export default function App() {
   const isMobile = Recoil.useRecoilValue(deviceGlobalStates.isMobile)
   const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
-  const [token, setToken] = Recoil.useRecoilState(adminGlobalStates.tokenState)
   const loading = Recoil.useRecoilValue(etcGlobalStates.loadingState)
   const { show, msg, type, time } = Recoil.useRecoilValue(
     etcGlobalStates.alertState,
@@ -54,29 +53,15 @@ export default function App() {
     if (!isMounted()) return
 
     if (admin === null) {
-      auth.signOut()
-
-      setToken(() => '')
+      if (auth?.signOut) {
+        auth.signOut()
+      }
 
       history.push(ROUTER_PATH.LOGIN)
     } else {
       history.push(ROUTER_PATH.DASHBOARD.APP_USE)
     }
-  }, [isMounted, admin])
-
-  React.useEffect(() => {
-    if (!isMounted()) return
-    if (admin === null) return
-    if (token) return
-
-    setAlert((old) => ({
-      ...old,
-      show: true,
-      type: 'warning',
-      msg: '로그인이 만료되었습니다. 다시 로그인 해 주세요.',
-      time: 1500,
-    }))
-  }, [isMounted, admin, token])
+  }, [isMounted, admin, auth?.signOut, history.push, ROUTER_PATH])
 
   return (
     <>

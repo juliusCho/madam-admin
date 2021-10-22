@@ -6,11 +6,10 @@ import customHooks from '~/utils/hooks'
 
 interface Props {
   device: ScreenOptionType
-  token: string
   className: string
 }
 
-function MadamPointChart({ device, token, className }: Props) {
+function MadamPointChart({ device, className }: Props) {
   const [data, setData] = React.useState<{
     isEnd?: boolean
     data: Array<[string, number]>
@@ -32,11 +31,7 @@ function MadamPointChart({ device, token, className }: Props) {
   }
 
   const fetchData = React.useCallback(async () => {
-    const result = await apiDashboard.apiPointsPerMadam(
-      token,
-      offset,
-      displayCount,
-    )
+    const result = await apiDashboard.apiPointsPerMadam(offset, displayCount)
     if (!result) {
       setData(() => ({ data: [] }))
       return

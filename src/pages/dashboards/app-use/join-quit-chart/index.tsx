@@ -7,11 +7,10 @@ import helpers from '~/utils/helpers'
 import customHooks from '~/utils/hooks'
 
 interface Props {
-  token: string
   className: string
 }
 
-function JoinQuitChart({ token, className }: Props) {
+function JoinQuitChart({ className }: Props) {
   const [dateRange, setDateRange] = React.useState<
     undefined | Date | Array<Date | undefined>
   >([helpers.getLastWeek(), helpers.getYesterday()])
@@ -66,7 +65,6 @@ function JoinQuitChart({ token, className }: Props) {
       return
 
     const result = await apiDashboard.apiQuitAndJoinCount(
-      token,
       moment(dateRange[0]).format('YYYY-MM-DD'),
       moment(dateRange[1]).format('YYYY-MM-DD'),
       rangeOption,
@@ -95,7 +93,7 @@ function JoinQuitChart({ token, className }: Props) {
           return [moment(date).format(format), 0, 0]
         }),
     )
-  }, [token, dateRange, helpers.getDateRangeArray, format, rangeOption])
+  }, [dateRange, helpers.getDateRangeArray, format, rangeOption])
 
   React.useEffect(() => {
     if (isMounted()) {

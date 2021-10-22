@@ -19,7 +19,6 @@ export interface LayoutHeaderProps {}
 function LayoutHeader({}: LayoutHeaderProps) {
   const [admin, setAdmin] = Recoil.useRecoilState(adminGlobalStates.adminState)
   const device = Recoil.useRecoilValue(deviceGlobalStates.getDevice)
-  const token = Recoil.useRecoilValue(adminGlobalStates.tokenState)
   const setAlert = Recoil.useSetRecoilState(etcGlobalStates.alertState)
 
   const [adminName, setAdminName] = React.useState('')
@@ -59,7 +58,7 @@ function LayoutHeader({}: LayoutHeaderProps) {
     const newAdmin = { ...admin, name: adminName }
 
     setAdmin(newAdmin)
-    const boo = await apiSession.apiChangeName(token, newAdmin)
+    const boo = await apiSession.apiChangeName(newAdmin)
 
     if (!boo) {
       setAdmin(null)
@@ -67,8 +66,6 @@ function LayoutHeader({}: LayoutHeaderProps) {
   }
 
   const logout = () => {
-    apiSession.apiLogout()
-
     setAlert((old) => ({
       ...old,
       show: true,

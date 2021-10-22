@@ -1,4 +1,4 @@
-import firebase from 'firebase'
+import firebase from 'firebase/compat'
 import React from 'react'
 import { RouterProps } from 'react-router'
 import { useTitle } from 'react-use'
@@ -21,7 +21,6 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
   const isMounted = customHooks.useIsMounted()
 
   const setAdmin = Recoil.useSetRecoilState(adminGlobalStates.adminState)
-  const setToken = Recoil.useSetRecoilState(adminGlobalStates.tokenState)
   const setLoading = Recoil.useSetRecoilState(etcGlobalStates.loadingState)
   const [alert, setAlert] = Recoil.useRecoilState(etcGlobalStates.alertState)
 
@@ -33,35 +32,33 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
   }, [isMounted, alert.type])
 
   React.useEffect(() => {
+    if (!auth?.onAuthStateChanged) return
+
     auth.onAuthStateChanged(async (user) => {
       if (!user) {
         setAdmin(() => null)
         return
       }
 
-      const { uid } = user
-
       console.log('=====================================')
-      console.log('uid: ', uid)
+      console.log('uid: ', user.uid)
       console.log('email: ', user.email)
       console.log('name: ', user.displayName)
 
-      const token = await apiSession.apiLogin(uid)
-      if (!token) {
-        setAdmin(() => null)
-        return
-      }
+      const result = await apiSession.apiLogin(user)
+      setAdmin(() => result)
 
-      const admin = await apiSession.apiGetAdminInfo(token, uid)
-      if (!admin) {
-        setAdmin(() => null)
-        return
+      if (!result) {
+        setAlert((old) => ({
+          ...old,
+          show: true,
+          type: 'warning',
+          msg: '존재하지 않는 관리자 입니다.',
+          time: 1500,
+        }))
       }
-
-      setToken(() => token)
-      setAdmin(() => admin)
     })
-  }, [isMounted, auth, firebase])
+  }, [isMounted, auth?.onAuthStateChanged, firebase, apiSession.apiLogin])
 
   React.useEffect(() => {
     if (!isMounted()) return

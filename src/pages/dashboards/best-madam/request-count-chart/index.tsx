@@ -8,11 +8,10 @@ import helpers from '~/utils/helpers'
 import customHooks from '~/utils/hooks'
 
 interface Props {
-  token: string
   className: string
 }
 
-function RequestCountChart({ token, className }: Props) {
+function RequestCountChart({ className }: Props) {
   const [dateRange, setDateRange] = React.useState<
     undefined | Date | Array<Date | undefined>
   >([helpers.getLastWeek(), helpers.getYesterday()])
@@ -69,7 +68,6 @@ function RequestCountChart({ token, className }: Props) {
       return
 
     const result = await apiDashboard.apiMadamRequestCount(
-      token,
       moment(dateRange[0]).format('YYYY-MM-DD'),
       moment(dateRange[1]).format('YYYY-MM-DD'),
       rangeOption,
@@ -105,7 +103,7 @@ function RequestCountChart({ token, className }: Props) {
           return [moment(date).format(format), 0, 0, 0, 0, 0]
         }),
     )
-  }, [token, dateRange, helpers.getDateRangeArray, format, rangeOption])
+  }, [dateRange, helpers.getDateRangeArray, format, rangeOption])
 
   React.useEffect(() => {
     if (isMounted()) {

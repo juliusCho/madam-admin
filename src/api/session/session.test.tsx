@@ -1,23 +1,24 @@
 import endpoints from '~/endpoints.config'
+import auth, { db } from '~/firebaseSetup'
 import api from '.'
 
 describe('API apiSession', () => {
-  let token = ''
-
-  beforeAll(async () => {
-    token = (await api.apiLogin(endpoints.test.uid)) ?? ''
+  it('apiLogin', async () => {
+    if (auth?.currentUser) {
+      const result = await api.apiLogin(auth.currentUser)
+      expect(result?.uid).toBe(endpoints.test.uid)
+    }
   })
 
-  afterAll(() => {
-    api.apiLogout()
-  })
-
-  it('apiGetAdminInfo', async () => {
-    const result = await api.apiGetAdminInfo(token, endpoints.test.uid)
-
-    expect(result.uid).toBe(endpoints.test.uid)
-    expect(result.email).toMatch(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-    )
+  it('apiChangeName', async () => {
+    if (db) {
+      const { uid, name, email } = endpoints.test
+      const result = await api.apiChangeName({
+        uid,
+        name,
+        email,
+      })
+      expect(result).toBeTruthy()
+    }
   })
 })

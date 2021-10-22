@@ -4,11 +4,10 @@ import { ChartDonut } from '~/components/charts/donut'
 import customHooks from '~/utils/hooks'
 
 interface Props {
-  token: string
   className: string
 }
 
-function CountryChart({ token, className }: Props) {
+function CountryChart({ className }: Props) {
   const [data, setData] = React.useState<
     Array<{ code: string; label: string; count: number }>
   >([])
@@ -16,14 +15,14 @@ function CountryChart({ token, className }: Props) {
   const isMounted = customHooks.useIsMounted()
 
   const fetchData = React.useCallback(async () => {
-    const result = await apiDashboard.apiCountryCount(token)
+    const result = await apiDashboard.apiCountryCount()
     if (!result) {
       setData(() => [])
       return
     }
 
     setData(() => result)
-  }, [token, apiDashboard.apiCountryCount])
+  }, [apiDashboard.apiCountryCount])
 
   React.useEffect(() => {
     if (isMounted()) {

@@ -4,12 +4,11 @@ import { ChartDonut } from '~/components/charts/donut'
 import customHooks from '~/utils/hooks'
 
 interface Props {
-  token: string
   isLike: boolean
   className: string
 }
 
-function InterestChart({ token, isLike, className }: Props) {
+function InterestChart({ isLike, className }: Props) {
   const [data, setData] = React.useState<
     Array<{ id: string; count: number; label: string }>
   >([])
@@ -17,7 +16,7 @@ function InterestChart({ token, isLike, className }: Props) {
   const isMounted = customHooks.useIsMounted()
 
   const fetchData = React.useCallback(async () => {
-    const result = await apiDashboard.apiInterestsCount(token, isLike)
+    const result = await apiDashboard.apiInterestsCount(isLike)
 
     if (!result) {
       setData((oldList) => oldList.map((old) => ({ ...old, count: 0 })))
@@ -25,7 +24,7 @@ function InterestChart({ token, isLike, className }: Props) {
     }
 
     setData(() => result)
-  }, [token, apiDashboard.apiInterestsCount, isLike])
+  }, [apiDashboard.apiInterestsCount, isLike])
 
   React.useEffect(() => {
     if (isMounted()) {

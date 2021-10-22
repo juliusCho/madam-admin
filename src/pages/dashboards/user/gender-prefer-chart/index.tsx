@@ -6,11 +6,10 @@ import { SEXUAL_PREFERENCE } from '~/enums'
 import customHooks from '~/utils/hooks'
 
 interface Props {
-  token: string
   className: string
 }
 
-function GenderPreferChart({ token, className }: Props) {
+function GenderPreferChart({ className }: Props) {
   const [data, setData] = React.useState<
     Array<{ status: string; count: number; label: string }>
   >(
@@ -24,7 +23,7 @@ function GenderPreferChart({ token, className }: Props) {
   const isMounted = customHooks.useIsMounted()
 
   const fetchData = React.useCallback(async () => {
-    const result = await apiDashboard.apiUserCountPerSexualPreference(token)
+    const result = await apiDashboard.apiUserCountPerSexualPreference()
 
     if (!result) {
       setData((oldList) => oldList.map((old) => ({ ...old, count: 0 })))
@@ -40,7 +39,7 @@ function GenderPreferChart({ token, className }: Props) {
         return { ...old, count: 0 }
       }),
     )
-  }, [token, apiDashboard.apiUserCountPerSexualPreference])
+  }, [apiDashboard.apiUserCountPerSexualPreference])
 
   React.useEffect(() => {
     if (isMounted()) {

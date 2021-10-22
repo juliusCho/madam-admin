@@ -6,11 +6,10 @@ import customHooks from '~/utils/hooks'
 interface Props {
   id: string
   title: string
-  token: string
   className: string
 }
 
-function DynamicChart({ id, title, token, className }: Props) {
+function DynamicChart({ id, title, className }: Props) {
   const [data, setData] = React.useState<
     Array<{ count: number; label: string }>
   >([])
@@ -18,14 +17,14 @@ function DynamicChart({ id, title, token, className }: Props) {
   const isMounted = customHooks.useIsMounted()
 
   const fetchValueList = React.useCallback(async () => {
-    const result = await apiDashboard.apiDynamicProfileItemCount(token, id)
+    const result = await apiDashboard.apiDynamicProfileItemCount(id)
     if (!result) {
       setData(() => [])
       return
     }
 
     setData(() => result)
-  }, [id, token])
+  }, [id])
 
   React.useEffect(() => {
     if (isMounted()) {

@@ -1,29 +1,49 @@
+import firebase from 'firebase/compat'
+import { db } from '~/firebaseSetup'
 import { AdminType } from '~/models/admin'
 
-const apiLogin = async (uid: string): Promise<string | null> => {
-  return uid
-}
+export const apiLogin = async (
+  firebaseAdmin: firebase.User,
+): Promise<AdminType | null> => {
+  if (!firebaseAdmin) return null
 
-const apiGetAdminInfo = async (token: string, uid: string) => {
+  const { uid } = firebaseAdmin
+
+  const admin = await db
+    .collection('admins')
+    .doc(uid)
+    .get()
+    .catch(() => null)
+  if (!admin?.exists) {
+    return null
+  }
+
+  const data = admin.data()
+  if (!data) {
+    return null
+  }
+
+  const { email, name } = data
+
   return {
     uid,
-    email: process.env.REACT_APP_TEST_EMAIL || '',
-    name: process.env.REACT_APP_TEST_NAME || '',
+    email,
+    name,
   }
 }
 
-const apiChangeName = async (
-  token: string,
-  user: AdminType,
-): Promise<boolean> => {
-  return true
+export const apiChangeName = async (user: AdminType): Promise<boolean> => {
+  return db
+    .collection('admins')
+    .doc(user.uid)
+    .update({
+      name: user.name ?? '',
+    })
+    .then(() => true)
+    .catch(() => false)
 }
-
-const apiLogout = () => {}
 
 export default {
   apiLogin,
-  apiGetAdminInfo,
   apiChangeName,
-  apiLogout,
 }

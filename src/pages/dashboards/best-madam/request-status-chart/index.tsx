@@ -8,11 +8,10 @@ import helpers from '~/utils/helpers'
 import customHooks from '~/utils/hooks'
 
 interface Props {
-  token: string
   className: string
 }
 
-function RequestStatusChart({ token, className }: Props) {
+function RequestStatusChart({ className }: Props) {
   const [data, setData] = React.useState<
     Array<{ status: string; count: number; label: string }>
   >(
@@ -33,7 +32,6 @@ function RequestStatusChart({ token, className }: Props) {
       return
 
     const result = await apiDashboard.apiMadamRequestStatusPerWeek(
-      token,
       moment(dateRange[0]).format('YYYY-MM-DD'),
       moment(dateRange[1]).format('YYYY-MM-DD'),
     )
@@ -52,7 +50,7 @@ function RequestStatusChart({ token, className }: Props) {
         return { ...old, count: 0 }
       }),
     )
-  }, [token, apiDashboard.apiMadamRequestStatusPerWeek, dateRange])
+  }, [apiDashboard.apiMadamRequestStatusPerWeek, dateRange])
 
   React.useEffect(() => {
     if (isMounted()) {

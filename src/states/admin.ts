@@ -10,13 +10,6 @@ const adminState = Recoil.atom<AdminType | null>({
   effects_UNSTABLE: [persistAtom],
 })
 
-const tokenState = Recoil.atom({
-  key: 'tokenState',
-  default: '',
-  effects_UNSTABLE: [persistAtom],
-})
-
 export default {
   adminState,
-  tokenState,
 }
