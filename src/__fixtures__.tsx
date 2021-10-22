@@ -7,7 +7,6 @@ import firebase from 'firebase/compat/app'
 import fs from 'fs'
 import { MemoryRouter, Route, RouteComponentProps } from 'react-router'
 import Recoil from 'recoil'
-import firebaseConfig from '../firebase.json'
 import endpoints from './endpoints.config'
 
 export const renderPage = (
@@ -30,16 +29,14 @@ export const initializeFirestoreTestEnv = async () => {
     firestore: {
       rules: fs.readFileSync(__dirname + path, 'utf8'),
       host: 'localhost',
-      port: firebaseConfig.emulators.firestore.port,
+      port: 8080,
     },
   })
 }
 
 const startEmulator = (firestore: firebase.firestore.Firestore) => {
-  firestore.app
-    .auth()
-    .useEmulator(`http://localhost:${firebaseConfig.emulators.auth.port}`)
-  firestore.useEmulator('localhost', firebaseConfig.emulators.firestore.port)
+  firestore.app.auth().useEmulator(`http://localhost:${9099}`)
+  firestore.useEmulator('localhost', 8080)
 }
 
 export const firestoreTestAuthenticate = (env: RulesTestEnvironment) => {
