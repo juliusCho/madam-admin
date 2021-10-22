@@ -3171,3 +3171,5 @@ java.lang.IllegalArgumentException: Not a project id: AIzaSyCciJbMP0kP8CNfNEiL5e
 
 Oct. 22, 2021 10:05:15 PM io.gapi.emulators.netty.HttpHandler$1 onError
 INFO: Exception when handling request: UNKNOWN
+*** shutting down gRPC server since JVM is shutting down
+*** server shut down

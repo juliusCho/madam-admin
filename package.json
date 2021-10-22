@@ -14,12 +14,14 @@
     "css": "bash tailwind-compile.sh",
     "start": "craco start",
     "prebuild": "cross-env NODE_ENV=production npm run css",
-    "build": "npm run css && craco build",
+    "build": "yarn css && craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\" --fix",
-    "firebase:dev": "npm run build && firebase serve",
-    "firebase": "npm run build && firebase deploy --only hosting"
+    "firebase:dev": "yarn build && firebase serve",
+    "firebase": "yarn build && firebase deploy --only hosting",
+    "auth-emul": "firebase emulators:start --only auth",
+    "store-emul": "firebase emulators:start --only firestore"
   },
   "eslintConfig": {
     "extends": [
