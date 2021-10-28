@@ -1,6 +1,6 @@
 import moment from 'moment'
 import React from 'react'
-import { apiDashboard } from '~/api'
+import { apiDashboard } from '~/apis'
 import { ChartBarLine } from '~/components/charts/bar-line'
 import { MADAM_REQUEST_STATUS_LABEL } from '~/constants/app'
 import { ChartDatePickerOptionType } from '~/enums'

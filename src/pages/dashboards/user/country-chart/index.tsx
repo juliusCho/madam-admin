@@ -1,5 +1,5 @@
 import React from 'react'
-import { apiDashboard } from '~/api'
+import { apiDashboard } from '~/apis'
 import { ChartDonut } from '~/components/charts/donut'
 import customHooks from '~/utils/hooks'
 

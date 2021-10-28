@@ -1,5 +1,5 @@
 import React from 'react'
-import { apiDashboard } from '~/api'
+import { apiDashboard } from '~/apis'
 import { ChartDonut } from '~/components/charts/donut'
 import { GENDER_LABEL } from '~/constants/app'
 import { GENDER } from '~/enums'

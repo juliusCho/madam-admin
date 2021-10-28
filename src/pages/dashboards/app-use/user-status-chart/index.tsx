@@ -1,5 +1,5 @@
 import React from 'react'
-import apiDashboard from '~/api/dashboard'
+import apiDashboard from '~/apis/dashboard'
 import { ChartDonut } from '~/components/charts/donut'
 import { USER_STATUS_LABEL } from '~/constants/app'
 import { USER_STATUS } from '~/enums'

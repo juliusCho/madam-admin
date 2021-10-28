@@ -1,7 +1,7 @@
 import React from 'react'
 import { useHistory } from 'react-router'
 import Recoil from 'recoil'
-import { apiSession } from '~/api'
+import { apiSession } from '~/apis'
 import { ButtonRoundWithIcon } from '~/components/buttons/round-with-icon'
 import { InputTextLine } from '~/components/inputs/text-line'
 import { LabelMadam } from '~/components/labels/madam'
@@ -57,12 +57,9 @@ function LayoutHeader({}: LayoutHeaderProps) {
 
     const newAdmin = { ...admin, name: adminName }
 
-    setAdmin(newAdmin)
     const boo = await apiSession.apiChangeName(newAdmin)
 
-    if (!boo) {
-      setAdmin(null)
-    }
+    setAdmin(boo ? newAdmin : null)
   }
 
   const logout = () => {

@@ -1,3 +1,4 @@
+import { Auth } from 'firebase/auth'
 import 'firebase/compat/analytics'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/app-check'
@@ -37,4 +38,4 @@ if (process.env.NODE_ENV === 'test') {
 
 export const db = firestore as firebase.firestore.Firestore
 
-export default auth as firebase.auth.Auth
+export default auth as Auth

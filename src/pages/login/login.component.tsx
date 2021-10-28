@@ -3,7 +3,7 @@ import React from 'react'
 import { RouterProps } from 'react-router'
 import { useTitle } from 'react-use'
 import Recoil from 'recoil'
-import { apiSession } from '~/api'
+import { apiSession } from '~/apis'
 import { ButtonCircle } from '~/components/buttons/circle'
 import { LabelMadam } from '~/components/labels/madam'
 import { ROUTER_PATH, ROUTER_TITLE } from '~/constants/etc'
@@ -28,37 +28,27 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
 
   React.useEffect(() => {
     if (!isMounted()) return
+
     setNoFound(() => alert.type === 'error')
   }, [isMounted, alert.type])
 
-  React.useEffect(() => {
-    if (!auth?.onAuthStateChanged) return
+  React.useLayoutEffect(() => {
+    const subscription = apiSession.apiAuthState$.subscribe((user) => {
+      setAdmin(() => user)
 
-    auth.onAuthStateChanged(async (user) => {
-      if (!user) {
-        setAdmin(() => null)
-        return
-      }
-
-      console.log('=====================================')
-      console.log('uid: ', user.uid)
-      console.log('email: ', user.email)
-      console.log('name: ', user.displayName)
-
-      const result = await apiSession.apiLogin(user)
-      setAdmin(() => result)
-
-      if (!result) {
-        setAlert((old) => ({
-          ...old,
-          show: true,
-          type: 'warning',
-          msg: '존재하지 않는 관리자 입니다.',
-          time: 1500,
-        }))
-      }
+      setAlert((old) => ({
+        ...old,
+        show: true,
+        type: user ? 'info' : 'warning',
+        msg: user ? '로그인 되었습니다.' : '존재하지 않는 관리자 입니다.',
+        time: 1500,
+      }))
     })
-  }, [isMounted, auth?.onAuthStateChanged, firebase, apiSession.apiLogin])
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
 
   React.useEffect(() => {
     if (!isMounted()) return
@@ -69,7 +59,7 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
     }
   }, [isMounted, history.location.pathname, ROUTER_PATH.LOGIN, auth])
 
-  const signIn = async () => {
+  const signIn = () => {
     if (window.navigator.userAgent.includes('KAKAOTALK')) {
       setAlert((old) => ({
         ...old,
@@ -81,17 +71,20 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
       return
     }
 
-    auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch((e) => {
-      if (!e.code.includes('cancelled-popup-request')) {
-        setAlert((old) => ({
-          ...old,
-          show: true,
-          type: 'error',
-          msg: e.message,
-          time: 1500,
-        }))
-      }
-    })
+    firebase
+      .auth()
+      .signInWithPopup(new firebase.auth.GoogleAuthProvider())
+      .catch((e) => {
+        if (!e.code.includes('cancelled-popup-request')) {
+          setAlert((old) => ({
+            ...old,
+            show: true,
+            type: 'error',
+            msg: e.message,
+            time: 1500,
+          }))
+        }
+      })
   }
 
   return (

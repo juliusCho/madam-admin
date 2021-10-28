@@ -1,12 +1,15 @@
+import { of } from 'rxjs'
 import endpoints from '~/endpoints.config'
 import auth, { db } from '~/firebaseSetup'
 import api from '.'
 
 describe('API apiSession', () => {
-  it('apiLogin', async () => {
+  it('apiAuthState$', async (done) => {
     if (auth?.currentUser) {
-      const result = await api.apiLogin(auth.currentUser)
-      expect(result?.uid).toBe(endpoints.test.uid)
+      of(api.apiAuthState$).subscribe((data) => {
+        expect(data).toBe(endpoints.test.uid)
+        done()
+      })
     }
   })
 

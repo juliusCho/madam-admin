@@ -1,5 +1,5 @@
 import React from 'react'
-import { apiDashboard } from '~/api'
+import { apiDashboard } from '~/apis'
 import { ChartLineByDataset } from '~/components/charts/line-by-dataset'
 import { ScreenOptionType } from '~/enums'
 import customHooks from '~/utils/hooks'

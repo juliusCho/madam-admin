@@ -1,6 +1,6 @@
 import moment from 'moment'
 import React from 'react'
-import { apiDashboard } from '~/api'
+import { apiDashboard } from '~/apis'
 import { ChartDonut } from '~/components/charts/donut'
 import { MADAM_REQUEST_STATUS_LABEL } from '~/constants/app'
 import { MADAM_REQUEST_STATUS } from '~/enums'

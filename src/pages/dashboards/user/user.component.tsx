@@ -1,6 +1,6 @@
 import React from 'react'
 import Recoil from 'recoil'
-import { apiSystemVariable } from '~/api'
+import { apiSystemVariable } from '~/apis'
 import { PROFILE_EXTRA_ITEM_TYPE } from '~/enums'
 import { ProfileExtraItemType } from '~/models/profile-extra-item'
 import PageDashboardLayout from '~/pages/dashboards/layout.component'
