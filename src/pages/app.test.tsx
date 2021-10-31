@@ -1,12 +1,25 @@
 import { render } from '@testing-library/react'
+import { deleteApp, FirebaseApp } from 'firebase/app'
 import { createMemoryHistory } from 'history'
 import { Router } from 'react-router'
 import Recoil from 'recoil'
 import { ROUTER_PATH } from '~/constants/etc'
 import { AdminType } from '~/models/admin'
+import { initializeTestFirebase } from '~/__fixtures__'
 import App from './app.component'
 
 describe('app 테스트', () => {
+  let app: FirebaseApp
+
+  beforeEach(() => {
+    const init = initializeTestFirebase()
+    app = init.app
+  })
+
+  afterEach(() => {
+    deleteApp(app).catch(() => undefined)
+  })
+
   const testAdminState = Recoil.atom<AdminType | null>({
     key: 'testAdminState',
     default: null,

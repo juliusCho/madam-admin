@@ -1,3 +1,4 @@
+import { deleteApp, FirebaseApp } from 'firebase/app'
 import moment from 'moment'
 import {
   GENDER,
@@ -5,19 +6,31 @@ import {
   SEXUAL_PREFERENCE,
   USER_STATUS,
 } from '~/enums'
+import { initializeTestFirebase } from '~/__fixtures__'
 import api from '.'
 
 describe('API Dashboard', () => {
-  it('apiUserCountPerStatus', async () => {
-    const result = await api.apiUserCountPerStatus()
+  let app: FirebaseApp
 
-    expect(result).not.toBeNull()
-    if (!result) return
+  beforeEach(() => {
+    const init = initializeTestFirebase()
+    app = init.app
+  })
 
-    expect(Object.keys(result).some((key) => !(key in USER_STATUS))).toBeFalsy()
-    expect(
-      Object.values(result).some((value) => typeof value !== 'number'),
-    ).toBeFalsy()
+  afterEach(() => {
+    deleteApp(app).catch(() => undefined)
+  })
+
+  xit('apiUserCountPerStatus$', (done) => {
+    api.apiUserCountPerStatus$.subscribe((result) => {
+      expect(
+        Object.keys(result).some((key) => !(key in USER_STATUS)),
+      ).toBeFalsy()
+      expect(
+        Object.values(result).some((value) => typeof value !== 'number'),
+      ).toBeFalsy()
+      done()
+    })
   })
 
   describe('apiQuitAndJoinCount', () => {

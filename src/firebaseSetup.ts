@@ -1,43 +1,32 @@
-import { Auth } from 'firebase/auth'
-import 'firebase/compat/analytics'
-import firebase from 'firebase/compat/app'
-import 'firebase/compat/app-check'
-import 'firebase/compat/auth'
-import 'firebase/compat/database'
-import 'firebase/compat/firestore'
-import 'firebase/compat/storage'
-import endpoint from './endpoints.config'
+import 'firebase/analytics'
+import { initializeApp } from 'firebase/app'
+import 'firebase/app-check'
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
+import 'firebase/auth'
 import {
-  firestoreTestAuthenticate,
-  initializeFirestoreTestEnv,
-} from './__fixtures__'
+  browserSessionPersistence,
+  getAuth,
+  setPersistence,
+} from 'firebase/auth'
+import 'firebase/database'
+import 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore'
+import 'firebase/storage'
+import endpoint from './endpoints.config'
 
-let auth: any
-let firestore: any
+const app = initializeApp(endpoint.firebase)
 
-if (process.env.NODE_ENV === 'test') {
-  if (initializeFirestoreTestEnv) {
-    const testEnv = initializeFirestoreTestEnv()
+const firestore = getFirestore(app)
 
-    testEnv.then((res) => {
-      firestore = firestoreTestAuthenticate(res).firestore()
-      auth = (firestore as firebase.firestore.Firestore).app.auth()
-    })
-  }
-} else {
-  firebase.initializeApp(endpoint.firebase)
+initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider(endpoint.firebase.siteKey),
+  isTokenAutoRefreshEnabled: true,
+})
 
-  firestore = firebase.firestore()
+const auth = getAuth(app)
 
-  const appCheck = firebase.appCheck()
+setPersistence(auth, browserSessionPersistence)
 
-  appCheck.activate(endpoint.firebase.siteKey, true)
+export const db = firestore
 
-  auth = firebase.auth()
-
-  auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
-}
-
-export const db = firestore as firebase.firestore.Firestore
-
-export default auth as Auth
+export default auth

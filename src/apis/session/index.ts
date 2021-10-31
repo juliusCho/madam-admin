@@ -31,10 +31,10 @@ const apiAuthState$ = authState(auth).pipe(
 )
 
 const apiChangeName$ = (user: AdminType) => {
-  const adminDocRef = doc(db, `admins/${user.uid}`)
-  updateDoc(adminDocRef, { name: user.name ?? '' })
+  const adminsDocRef = doc(db, `admins/${user.uid}`)
+  updateDoc(adminsDocRef, { name: user.name ?? '' })
 
-  return docData(adminDocRef).pipe(
+  return docData(adminsDocRef).pipe(
     first(),
     map((docUser) => mapDocUser(user.uid, docUser)),
   )

@@ -14,5 +14,6 @@ export default {
     uid: process.env.REACT_APP_TEST_UID ?? '',
     email: process.env.REACT_APP_TEST_EMAIL ?? '',
     name: process.env.REACT_APP_TEST_NAME ?? '',
+    password: process.env.REACT_APP_TEST_PW ?? '',
   },
 }

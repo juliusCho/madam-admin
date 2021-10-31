@@ -1,4 +1,4 @@
-import firebase from 'firebase/compat'
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import React from 'react'
 import { RouterProps } from 'react-router'
 import { useTitle } from 'react-use'
@@ -71,20 +71,17 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
       return
     }
 
-    firebase
-      .auth()
-      .signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .catch((e) => {
-        if (!e.code.includes('cancelled-popup-request')) {
-          setAlert((old) => ({
-            ...old,
-            show: true,
-            type: 'error',
-            msg: e.message,
-            time: 1500,
-          }))
-        }
-      })
+    signInWithPopup(auth, new GoogleAuthProvider()).catch((e) => {
+      if (!e.code.includes('cancelled-popup-request')) {
+        setAlert((old) => ({
+          ...old,
+          show: true,
+          type: 'error',
+          msg: e.message,
+          time: 1500,
+        }))
+      }
+    })
   }
 
   return (

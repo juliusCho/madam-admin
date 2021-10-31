@@ -1,4 +1,7 @@
+import { collection } from 'firebase/firestore'
 import moment from 'moment'
+import { collectionData } from 'rxfire/firestore'
+import { map } from 'rxjs'
 import {
   ChartDatePickerOptionType,
   GENDER,
@@ -6,19 +9,32 @@ import {
   SEXUAL_PREFERENCE,
   USER_STATUS,
 } from '~/enums'
+import { db } from '~/firebaseSetup'
 import helpers from '~/utils/helpers'
 
-const apiUserCountPerStatus = async (): Promise<Record<
-  USER_STATUS,
-  number
-> | null> => {
-  const result = { ACTIVE: 13, INACTIVE: 1, REST: 3, BAN: 7, QUIT: 2 }
-  // const usersDocRef = doc(db, 'users')
-  // getDoc(usersDocRef).
-  // const result = await
+const apiUserCountPerStatus$ = collectionData(collection(db, 'users')).pipe(
+  map((docs) => {
+    const statusList = docs.map((doc) => doc.status)
 
-  return result
-}
+    return {
+      [USER_STATUS.ACTIVE]: statusList.filter(
+        (status) => status === USER_STATUS.ACTIVE,
+      ).length,
+      [USER_STATUS.INACTIVE]: statusList.filter(
+        (status) => status === USER_STATUS.INACTIVE,
+      ).length,
+      [USER_STATUS.REST]: statusList.filter(
+        (status) => status === USER_STATUS.REST,
+      ).length,
+      [USER_STATUS.BAN]: statusList.filter(
+        (status) => status === USER_STATUS.BAN,
+      ).length,
+      [USER_STATUS.QUIT]: statusList.filter(
+        (status) => status === USER_STATUS.QUIT,
+      ).length,
+    }
+  }),
+)
 
 const apiQuitAndJoinCount = async (
   startDate: string,
@@ -1154,7 +1170,8 @@ const apiDynamicProfileItemCount = async (
 }
 
 export default {
-  apiUserCountPerStatus,
+  // apiUserCountPerStatus,
+  apiUserCountPerStatus$,
   apiQuitAndJoinCount,
   apiReportCount,
   apiSendLinkAndJoinCount,
