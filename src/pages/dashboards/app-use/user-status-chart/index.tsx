@@ -4,7 +4,6 @@ import { ChartDonut } from '~/components/charts/donut'
 import { USER_STATUS_LABEL } from '~/constants/app'
 import { USER_STATUS } from '~/enums'
 import helpers from '~/utils/helpers'
-import customHooks from '~/utils/hooks'
 
 interface Props {
   className: string
@@ -21,36 +20,10 @@ function UserStatusChart({ className }: Props) {
     })),
   )
 
-  const isMounted = customHooks.useIsMounted()
-
-  // const fetchData = React.useCallback(async () => {
-  //   const result = await apiDashboard.apiUserCountPerStatus()
-
-  //   if (!result) {
-  //     setData((oldList) => oldList.map((old) => ({ ...old, count: 0 })))
-  //     return
-  //   }
-  //   setData((oldList) =>
-  //     oldList.map((old) => {
-  //       const found = Object.keys(result).find((key) => key === old.status)
-  //       if (found) {
-  //         // @ts-ignore
-  //         return { ...old, count: result[found] }
-  //       }
-  //       return { ...old, count: 0 }
-  //     }),
-  //   )
-  // }, [apiDashboard.apiUserCountPerStatus])
-
-  // React.useEffect(() => {
-  //   if (isMounted()) {
-  //     fetchData()
-  //   }
-  // }, [isMounted, fetchData])
-
   React.useLayoutEffect(() => {
-    const subscription = apiDashboard.apiUserCountPerStatus$.subscribe(
-      (fetchedData) => {
+    const subscription = apiDashboard
+      .apiUserCountPerStatus$()
+      .subscribe((fetchedData) => {
         setData((oldList) =>
           oldList.map((old) => {
             const found = Object.keys(fetchedData).find(
@@ -63,8 +36,7 @@ function UserStatusChart({ className }: Props) {
             return { ...old, count: 0 }
           }),
         )
-      },
-    )
+      })
 
     return () => subscription.unsubscribe()
   }, [])

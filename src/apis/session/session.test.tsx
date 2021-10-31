@@ -25,7 +25,7 @@ describe('API apiSession', () => {
   })
 
   xit('apiAuthState$', (done) => {
-    api.apiAuthState$.subscribe((data) => {
+    api.apiAuthState$().subscribe((data) => {
       expect(data).toBe(endpoints.test.uid)
       done()
     })

@@ -16,19 +16,20 @@ const mapDocUser = (uid: string, docUser: DocumentData) => {
   return { uid, email, name }
 }
 
-const apiAuthState$ = authState(auth).pipe(
-  switchMap((user) =>
-    docData(doc(db, `admins/${user?.uid}`)).pipe(
-      map((docUser) => {
-        if (!user) {
-          return null
-        }
+const apiAuthState$ = () =>
+  authState(auth).pipe(
+    switchMap((user) =>
+      docData(doc(db, `admins/${user?.uid}`)).pipe(
+        map((docUser) => {
+          if (!user) {
+            return null
+          }
 
-        return mapDocUser(user.uid, docUser)
-      }),
+          return mapDocUser(user.uid, docUser)
+        }),
+      ),
     ),
-  ),
-)
+  )
 
 const apiChangeName$ = (user: AdminType) => {
   const adminsDocRef = doc(db, `admins/${user.uid}`)

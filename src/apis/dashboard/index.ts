@@ -1,7 +1,7 @@
-import { collection } from 'firebase/firestore'
+import { collection, orderBy, query, where } from 'firebase/firestore'
 import moment from 'moment'
 import { collectionData } from 'rxfire/firestore'
-import { map } from 'rxjs'
+import { map, zip } from 'rxjs'
 import {
   ChartDatePickerOptionType,
   GENDER,
@@ -12,39 +12,36 @@ import {
 import { db } from '~/firebaseSetup'
 import helpers from '~/utils/helpers'
 
-const apiUserCountPerStatus$ = collectionData(collection(db, 'users')).pipe(
-  map((docs) => {
-    const statusList = docs.map((doc) => doc.status)
+const apiUserCountPerStatus$ = () =>
+  collectionData(collection(db, 'users')).pipe(
+    map((docs) => {
+      const statusList = docs.map((doc) => doc.status)
 
-    return {
-      [USER_STATUS.ACTIVE]: statusList.filter(
-        (status) => status === USER_STATUS.ACTIVE,
-      ).length,
-      [USER_STATUS.INACTIVE]: statusList.filter(
-        (status) => status === USER_STATUS.INACTIVE,
-      ).length,
-      [USER_STATUS.REST]: statusList.filter(
-        (status) => status === USER_STATUS.REST,
-      ).length,
-      [USER_STATUS.BAN]: statusList.filter(
-        (status) => status === USER_STATUS.BAN,
-      ).length,
-      [USER_STATUS.QUIT]: statusList.filter(
-        (status) => status === USER_STATUS.QUIT,
-      ).length,
-    }
-  }),
-)
+      return {
+        [USER_STATUS.ACTIVE]: statusList.filter(
+          (status) => status === USER_STATUS.ACTIVE,
+        ).length,
+        [USER_STATUS.INACTIVE]: statusList.filter(
+          (status) => status === USER_STATUS.INACTIVE,
+        ).length,
+        [USER_STATUS.REST]: statusList.filter(
+          (status) => status === USER_STATUS.REST,
+        ).length,
+        [USER_STATUS.BAN]: statusList.filter(
+          (status) => status === USER_STATUS.BAN,
+        ).length,
+        [USER_STATUS.QUIT]: statusList.filter(
+          (status) => status === USER_STATUS.QUIT,
+        ).length,
+      }
+    }),
+  )
 
-const apiQuitAndJoinCount = async (
+const apiQuitAndJoinCount$ = (
   startDate: string,
   endDate: string,
   range: ChartDatePickerOptionType,
-): Promise<Array<{
-  date: string
-  joinCount: number
-  quitCount: number
-}> | null> => {
+) => {
   const dateArray = helpers.getDateRangeArray(range, [
     moment(startDate).toDate(),
     moment(endDate).toDate(),
@@ -55,107 +52,45 @@ const apiQuitAndJoinCount = async (
     format = 'YYYY-MM'
   }
 
-  const result = [
-    { date: '', joinCount: 200, quitCount: 100 },
-    { date: '', joinCount: 358, quitCount: 3 },
-    { date: '', joinCount: 690, quitCount: 26 },
-    { date: '', joinCount: 590, quitCount: 42 },
-    { date: '', joinCount: 1203, quitCount: 52 },
-    { date: '', joinCount: 1489, quitCount: 3 },
-    { date: '', joinCount: 1479, quitCount: 1 },
-  ]
-
-  const monthResult = [
-    { date: '', joinCount: 200, quitCount: 100 },
-    { date: '', joinCount: 358, quitCount: 3 },
-    { date: '', joinCount: 690, quitCount: 26 },
-    { date: '', joinCount: 590, quitCount: 42 },
-    { date: '', joinCount: 1203, quitCount: 52 },
-    { date: '', joinCount: 1489, quitCount: 3 },
-    { date: '', joinCount: 1479, quitCount: 1 },
-    { date: '', joinCount: 200, quitCount: 100 },
-    { date: '', joinCount: 358, quitCount: 3 },
-    { date: '', joinCount: 690, quitCount: 26 },
-    { date: '', joinCount: 590, quitCount: 42 },
-    { date: '', joinCount: 1203, quitCount: 52 },
-    { date: '', joinCount: 1489, quitCount: 3 },
-    { date: '', joinCount: 1479, quitCount: 1 },
-    { date: '', joinCount: 200, quitCount: 100 },
-    { date: '', joinCount: 358, quitCount: 3 },
-    { date: '', joinCount: 690, quitCount: 26 },
-    { date: '', joinCount: 590, quitCount: 42 },
-    { date: '', joinCount: 1203, quitCount: 52 },
-    { date: '', joinCount: 1489, quitCount: 3 },
-    { date: '', joinCount: 1479, quitCount: 1 },
-    { date: '', joinCount: 200, quitCount: 100 },
-    { date: '', joinCount: 358, quitCount: 3 },
-    { date: '', joinCount: 690, quitCount: 26 },
-    { date: '', joinCount: 590, quitCount: 42 },
-    { date: '', joinCount: 1203, quitCount: 52 },
-    { date: '', joinCount: 1489, quitCount: 3 },
-    { date: '', joinCount: 1479, quitCount: 1 },
-    { date: '', joinCount: 200, quitCount: 100 },
-    { date: '', joinCount: 358, quitCount: 3 },
-    { date: '', joinCount: 690, quitCount: 26 },
-  ]
-
-  const month3Result = [
-    { date: '', joinCount: 200, quitCount: 100 },
-    { date: '', joinCount: 358, quitCount: 3 },
-    { date: '', joinCount: 690, quitCount: 26 },
-  ]
-
-  const month6Result = [
-    { date: '', joinCount: 200, quitCount: 100 },
-    { date: '', joinCount: 358, quitCount: 3 },
-    { date: '', joinCount: 690, quitCount: 26 },
-    { date: '', joinCount: 590, quitCount: 42 },
-    { date: '', joinCount: 1203, quitCount: 52 },
-    { date: '', joinCount: 1489, quitCount: 3 },
-  ]
-
-  const yearResult = [
-    { date: '', joinCount: 200, quitCount: 100 },
-    { date: '', joinCount: 358, quitCount: 3 },
-    { date: '', joinCount: 690, quitCount: 26 },
-    { date: '', joinCount: 590, quitCount: 42 },
-    { date: '', joinCount: 1203, quitCount: 52 },
-    { date: '', joinCount: 1489, quitCount: 3 },
-    { date: '', joinCount: 1479, quitCount: 1 },
-    { date: '', joinCount: 200, quitCount: 100 },
-    { date: '', joinCount: 358, quitCount: 3 },
-    { date: '', joinCount: 690, quitCount: 26 },
-    { date: '', joinCount: 590, quitCount: 42 },
-    { date: '', joinCount: 1203, quitCount: 52 },
-  ]
-
-  switch (range) {
-    case 'month':
-      return dateArray.map((date, idx) => ({
-        ...monthResult[idx],
-        date: moment(date).format(format),
-      }))
-    case '3-months':
-      return dateArray.map((date, idx) => ({
-        ...month3Result[idx],
-        date: moment(date).format(format),
-      }))
-    case '6-months':
-      return dateArray.map((date, idx) => ({
-        ...month6Result[idx],
-        date: moment(date).format(format),
-      }))
-    case 'year':
-      return dateArray.map((date, idx) => ({
-        ...yearResult[idx],
-        date: moment(date).format(format),
-      }))
-    default:
-      return dateArray.map((date, idx) => ({
-        ...result[idx],
-        date: moment(date).format(format),
-      }))
-  }
+  return zip(
+    collectionData(
+      query(
+        collection(db, 'users'),
+        where('joinedAt', '>=', moment(startDate).toDate()),
+        where('joinedAt', '<=', moment(endDate).toDate()),
+        orderBy('joinedAt'),
+      ),
+    ).pipe(
+      map((docs) =>
+        docs.map((doc) =>
+          helpers.timestampColToStringDate(doc.joinedAt, format),
+        ),
+      ),
+    ),
+    collectionData(
+      query(
+        collection(db, 'users'),
+        where('quitAt', '>=', moment(startDate).toDate()),
+        where('quitAt', '<=', moment(endDate).toDate()),
+        orderBy('quitAt'),
+      ),
+    ).pipe(
+      map((docs) =>
+        docs.map((doc) => helpers.timestampColToStringDate(doc.quitAt, format)),
+      ),
+    ),
+  ).pipe(
+    map((data) =>
+      dateArray.map((date) => {
+        const str = moment(date).format(format)
+        return {
+          date: str,
+          joinCount: data[0].filter((datum) => datum === str).length,
+          quitCount: data[1].filter((datum) => datum === str).length,
+        }
+      }),
+    ),
+  )
 }
 
 const apiReportCount = async (
@@ -1170,9 +1105,8 @@ const apiDynamicProfileItemCount = async (
 }
 
 export default {
-  // apiUserCountPerStatus,
   apiUserCountPerStatus$,
-  apiQuitAndJoinCount,
+  apiQuitAndJoinCount$,
   apiReportCount,
   apiSendLinkAndJoinCount,
   apiMadamRequestStatusPerWeek,

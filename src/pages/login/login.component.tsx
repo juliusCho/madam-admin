@@ -33,7 +33,7 @@ export default function PageLogin({ history }: PageLoginProps & RouterProps) {
   }, [isMounted, alert.type])
 
   React.useLayoutEffect(() => {
-    const subscription = apiSession.apiAuthState$.subscribe((user) => {
+    const subscription = apiSession.apiAuthState$().subscribe((user) => {
       setAdmin(() => user)
 
       setAlert((old) => ({
