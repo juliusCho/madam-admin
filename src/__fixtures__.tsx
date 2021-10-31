@@ -3,11 +3,16 @@ import {
   RulesTestEnvironment,
 } from '@firebase/rules-unit-testing'
 import { render } from '@testing-library/react'
+import { connectAuthEmulator } from 'firebase/auth'
 import firebase from 'firebase/compat/app'
 import fs from 'fs'
 import { MemoryRouter, Route, RouteComponentProps } from 'react-router'
 import Recoil from 'recoil'
 import endpoints from './endpoints.config'
+import auth from './firebaseSetup'
+
+const TEST_EMUL_AUTH_PORT = 9099
+const TEST_EMUL_STORE_PORT = 8080
 
 export const renderPage = (
   endpoint: string,
@@ -21,6 +26,12 @@ export const renderPage = (
     </Recoil.RecoilRoot>,
   )
 
+export const connectEmulator = () => {
+  connectAuthEmulator(auth, `http://localhost:${TEST_EMUL_AUTH_PORT}`, {
+    disableWarnings: true,
+  })
+}
+
 export const initializeFirestoreTestEnv = async () => {
   const path = '/../firestore.rules'
 
@@ -29,14 +40,21 @@ export const initializeFirestoreTestEnv = async () => {
     firestore: {
       rules: fs.readFileSync(__dirname + path, 'utf8'),
       host: 'localhost',
-      port: 8080,
+      port: TEST_EMUL_STORE_PORT,
     },
   })
 }
 
 const startEmulator = (firestore: firebase.firestore.Firestore) => {
-  firestore.app.auth().useEmulator(`http://localhost:${9099}`)
-  firestore.useEmulator('localhost', 8080)
+  connectAuthEmulator(
+    firestore.app.auth(),
+    `http://localhost:${TEST_EMUL_AUTH_PORT}`,
+    {
+      disableWarnings: true,
+    },
+  )
+  firestore.app.auth().useEmulator(`http://localhost:${TEST_EMUL_AUTH_PORT}`)
+  firestore.useEmulator('localhost', TEST_EMUL_STORE_PORT)
 }
 
 export const firestoreTestAuthenticate = (env: RulesTestEnvironment) => {
@@ -53,18 +71,4 @@ export const firestoreTestUnauthenticate = (env: RulesTestEnvironment) => {
 
 export const firestoreCleanup = async (env: RulesTestEnvironment) => {
   await env.cleanup()
-}
-
-export const initializeTestEnvAuth = async (env: RulesTestEnvironment) => {
-  const context = firestoreTestAuthenticate(env)
-  const firestore = context.firestore()
-  const auth = firestore.app.auth()
-  return { firestore, auth }
-}
-
-export const initializeTestEnvUnauth = async (env: RulesTestEnvironment) => {
-  const context = firestoreTestUnauthenticate(env)
-  const firestore = context.firestore()
-  const auth = firestore.app.auth()
-  return { firestore, auth }
 }

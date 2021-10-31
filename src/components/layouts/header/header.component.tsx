@@ -41,25 +41,33 @@ function LayoutHeader({}: LayoutHeaderProps) {
     }
   }, [isMounted, admin?.name])
 
-  const changeName = async () => {
-    setConfirmChangeNameShow(false)
-    setModalShow(false)
+  const changeName = () => {
+    setConfirmChangeNameShow(() => false)
+    setModalShow(() => false)
 
     if (!admin) return
 
-    setAlert((old) => ({
-      ...old,
-      show: true,
-      type: 'success',
-      msg: '이름이 변경되었습니다.',
-      time: 1000,
-    }))
+    apiSession.apiChangeName$({ ...admin, name: adminName }).subscribe({
+      next: (newAdmin) => {
+        setAdmin(() => newAdmin)
 
-    const newAdmin = { ...admin, name: adminName }
-
-    const boo = await apiSession.apiChangeName(newAdmin)
-
-    setAdmin(boo ? newAdmin : null)
+        setAlert((old) => ({
+          ...old,
+          show: true,
+          type: 'success',
+          msg: '이름이 변경되었습니다.',
+          time: 1000,
+        }))
+      },
+      error: () =>
+        setAlert((old) => ({
+          ...old,
+          show: true,
+          type: 'error',
+          msg: '이름 변경 중, 문제가 발생했습니다. 다시 시도해 주세요.',
+          time: 1000,
+        })),
+    })
   }
 
   const logout = () => {

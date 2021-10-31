@@ -16,12 +16,14 @@ let auth: any
 let firestore: any
 
 if (process.env.NODE_ENV === 'test') {
-  const testEnv = initializeFirestoreTestEnv()
+  if (initializeFirestoreTestEnv) {
+    const testEnv = initializeFirestoreTestEnv()
 
-  testEnv.then((res) => {
-    firestore = firestoreTestAuthenticate(res).firestore()
-    auth = (firestore as firebase.firestore.Firestore).app.auth()
-  })
+    testEnv.then((res) => {
+      firestore = firestoreTestAuthenticate(res).firestore()
+      auth = (firestore as firebase.firestore.Firestore).app.auth()
+    })
+  }
 } else {
   firebase.initializeApp(endpoint.firebase)
 

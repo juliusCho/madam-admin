@@ -47,7 +47,7 @@ describe('Component ChartBarLine', () => {
       setTimeout(() => {
         const picker = getByTestId('calendarPeriod.container')
         expect(picker).toBeInTheDocument()
-      }, 399)
+      }, 300)
     })
 
     it('change date', () => {

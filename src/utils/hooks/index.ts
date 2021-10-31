@@ -2,6 +2,7 @@ import React from 'react'
 import { useHistory } from 'react-router'
 import { useTitle } from 'react-use'
 import Recoil from 'recoil'
+import { Observable } from 'rxjs'
 import {
   MAX_MEDIUM_SCREEN,
   MAX_SMALL_SCREEN,
@@ -131,9 +132,21 @@ function useForceUpdate() {
   return () => setValue((value) => value + 1)
 }
 
+function useObservable<T>(observable: Observable<T>) {
+  const [state, setState] = React.useState<T>()
+
+  React.useLayoutEffect(() => {
+    const sub$ = observable.subscribe(setState)
+    return () => sub$.unsubscribe()
+  }, [observable])
+
+  return state
+}
+
 export default {
   useIsMounted,
   useCheckMobile,
   usePage,
   useForceUpdate,
+  useObservable,
 }

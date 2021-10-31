@@ -13,6 +13,9 @@ const apiUserCountPerStatus = async (): Promise<Record<
   number
 > | null> => {
   const result = { ACTIVE: 13, INACTIVE: 1, REST: 3, BAN: 7, QUIT: 2 }
+  // const usersDocRef = doc(db, 'users')
+  // getDoc(usersDocRef).
+  // const result = await
 
   return result
 }

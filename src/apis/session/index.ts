@@ -1,42 +1,46 @@
+import { doc, updateDoc } from 'firebase/firestore'
 import { authState } from 'rxfire/auth'
 import { docData } from 'rxfire/firestore'
-import { DocumentData, DocumentReference } from 'rxfire/firestore/interfaces'
-import { map, switchMap } from 'rxjs'
+import { DocumentData } from 'rxfire/firestore/interfaces'
+import { first, map, switchMap } from 'rxjs'
 import auth, { db } from '~/firebaseSetup'
 import { AdminType } from '~/models/admin'
 
+const mapDocUser = (uid: string, docUser: DocumentData) => {
+  if (!docUser) {
+    return null
+  }
+
+  const { email, name } = docUser
+
+  return { uid, email, name }
+}
+
 const apiAuthState$ = authState(auth).pipe(
   switchMap((user) =>
-    docData(
-      db
-        .collection('admins')
-        .doc(user?.uid) as unknown as DocumentReference<DocumentData>,
-    ).pipe(
+    docData(doc(db, `admins/${user?.uid}`)).pipe(
       map((docUser) => {
-        if (!user || !docUser) {
+        if (!user) {
           return null
         }
 
-        const { email, name } = docUser
-
-        return { uid: user.uid, email, name }
+        return mapDocUser(user.uid, docUser)
       }),
     ),
   ),
 )
 
-const apiChangeName = async (user: AdminType): Promise<boolean> => {
-  return db
-    .collection('admins')
-    .doc(user.uid)
-    .update({
-      name: user.name ?? '',
-    })
-    .then(() => true)
-    .catch(() => false)
+const apiChangeName$ = (user: AdminType) => {
+  const adminDocRef = doc(db, `admins/${user.uid}`)
+  updateDoc(adminDocRef, { name: user.name ?? '' })
+
+  return docData(adminDocRef).pipe(
+    first(),
+    map((docUser) => mapDocUser(user.uid, docUser)),
+  )
 }
 
 export default {
   apiAuthState$,
-  apiChangeName,
+  apiChangeName$,
 }
