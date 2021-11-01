@@ -33,141 +33,45 @@ describe('API Dashboard', () => {
     })
   })
 
-  // describe('apiQuitAndJoinCount', () => {
-  //   it('일주일', async () => {
-  //     const startDate = moment().hour(0).add(-7, 'days').format('YYYY-MM-DD')
-  //     const endDate = moment().hour(0).add(-1, 'days').format('YYYY-MM-DD')
-
-  //     const result = await api.apiQuitAndJoinCount(startDate, endDate, 'week')
-
-  //     expect(result).not.toBeNull()
-  //     if (!result) return
-
-  //     expect(result.length).toBe(7)
-  //     expect(
-  //       Object.keys(result[0]).some(
-  //         (key) => key !== 'date' && key !== 'joinCount' && key !== 'quitCount',
-  //       ),
-  //     ).toBeFalsy()
-  //     expect(result[0].date).toBe(startDate)
-  //     expect(result[6].date).toBe(endDate)
-  //     expect(
-  //       result
-  //         .map((res) => res.joinCount)
-  //         .some((res) => typeof res !== 'number'),
-  //     ).toBeFalsy()
-  //     expect(
-  //       result
-  //         .map((res) => res.quitCount)
-  //         .some((res) => typeof res !== 'number'),
-  //     ).toBeFalsy()
-  //   })
-
-  //   it('한달', async () => {
-  //     const startDate = moment()
-  //       .hour(0)
-  //       .add(-1, 'months')
-  //       .date(1)
-  //       .format('YYYY-MM-DD')
-  //     const end = moment().hour(0).toDate()
-  //     const endDate = moment(
-  //       new Date(end.getFullYear(), end.getMonth(), 0),
-  //     ).format('YYYY-MM-DD')
-
-  //     const result = await api.apiQuitAndJoinCount(startDate, endDate, 'month')
-
-  //     expect(result).not.toBeNull()
-  //     if (!result) return
-
-  //     expect(result.length + 4).toBeGreaterThanOrEqual(30)
-  //     expect(result.length + 4).toBeLessThan(40)
-  //     expect(result[0].date).toBe(startDate)
-  //     expect(result[result.length - 1].date).toBe(endDate)
-  //   })
-
-  //   it('3개월', async () => {
-  //     const startDate = moment().hour(0).add(-3, 'months').format('YYYY-MM')
-  //     const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
-
-  //     const result = await api.apiQuitAndJoinCount(
-  //       startDate,
-  //       endDate,
-  //       '3-months',
-  //     )
-
-  //     expect(result).not.toBeNull()
-  //     if (!result) return
-
-  //     expect(result.length).toBe(3)
-  //     expect(result[0].date).toBe(startDate)
-  //     expect(result[2].date).toBe(endDate)
-  //   })
-
-  //   it('6개월', async () => {
-  //     const startDate = moment().hour(0).add(-6, 'months').format('YYYY-MM')
-  //     const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
-
-  //     const result = await api.apiQuitAndJoinCount(
-  //       startDate,
-  //       endDate,
-  //       '6-months',
-  //     )
-
-  //     expect(result).not.toBeNull()
-  //     if (!result) return
-
-  //     expect(result.length).toBe(6)
-  //     expect(result[0].date).toBe(startDate)
-  //     expect(result[5].date).toBe(endDate)
-  //   })
-
-  //   it('1년', async () => {
-  //     const startDate = moment()
-  //       .hour(0)
-  //       .date(0)
-  //       .add(-1, 'years')
-  //       .month(0)
-  //       .format('YYYY-MM')
-  //     const endDate = moment()
-  //       .hour(0)
-  //       .date(0)
-  //       .add(-1, 'years')
-  //       .month(11)
-  //       .format('YYYY-MM')
-
-  //     const result = await api.apiQuitAndJoinCount(startDate, endDate, 'year')
-
-  //     expect(result).not.toBeNull()
-  //     if (!result) return
-
-  //     expect(result.length).toBe(12)
-  //     expect(result[0].date).toBe(startDate)
-  //     expect(result[11].date).toBe(endDate)
-  //   })
-  // })
-
-  describe('apiReportCount', () => {
-    it('일주일', async () => {
+  describe('apiQuitAndJoinCount$', () => {
+    xit('일주일', (done) => {
       const startDate = moment().hour(0).add(-7, 'days').format('YYYY-MM-DD')
       const endDate = moment().hour(0).add(-1, 'days').format('YYYY-MM-DD')
 
-      const result = await api.apiReportCount(startDate, endDate, 'week')
+      api
+        .apiQuitAndJoinCount$(startDate, endDate, 'week')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
 
-      expect(result).not.toBeNull()
-      if (!result) return
+          expect(result.length).toBe(7)
+          expect(
+            Object.keys(result[0]).some(
+              (key) =>
+                key !== 'date' && key !== 'joinCount' && key !== 'quitCount',
+            ),
+          ).toBeFalsy()
+          expect(result[0].date).toBe(startDate)
+          expect(result[6].date).toBe(endDate)
+          expect(
+            result
+              .map((res) => res.joinCount)
+              .some((res) => typeof res !== 'number'),
+          ).toBeFalsy()
+          expect(
+            result
+              .map((res) => res.quitCount)
+              .some((res) => typeof res !== 'number'),
+          ).toBeFalsy()
 
-      expect(result.length).toBe(7)
-      expect(
-        Object.keys(result[0]).some((key) => key !== 'date' && key !== 'count'),
-      ).toBeFalsy()
-      expect(result[0].date).toBe(startDate)
-      expect(result[6].date).toBe(endDate)
-      expect(
-        result.map((res) => res.count).some((res) => typeof res !== 'number'),
-      ).toBeFalsy()
+          done()
+        })
     })
 
-    it('한달', async () => {
+    xit('한달', (done) => {
       const startDate = moment()
         .hour(0)
         .add(-1, 'months')
@@ -178,46 +82,67 @@ describe('API Dashboard', () => {
         new Date(end.getFullYear(), end.getMonth(), 0),
       ).format('YYYY-MM-DD')
 
-      const result = await api.apiReportCount(startDate, endDate, 'month')
+      api
+        .apiQuitAndJoinCount$(startDate, endDate, 'month')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
 
-      expect(result).not.toBeNull()
-      if (!result) return
+          expect(result.length + 4).toBeGreaterThanOrEqual(30)
+          expect(result.length + 4).toBeLessThan(40)
+          expect(result[0].date).toBe(startDate)
+          expect(result[result.length - 1].date).toBe(endDate)
 
-      expect(result.length + 4).toBeGreaterThanOrEqual(30)
-      expect(result.length + 4).toBeLessThan(40)
-      expect(result[0].date).toBe(startDate)
-      expect(result[result.length - 1].date).toBe(endDate)
+          done()
+        })
     })
 
-    it('3개월', async () => {
+    xit('3개월', (done) => {
       const startDate = moment().hour(0).add(-3, 'months').format('YYYY-MM')
       const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
 
-      const result = await api.apiReportCount(startDate, endDate, '3-months')
+      api
+        .apiQuitAndJoinCount$(startDate, endDate, '3-months')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
 
-      expect(result).not.toBeNull()
-      if (!result) return
+          expect(result.length).toBe(3)
+          expect(result[0].date).toBe(startDate)
+          expect(result[2].date).toBe(endDate)
 
-      expect(result.length).toBe(3)
-      expect(result[0].date).toBe(startDate)
-      expect(result[2].date).toBe(endDate)
+          done()
+        })
     })
 
-    it('6개월', async () => {
+    xit('6개월', (done) => {
       const startDate = moment().hour(0).add(-6, 'months').format('YYYY-MM')
       const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
 
-      const result = await api.apiReportCount(startDate, endDate, '6-months')
+      api
+        .apiQuitAndJoinCount$(startDate, endDate, '6-months')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
 
-      expect(result).not.toBeNull()
-      if (!result) return
+          expect(result.length).toBe(6)
+          expect(result[0].date).toBe(startDate)
+          expect(result[5].date).toBe(endDate)
 
-      expect(result.length).toBe(6)
-      expect(result[0].date).toBe(startDate)
-      expect(result[5].date).toBe(endDate)
+          done()
+        })
     })
 
-    it('1년', async () => {
+    xit('1년', (done) => {
       const startDate = moment()
         .hour(0)
         .date(0)
@@ -231,52 +156,53 @@ describe('API Dashboard', () => {
         .month(11)
         .format('YYYY-MM')
 
-      const result = await api.apiReportCount(startDate, endDate, 'year')
+      api
+        .apiQuitAndJoinCount$(startDate, endDate, 'year')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
 
-      expect(result).not.toBeNull()
-      if (!result) return
+          expect(result.length).toBe(12)
+          expect(result[0].date).toBe(startDate)
+          expect(result[11].date).toBe(endDate)
 
-      expect(result.length).toBe(12)
-      expect(result[0].date).toBe(startDate)
-      expect(result[11].date).toBe(endDate)
+          done()
+        })
     })
   })
 
-  describe('apiSendLinkAndJoinCount', () => {
-    it('일주일', async () => {
+  describe('apiReportCount$', () => {
+    xit('일주일', (done) => {
       const startDate = moment().hour(0).add(-7, 'days').format('YYYY-MM-DD')
       const endDate = moment().hour(0).add(-1, 'days').format('YYYY-MM-DD')
 
-      const result = await api.apiSendLinkAndJoinCount(
-        startDate,
-        endDate,
-        'week',
-      )
+      api.apiReportCount$(startDate, endDate, 'week').subscribe((result) => {
+        expect(result).not.toBeNull()
+        if (!result) {
+          done()
+          return
+        }
 
-      expect(result).not.toBeNull()
-      if (!result) return
+        expect(result.length).toBe(7)
+        expect(
+          Object.keys(result[0]).some(
+            (key) => key !== 'date' && key !== 'count',
+          ),
+        ).toBeFalsy()
+        expect(result[0].date).toBe(startDate)
+        expect(result[6].date).toBe(endDate)
+        expect(
+          result.map((res) => res.count).some((res) => typeof res !== 'number'),
+        ).toBeFalsy()
 
-      expect(result.length).toBe(7)
-      expect(
-        Object.keys(result[0]).some(
-          (key) => key !== 'date' && key !== 'joinCount' && key !== 'sendCount',
-        ),
-      ).toBeFalsy()
-      expect(result[0].date).toBe(startDate)
-      expect(result[6].date).toBe(endDate)
-      expect(
-        result
-          .map((res) => res.joinCount)
-          .some((res) => typeof res !== 'number'),
-      ).toBeFalsy()
-      expect(
-        result
-          .map((res) => res.sendCount)
-          .some((res) => typeof res !== 'number'),
-      ).toBeFalsy()
+        done()
+      })
     })
 
-    it('한달', async () => {
+    xit('한달', (done) => {
       const startDate = moment()
         .hour(0)
         .add(-1, 'months')
@@ -287,58 +213,65 @@ describe('API Dashboard', () => {
         new Date(end.getFullYear(), end.getMonth(), 0),
       ).format('YYYY-MM-DD')
 
-      const result = await api.apiSendLinkAndJoinCount(
-        startDate,
-        endDate,
-        'month',
-      )
+      api.apiReportCount$(startDate, endDate, 'month').subscribe((result) => {
+        expect(result).not.toBeNull()
+        if (!result) {
+          done()
+          return
+        }
 
-      expect(result).not.toBeNull()
-      if (!result) return
+        expect(result.length + 4).toBeGreaterThanOrEqual(30)
+        expect(result.length + 4).toBeLessThan(40)
+        expect(result[0].date).toBe(startDate)
+        expect(result[result.length - 1].date).toBe(endDate)
 
-      expect(result.length + 4).toBeGreaterThanOrEqual(30)
-      expect(result.length + 4).toBeLessThan(40)
-      expect(result[0].date).toBe(startDate)
-      expect(result[result.length - 1].date).toBe(endDate)
+        done()
+      })
     })
 
-    it('3개월', async () => {
+    xit('3개월', (done) => {
       const startDate = moment().hour(0).add(-3, 'months').format('YYYY-MM')
       const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
 
-      const result = await api.apiSendLinkAndJoinCount(
-        startDate,
-        endDate,
-        '3-months',
-      )
+      api
+        .apiReportCount$(startDate, endDate, '3-months')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
 
-      expect(result).not.toBeNull()
-      if (!result) return
+          expect(result.length).toBe(3)
+          expect(result[0].date).toBe(startDate)
+          expect(result[2].date).toBe(endDate)
 
-      expect(result.length).toBe(3)
-      expect(result[0].date).toBe(startDate)
-      expect(result[2].date).toBe(endDate)
+          done()
+        })
     })
 
-    it('6개월', async () => {
+    xit('6개월', (done) => {
       const startDate = moment().hour(0).add(-6, 'months').format('YYYY-MM')
       const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
 
-      const result = await api.apiSendLinkAndJoinCount(
-        startDate,
-        endDate,
-        '6-months',
-      )
+      api
+        .apiReportCount$(startDate, endDate, '6-months')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
 
-      expect(result).not.toBeNull()
-      if (!result) return
+          expect(result.length).toBe(6)
+          expect(result[0].date).toBe(startDate)
+          expect(result[5].date).toBe(endDate)
 
-      expect(result.length).toBe(6)
-      expect(result[0].date).toBe(startDate)
-      expect(result[5].date).toBe(endDate)
+          done()
+        })
     })
 
-    it('1년', async () => {
+    xit('1년', (done) => {
       const startDate = moment()
         .hour(0)
         .date(0)
@@ -352,18 +285,160 @@ describe('API Dashboard', () => {
         .month(11)
         .format('YYYY-MM')
 
-      const result = await api.apiSendLinkAndJoinCount(
-        startDate,
-        endDate,
-        'year',
-      )
+      api.apiReportCount$(startDate, endDate, 'year').subscribe((result) => {
+        expect(result).not.toBeNull()
+        if (!result) {
+          done()
+          return
+        }
 
-      expect(result).not.toBeNull()
-      if (!result) return
+        expect(result.length).toBe(12)
+        expect(result[0].date).toBe(startDate)
+        expect(result[11].date).toBe(endDate)
 
-      expect(result.length).toBe(12)
-      expect(result[0].date).toBe(startDate)
-      expect(result[11].date).toBe(endDate)
+        done()
+      })
+    })
+  })
+
+  describe('apiSendLinkAndJoinCount$', () => {
+    xit('일주일', (done) => {
+      const startDate = moment().hour(0).add(-7, 'days').format('YYYY-MM-DD')
+      const endDate = moment().hour(0).add(-1, 'days').format('YYYY-MM-DD')
+
+      api
+        .apiSendLinkAndJoinCount$(startDate, endDate, 'week')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length).toBe(7)
+          expect(
+            Object.keys(result[0]).some(
+              (key) =>
+                key !== 'date' && key !== 'joinCount' && key !== 'sendCount',
+            ),
+          ).toBeFalsy()
+          expect(result[0].date).toBe(startDate)
+          expect(result[6].date).toBe(endDate)
+          expect(
+            result
+              .map((res) => res.joinCount)
+              .some((res) => typeof res !== 'number'),
+          ).toBeFalsy()
+          expect(
+            result
+              .map((res) => res.sendCount)
+              .some((res) => typeof res !== 'number'),
+          ).toBeFalsy()
+
+          done()
+        })
+    })
+
+    xit('한달', (done) => {
+      const startDate = moment()
+        .hour(0)
+        .add(-1, 'months')
+        .date(1)
+        .format('YYYY-MM-DD')
+      const end = moment().hour(0).toDate()
+      const endDate = moment(
+        new Date(end.getFullYear(), end.getMonth(), 0),
+      ).format('YYYY-MM-DD')
+
+      api
+        .apiSendLinkAndJoinCount$(startDate, endDate, 'month')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length + 4).toBeGreaterThanOrEqual(30)
+          expect(result.length + 4).toBeLessThan(40)
+          expect(result[0].date).toBe(startDate)
+          expect(result[result.length - 1].date).toBe(endDate)
+
+          done()
+        })
+    })
+
+    xit('3개월', (done) => {
+      const startDate = moment().hour(0).add(-3, 'months').format('YYYY-MM')
+      const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
+
+      api
+        .apiSendLinkAndJoinCount$(startDate, endDate, '3-months')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length).toBe(3)
+          expect(result[0].date).toBe(startDate)
+          expect(result[2].date).toBe(endDate)
+
+          done()
+        })
+    })
+
+    xit('6개월', (done) => {
+      const startDate = moment().hour(0).add(-6, 'months').format('YYYY-MM')
+      const endDate = moment().hour(0).add(-1, 'months').format('YYYY-MM')
+
+      api
+        .apiSendLinkAndJoinCount$(startDate, endDate, '6-months')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length).toBe(6)
+          expect(result[0].date).toBe(startDate)
+          expect(result[5].date).toBe(endDate)
+
+          done()
+        })
+    })
+
+    xit('1년', (done) => {
+      const startDate = moment()
+        .hour(0)
+        .date(0)
+        .add(-1, 'years')
+        .month(0)
+        .format('YYYY-MM')
+      const endDate = moment()
+        .hour(0)
+        .date(0)
+        .add(-1, 'years')
+        .month(11)
+        .format('YYYY-MM')
+
+      api
+        .apiSendLinkAndJoinCount$(startDate, endDate, 'year')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length).toBe(12)
+          expect(result[0].date).toBe(startDate)
+          expect(result[11].date).toBe(endDate)
+
+          done()
+        })
     })
   })
 

@@ -1,6 +1,6 @@
 import { collection, orderBy, query, where } from 'firebase/firestore'
 import moment from 'moment'
-import { collectionData } from 'rxfire/firestore'
+import { collection as rxCollection, collectionData } from 'rxfire/firestore'
 import { map, zip } from 'rxjs'
 import {
   ChartDatePickerOptionType,
@@ -42,10 +42,10 @@ const apiQuitAndJoinCount$ = (
   endDate: string,
   range: ChartDatePickerOptionType,
 ) => {
-  const dateArray = helpers.getDateRangeArray(range, [
-    moment(startDate).toDate(),
-    moment(endDate).toDate(),
-  ])
+  const startDt = moment(startDate).toDate()
+  const endDt = moment(endDate).toDate()
+
+  const dateArray = helpers.getDateRangeArray(range, [startDt, endDt])
   let format = 'YYYY-MM-DD'
 
   if (range === 'year' || range === '3-months' || range === '6-months') {
@@ -56,8 +56,8 @@ const apiQuitAndJoinCount$ = (
     collectionData(
       query(
         collection(db, 'users'),
-        where('joinedAt', '>=', moment(startDate).toDate()),
-        where('joinedAt', '<=', moment(endDate).toDate()),
+        where('joinedAt', '>=', startDt),
+        where('joinedAt', '<=', endDt),
         orderBy('joinedAt'),
       ),
     ).pipe(
@@ -70,8 +70,8 @@ const apiQuitAndJoinCount$ = (
     collectionData(
       query(
         collection(db, 'users'),
-        where('quitAt', '>=', moment(startDate).toDate()),
-        where('quitAt', '<=', moment(endDate).toDate()),
+        where('quitAt', '>=', startDt),
+        where('quitAt', '<=', endDt),
         orderBy('quitAt'),
       ),
     ).pipe(
@@ -81,259 +81,114 @@ const apiQuitAndJoinCount$ = (
     ),
   ).pipe(
     map((data) =>
-      dateArray.map((date) => {
-        const str = moment(date).format(format)
+      dateArray.map((da) => {
+        const date = moment(da).format(format)
+        const [joinCount, quitCount] = data.map(
+          (datum) => datum.filter((d) => d === date).length,
+        )
+
         return {
-          date: str,
-          joinCount: data[0].filter((datum) => datum === str).length,
-          quitCount: data[1].filter((datum) => datum === str).length,
+          date,
+          joinCount,
+          quitCount,
         }
       }),
     ),
   )
 }
 
-const apiReportCount = async (
+const apiReportCount$ = (
   startDate: string,
   endDate: string,
   range: ChartDatePickerOptionType,
-): Promise<Array<{
-  date: string
-  count: number
-}> | null> => {
-  const dateArray = helpers.getDateRangeArray(range, [
-    moment(startDate).toDate(),
-    moment(endDate).toDate(),
-  ])
+) => {
+  const startDt = moment(startDate).toDate()
+  const endDt = moment(endDate).toDate()
+
+  const dateArray = helpers.getDateRangeArray(range, [startDt, endDt])
   let format = 'YYYY-MM-DD'
 
   if (range === 'year' || range === '3-months' || range === '6-months') {
     format = 'YYYY-MM'
   }
 
-  const result = [
-    { date: '', count: 200 },
-    { date: '', count: 358 },
-    { date: '', count: 690 },
-    { date: '', count: 590 },
-    { date: '', count: 1203 },
-    { date: '', count: 1489 },
-    { date: '', count: 1479 },
-  ]
+  return collectionData(
+    query(
+      collection(db, 'user-blocks'),
+      where('createdAt', '>=', startDt),
+      where('createdAt', '<=', endDt),
+      orderBy('createdAt'),
+    ),
+  ).pipe(
+    map((docs) => {
+      const countList = docs.map((doc) =>
+        helpers.timestampColToStringDate(doc.createdAt, format),
+      )
 
-  const monthResult = [
-    { date: '', count: 200 },
-    { date: '', count: 358 },
-    { date: '', count: 690 },
-    { date: '', count: 590 },
-    { date: '', count: 1203 },
-    { date: '', count: 1489 },
-    { date: '', count: 1479 },
-    { date: '', count: 200 },
-    { date: '', count: 358 },
-    { date: '', count: 690 },
-    { date: '', count: 590 },
-    { date: '', count: 1203 },
-    { date: '', count: 1489 },
-    { date: '', count: 1479 },
-    { date: '', count: 200 },
-    { date: '', count: 358 },
-    { date: '', count: 690 },
-    { date: '', count: 590 },
-    { date: '', count: 1203 },
-    { date: '', count: 1489 },
-    { date: '', count: 1479 },
-    { date: '', count: 200 },
-    { date: '', count: 358 },
-    { date: '', count: 690 },
-    { date: '', count: 590 },
-    { date: '', count: 1203 },
-    { date: '', count: 1489 },
-    { date: '', count: 1479 },
-    { date: '', count: 200 },
-    { date: '', count: 358 },
-    { date: '', count: 690 },
-  ]
+      return dateArray.map((da) => {
+        const date = moment(da).format(format)
 
-  const month3Result = [
-    { date: '', count: 200 },
-    { date: '', count: 358 },
-    { date: '', count: 690 },
-  ]
-
-  const month6Result = [
-    { date: '', count: 200 },
-    { date: '', count: 358 },
-    { date: '', count: 690 },
-    { date: '', count: 590 },
-    { date: '', count: 1203 },
-    { date: '', count: 1489 },
-  ]
-
-  const yearResult = [
-    { date: '', count: 200 },
-    { date: '', count: 358 },
-    { date: '', count: 690 },
-    { date: '', count: 590 },
-    { date: '', count: 1203 },
-    { date: '', count: 1489 },
-    { date: '', count: 1479 },
-    { date: '', count: 200 },
-    { date: '', count: 358 },
-    { date: '', count: 690 },
-    { date: '', count: 590 },
-    { date: '', count: 1203 },
-  ]
-
-  switch (range) {
-    case 'month':
-      return dateArray.map((date, idx) => ({
-        ...monthResult[idx],
-        date: moment(date).format(format),
-      }))
-    case '3-months':
-      return dateArray.map((date, idx) => ({
-        ...month3Result[idx],
-        date: moment(date).format(format),
-      }))
-    case '6-months':
-      return dateArray.map((date, idx) => ({
-        ...month6Result[idx],
-        date: moment(date).format(format),
-      }))
-    case 'year':
-      return dateArray.map((date, idx) => ({
-        ...yearResult[idx],
-        date: moment(date).format(format),
-      }))
-    default:
-      return dateArray.map((date, idx) => ({
-        ...result[idx],
-        date: moment(date).format(format),
-      }))
-  }
+        return {
+          date,
+          count: countList.filter((datum) => datum === date).length,
+        }
+      })
+    }),
+  )
 }
 
-const apiSendLinkAndJoinCount = async (
+const apiSendLinkAndJoinCount$ = (
   startDate: string,
   endDate: string,
   range: ChartDatePickerOptionType,
-): Promise<Array<{
-  date: string
-  sendCount: number
-  joinCount: number
-}> | null> => {
-  const dateArray = helpers.getDateRangeArray(range, [
-    moment(startDate).toDate(),
-    moment(endDate).toDate(),
-  ])
+) => {
+  const startDt = moment(startDate).toDate()
+  const endDt = moment(endDate).toDate()
+
+  const dateArray = helpers.getDateRangeArray(range, [startDt, endDt])
   let format = 'YYYY-MM-DD'
 
   if (range === 'year' || range === '3-months' || range === '6-months') {
     format = 'YYYY-MM'
   }
 
-  const result = [
-    { date: '', sendCount: 200, joinCount: 100 },
-    { date: '', sendCount: 358, joinCount: 3 },
-    { date: '', sendCount: 690, joinCount: 26 },
-    { date: '', sendCount: 590, joinCount: 42 },
-    { date: '', sendCount: 1203, joinCount: 52 },
-    { date: '', sendCount: 1489, joinCount: 3 },
-    { date: '', sendCount: 1479, joinCount: 1 },
-  ]
+  return zip([
+    collectionData(
+      query(
+        collection(db, 'user-invites'),
+        where('createdAt', '>=', startDt),
+        where('createdAt', '<=', endDt),
+        orderBy('createdAt'),
+      ),
+    ),
+    rxCollection(collection(db, 'users')),
+  ]).pipe(
+    map((docs) => {
+      const [userInvites, users] = docs
 
-  const monthResult = [
-    { date: '', sendCount: 200, joinCount: 100 },
-    { date: '', sendCount: 358, joinCount: 3 },
-    { date: '', sendCount: 690, joinCount: 26 },
-    { date: '', sendCount: 590, joinCount: 42 },
-    { date: '', sendCount: 1203, joinCount: 52 },
-    { date: '', sendCount: 1489, joinCount: 3 },
-    { date: '', sendCount: 1479, joinCount: 1 },
-    { date: '', sendCount: 200, joinCount: 100 },
-    { date: '', sendCount: 358, joinCount: 3 },
-    { date: '', sendCount: 690, joinCount: 26 },
-    { date: '', sendCount: 590, joinCount: 42 },
-    { date: '', sendCount: 1203, joinCount: 52 },
-    { date: '', sendCount: 1489, joinCount: 3 },
-    { date: '', sendCount: 1479, joinCount: 1 },
-    { date: '', sendCount: 200, joinCount: 100 },
-    { date: '', sendCount: 358, joinCount: 3 },
-    { date: '', sendCount: 690, joinCount: 26 },
-    { date: '', sendCount: 590, joinCount: 42 },
-    { date: '', sendCount: 1203, joinCount: 52 },
-    { date: '', sendCount: 1489, joinCount: 3 },
-    { date: '', sendCount: 1479, joinCount: 1 },
-    { date: '', sendCount: 200, joinCount: 100 },
-    { date: '', sendCount: 358, joinCount: 3 },
-    { date: '', sendCount: 690, joinCount: 26 },
-    { date: '', sendCount: 590, joinCount: 42 },
-    { date: '', sendCount: 1203, joinCount: 52 },
-    { date: '', sendCount: 1489, joinCount: 3 },
-    { date: '', sendCount: 1479, joinCount: 1 },
-    { date: '', sendCount: 200, joinCount: 100 },
-    { date: '', sendCount: 358, joinCount: 3 },
-    { date: '', sendCount: 690, joinCount: 26 },
-  ]
+      const sendList = userInvites.map((ui) =>
+        helpers.timestampColToStringDate(ui.createdAt, format),
+      )
 
-  const month3Result = [
-    { date: '', sendCount: 200, joinCount: 100 },
-    { date: '', sendCount: 358, joinCount: 3 },
-    { date: '', sendCount: 690, joinCount: 26 },
-  ]
+      const joinList = userInvites
+        .filter((ui) =>
+          users.some(
+            (user) => user.id === ui.inviteUserKey && !!user.data().joinedAt,
+          ),
+        )
+        .map((ui) => helpers.timestampColToStringDate(ui.createdAt, format))
 
-  const month6Result = [
-    { date: '', sendCount: 200, joinCount: 100 },
-    { date: '', sendCount: 358, joinCount: 3 },
-    { date: '', sendCount: 690, joinCount: 26 },
-    { date: '', sendCount: 590, joinCount: 42 },
-    { date: '', sendCount: 1203, joinCount: 52 },
-    { date: '', sendCount: 1489, joinCount: 3 },
-  ]
+      return dateArray.map((da) => {
+        const date = moment(da).format(format)
 
-  const yearResult = [
-    { date: '', sendCount: 200, joinCount: 100 },
-    { date: '', sendCount: 358, joinCount: 3 },
-    { date: '', sendCount: 690, joinCount: 26 },
-    { date: '', sendCount: 590, joinCount: 42 },
-    { date: '', sendCount: 1203, joinCount: 52 },
-    { date: '', sendCount: 1489, joinCount: 3 },
-    { date: '', sendCount: 1479, joinCount: 1 },
-    { date: '', sendCount: 200, joinCount: 100 },
-    { date: '', sendCount: 358, joinCount: 3 },
-    { date: '', sendCount: 690, joinCount: 26 },
-    { date: '', sendCount: 590, joinCount: 42 },
-    { date: '', sendCount: 1203, joinCount: 52 },
-  ]
-
-  switch (range) {
-    case 'month':
-      return dateArray.map((date, idx) => ({
-        ...monthResult[idx],
-        date: moment(date).format(format),
-      }))
-    case '3-months':
-      return dateArray.map((date, idx) => ({
-        ...month3Result[idx],
-        date: moment(date).format(format),
-      }))
-    case '6-months':
-      return dateArray.map((date, idx) => ({
-        ...month6Result[idx],
-        date: moment(date).format(format),
-      }))
-    case 'year':
-      return dateArray.map((date, idx) => ({
-        ...yearResult[idx],
-        date: moment(date).format(format),
-      }))
-    default:
-      return dateArray.map((date, idx) => ({
-        ...result[idx],
-        date: moment(date).format(format),
-      }))
-  }
+        return {
+          date,
+          sendCount: sendList.filter((d) => d === date).length,
+          joinCount: joinList.filter((d) => d === date).length,
+        }
+      })
+    }),
+  )
 }
 
 const apiMadamRequestStatusPerWeek = async (
@@ -1107,8 +962,8 @@ const apiDynamicProfileItemCount = async (
 export default {
   apiUserCountPerStatus$,
   apiQuitAndJoinCount$,
-  apiReportCount,
-  apiSendLinkAndJoinCount,
+  apiReportCount$,
+  apiSendLinkAndJoinCount$,
   apiMadamRequestStatusPerWeek,
   apiMadamRequestCount,
   apiPointsPerMadam,

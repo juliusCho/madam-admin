@@ -426,7 +426,7 @@ function DatePicker({
   }, [isMounted, isOpen, timeDisplay, setLocalTimeValue])
 
   const refreshLocalTimeValue = React.useCallback(() => {
-    setTimeValue(() => calculateTimeValue(date))
+    setTimeValue(() => calculateTimeValue(value))
   }, [value, selectRange, timeRange])
 
   React.useEffect(() => {
