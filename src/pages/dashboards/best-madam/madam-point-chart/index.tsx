@@ -1,10 +1,14 @@
-import { DocumentData } from 'firebase/firestore'
+import {
+  DocumentData,
+  endBefore,
+  QueryConstraint,
+  startAfter,
+} from 'firebase/firestore'
 import moment from 'moment'
 import React from 'react'
 import { apiDashboard } from '~/apis'
 import { ChartLineByDataset } from '~/components/charts/line-by-dataset'
 import { ScreenOptionType } from '~/enums'
-import helpers from '~/utils/helpers'
 
 interface Props {
   device: ScreenOptionType
@@ -18,7 +22,9 @@ function MadamPointChart({ device, className }: Props) {
   }>({ data: [] })
   const [documents, setDocuments] = React.useState<DocumentData[]>([])
   const [displayCount, setDisplayCount] = React.useState(4)
-  const [lastStartDate, setLastStartDate] = React.useState<Date | undefined>()
+  const [lastStartDate, setLastStartDate] = React.useState<
+    { date: Date; isFirst: boolean } | undefined
+  >()
 
   const onChangeDisplayCount = (count: number) => {
     setLastStartDate(undefined)
@@ -27,25 +33,33 @@ function MadamPointChart({ device, className }: Props) {
   }
 
   const onClickPrevNext = (type: 'prev' | 'next') => {
-    if (documents.length > 1) {
+    if (documents.length > 0) {
       setLastStartDate(
         type === 'prev'
-          ? documents[0].startDate
-          : documents[documents.length - 1].startDate,
+          ? { date: documents[0].startDate, isFirst: true }
+          : { date: documents[documents.length - 1].endDate, isFirst: false },
       )
     }
   }
 
   React.useLayoutEffect(() => {
+    let queryOffset: QueryConstraint | undefined
+
+    if (lastStartDate) {
+      queryOffset = lastStartDate.isFirst
+        ? startAfter(lastStartDate.date)
+        : endBefore(lastStartDate.date)
+    }
+
     const subscription = apiDashboard
-      .apiPointsPerMadam$(displayCount, lastStartDate)
+      .apiPointsPerMadam$(displayCount, queryOffset)
       .subscribe((result) => {
         if (result.length > 0) {
           let snapshot = !result[result.length - 1].latest
           const offset = result[0].startDate
 
           if (lastStartDate) {
-            const snapshotDt = moment(lastStartDate).format('YYYYMMDD')
+            const snapshotDt = moment(lastStartDate.date).format('YYYYMMDD')
             const lastSnapshot = moment(offset).format('YYYYMMDD')
 
             if (snapshotDt === lastSnapshot) {
@@ -54,14 +68,17 @@ function MadamPointChart({ device, className }: Props) {
           }
 
           if (snapshot) {
-            setLastStartDate(() => offset)
+            setLastStartDate(() => ({
+              date: offset,
+              isFirst: true,
+            }))
           }
 
           setDocuments(() => result)
           setData(() => ({
             isEnd: result.some((res) => res.latest),
             data: result.map((res) => [
-              helpers.timestampColToStringDate(res.startDate, 'YYYY-MM-DD'),
+              moment(res.startDate).format('YYYY-MM-DD'),
               res.charm,
             ]) as Array<[string, number]>,
           }))
@@ -74,7 +91,8 @@ function MadamPointChart({ device, className }: Props) {
     lastStartDate,
     apiDashboard.apiPointsPerMadam$,
     moment,
-    helpers.timestampColToStringDate,
+    startAfter,
+    endBefore,
   ])
 
   return (

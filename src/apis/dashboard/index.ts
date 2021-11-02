@@ -3,12 +3,14 @@ import {
   limit,
   orderBy,
   query,
+  QueryConstraint,
   startAfter,
   where,
 } from 'firebase/firestore'
 import moment from 'moment'
 import { collection as rxCollection, collectionData } from 'rxfire/firestore'
-import { map, zip } from 'rxjs'
+import { DocumentData } from 'rxfire/firestore/interfaces'
+import { map, Observable, zip } from 'rxjs'
 import {
   ChartDatePickerOptionType,
   GENDER,
@@ -262,13 +264,24 @@ const apiMadamRequestCount$ = (
   )
 }
 
-const apiPointsPerMadam$ = (count: number, offset?: Date) =>
+const apiPointsPerMadam$ = (
+  count: number,
+  offset?: QueryConstraint,
+): Observable<DocumentData[]> =>
   collectionData(
     query(
       collection(db, 'madams'),
       orderBy('startDate', 'desc'),
-      startAfter(offset ?? moment('9999-12-31').toDate()),
+      offset ?? startAfter(moment('9999-12-31').toDate()),
       limit(count),
+    ),
+  ).pipe(
+    map((result) =>
+      result.reverse().map((res) => ({
+        ...res,
+        startDate: moment(Number(res.startDate?.seconds) * 1000).toDate(),
+        endDate: moment(Number(res.endDate?.seconds) * 1000).toDate(),
+      })),
     ),
   )
 
