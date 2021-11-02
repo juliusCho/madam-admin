@@ -296,13 +296,13 @@ function SearchChartDate({
           newDate = [helpers.getLastMonth(), helpers.getYesterday()]
           break
         case '3-months':
-          newDate = [helpers.getPreviousThreeMonth(), helpers.getYesterday()]
+          newDate = [helpers.getPreviousThreeMonth(), helpers.getLastMonth()]
           break
         case '6-months':
-          newDate = [helpers.getPreviousSixMonth(), helpers.getYesterday()]
+          newDate = [helpers.getPreviousSixMonth(), helpers.getLastMonth()]
           break
         case 'year':
-          newDate = [helpers.getLastYear(), helpers.getYesterday()]
+          newDate = [helpers.getLastYear(true), helpers.getLastYear()]
           break
         default:
           newDate = date

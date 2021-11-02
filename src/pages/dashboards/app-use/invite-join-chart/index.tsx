@@ -57,14 +57,14 @@ function InviteJoinChart({ className }: Props) {
     helpers.changeChartDate(setDateRange, date, rangeOption)
   }
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (!dateRange || !Array.isArray(dateRange) || dateRange.length === 1)
       return () => {}
 
     const subscription = apiDashboard
       .apiSendLinkAndJoinCount$(
-        moment(dateRange[0]).format('YYYY-MM-DD'),
-        moment(dateRange[1]).format('YYYY-MM-DD'),
+        moment(dateRange[0]).toDate(),
+        moment(dateRange[1]).toDate(),
         rangeOption,
       )
       .subscribe((result) => {

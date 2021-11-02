@@ -5,7 +5,6 @@ import { ChartDonut } from '~/components/charts/donut'
 import { MADAM_REQUEST_STATUS_LABEL } from '~/constants/app'
 import { MADAM_REQUEST_STATUS } from '~/enums'
 import helpers from '~/utils/helpers'
-import customHooks from '~/utils/hooks'
 
 interface Props {
   className: string
@@ -25,38 +24,30 @@ function RequestStatusChart({ className }: Props) {
     undefined | Date | Array<Date | undefined>
   >([helpers.getLastWeek(), helpers.getYesterday()])
 
-  const isMounted = customHooks.useIsMounted()
-
-  const fetchData = React.useCallback(async () => {
+  React.useLayoutEffect(() => {
     if (!dateRange || !Array.isArray(dateRange) || dateRange.length === 1)
-      return
+      return () => {}
 
-    const result = await apiDashboard.apiMadamRequestStatusPerWeek(
-      moment(dateRange[0]).format('YYYY-MM-DD'),
-      moment(dateRange[1]).format('YYYY-MM-DD'),
-    )
+    const subscription = apiDashboard
+      .apiMadamRequestStatusPerWeek$(
+        moment(dateRange[0]).toDate(),
+        moment(dateRange[1]).toDate(),
+      )
+      .subscribe((result) => {
+        setData((oldList) =>
+          oldList.map((old) => {
+            const found = Object.keys(result).find((key) => key === old.status)
+            if (found) {
+              // @ts-ignore
+              return { ...old, count: result[found] }
+            }
+            return { ...old, count: 0 }
+          }),
+        )
+      })
 
-    if (!result) {
-      setData((oldList) => oldList.map((old) => ({ ...old, count: 0 })))
-      return
-    }
-    setData((oldList) =>
-      oldList.map((old) => {
-        const found = Object.keys(result).find((key) => key === old.status)
-        if (found) {
-          // @ts-ignore
-          return { ...old, count: result[found] }
-        }
-        return { ...old, count: 0 }
-      }),
-    )
-  }, [apiDashboard.apiMadamRequestStatusPerWeek, dateRange])
-
-  React.useEffect(() => {
-    if (isMounted()) {
-      fetchData()
-    }
-  }, [isMounted, fetchData])
+    return () => subscription.unsubscribe()
+  }, [apiDashboard.apiMadamRequestStatusPerWeek$, dateRange])
 
   const onChangeDate = (date?: Date | Array<Date | undefined>) => {
     if (!date) return

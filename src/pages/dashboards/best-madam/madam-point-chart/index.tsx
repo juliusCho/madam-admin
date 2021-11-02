@@ -1,8 +1,10 @@
+import { DocumentData } from 'firebase/firestore'
+import moment from 'moment'
 import React from 'react'
 import { apiDashboard } from '~/apis'
 import { ChartLineByDataset } from '~/components/charts/line-by-dataset'
 import { ScreenOptionType } from '~/enums'
-import customHooks from '~/utils/hooks'
+import helpers from '~/utils/helpers'
 
 interface Props {
   device: ScreenOptionType
@@ -14,40 +16,66 @@ function MadamPointChart({ device, className }: Props) {
     isEnd?: boolean
     data: Array<[string, number]>
   }>({ data: [] })
-  const [offset, setOffset] = React.useState(0)
+  const [documents, setDocuments] = React.useState<DocumentData[]>([])
   const [displayCount, setDisplayCount] = React.useState(4)
-
-  const isMounted = customHooks.useIsMounted()
+  const [lastStartDate, setLastStartDate] = React.useState<Date | undefined>()
 
   const onChangeDisplayCount = (count: number) => {
-    setOffset(0)
+    setLastStartDate(undefined)
+    setDocuments([])
     setDisplayCount(count)
   }
 
   const onClickPrevNext = (type: 'prev' | 'next') => {
-    setOffset((old) => {
-      return type === 'prev' ? old - displayCount : old + displayCount
-    })
+    if (documents.length > 1) {
+      setLastStartDate(
+        type === 'prev'
+          ? documents[0].startDate
+          : documents[documents.length - 1].startDate,
+      )
+    }
   }
 
-  const fetchData = React.useCallback(async () => {
-    const result = await apiDashboard.apiPointsPerMadam(offset, displayCount)
-    if (!result) {
-      setData(() => ({ data: [] }))
-      return
-    }
+  React.useLayoutEffect(() => {
+    const subscription = apiDashboard
+      .apiPointsPerMadam$(displayCount, lastStartDate)
+      .subscribe((result) => {
+        if (result.length > 0) {
+          let snapshot = !result[result.length - 1].latest
+          const offset = result[0].startDate
 
-    setData(() => ({
-      isEnd: result.isEnd,
-      data: result.data.map((datum) => [datum.madam, datum.point]),
-    }))
-  }, [displayCount, offset])
+          if (lastStartDate) {
+            const snapshotDt = moment(lastStartDate).format('YYYYMMDD')
+            const lastSnapshot = moment(offset).format('YYYYMMDD')
 
-  React.useEffect(() => {
-    if (isMounted()) {
-      fetchData()
-    }
-  }, [isMounted, fetchData])
+            if (snapshotDt === lastSnapshot) {
+              snapshot = false
+            }
+          }
+
+          if (snapshot) {
+            setLastStartDate(() => offset)
+          }
+
+          setDocuments(() => result)
+          setData(() => ({
+            isEnd: result.some((res) => res.latest),
+            data: result.map((res) => [
+              helpers.timestampColToStringDate(res.startDate, 'YYYY-MM-DD'),
+              res.charm,
+            ]) as Array<[string, number]>,
+          }))
+        }
+      })
+
+    return () => subscription.unsubscribe()
+  }, [
+    displayCount,
+    lastStartDate,
+    apiDashboard.apiPointsPerMadam$,
+    moment,
+    helpers.timestampColToStringDate,
+  ])
 
   return (
     <ChartLineByDataset
@@ -68,11 +96,11 @@ function MadamPointChart({ device, className }: Props) {
       onChangeDisplayDataCount={onChangeDisplayCount}
       prev={{
         onClick: () => onClickPrevNext('prev'),
-        disabled: data.isEnd,
+        disabled: data.data.length < displayCount,
       }}
       next={{
         onClick: () => onClickPrevNext('next'),
-        disabled: offset === 0,
+        disabled: data.isEnd,
       }}
       className={className}
       colors={['pink']}

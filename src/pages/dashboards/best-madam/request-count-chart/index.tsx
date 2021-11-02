@@ -3,9 +3,8 @@ import React from 'react'
 import { apiDashboard } from '~/apis'
 import { ChartBarLine } from '~/components/charts/bar-line'
 import { MADAM_REQUEST_STATUS_LABEL } from '~/constants/app'
-import { ChartDatePickerOptionType } from '~/enums'
+import { ChartDatePickerOptionType, MADAM_REQUEST_STATUS } from '~/enums'
 import helpers from '~/utils/helpers'
-import customHooks from '~/utils/hooks'
 
 interface Props {
   className: string
@@ -17,11 +16,7 @@ function RequestCountChart({ className }: Props) {
   >([helpers.getLastWeek(), helpers.getYesterday()])
   const [rangeOption, setRangeOption] =
     React.useState<ChartDatePickerOptionType>('week')
-  const [data, setData] = React.useState<
-    Array<[string, number, number, number, number, number]>
-  >([])
-
-  const isMounted = customHooks.useIsMounted()
+  const [data, setData] = React.useState<Array<Array<string | number>>>([])
 
   const maxDate = React.useMemo(() => {
     switch (rangeOption) {
@@ -63,53 +58,52 @@ function RequestCountChart({ className }: Props) {
     helpers.changeChartDate(setDateRange, date, rangeOption)
   }
 
-  const fetchData = React.useCallback(async () => {
+  React.useLayoutEffect(() => {
     if (!dateRange || !Array.isArray(dateRange) || dateRange.length === 1)
-      return
+      return () => {}
 
-    const result = await apiDashboard.apiMadamRequestCount(
-      moment(dateRange[0]).format('YYYY-MM-DD'),
-      moment(dateRange[1]).format('YYYY-MM-DD'),
-      rangeOption,
-    )
-    if (!result) {
-      setDateRange(() => [])
-      return
-    }
+    const subscription = apiDashboard
+      .apiMadamRequestCount$(
+        moment(dateRange[0]).toDate(),
+        moment(dateRange[1]).toDate(),
+        rangeOption,
+      )
+      .subscribe((result) => {
+        setData(() =>
+          helpers
+            .getDateRangeArray(rangeOption, dateRange as Date[])
+            .filter(
+              (date) =>
+                !!result.find(
+                  (res) => res.date === moment(date).format(format),
+                ),
+            )
+            .map((date) => {
+              const found = result.find(
+                (res) => res.date === moment(date).format(format),
+              )
 
-    setData(() =>
-      helpers
-        .getDateRangeArray(rangeOption, dateRange as Date[])
-        .filter(
-          (date) =>
-            !!result.find((res) => res.date === moment(date).format(format)),
+              if (found) {
+                return Object.values(found)
+              }
+
+              return [
+                moment(date).format(format),
+                ...Object.keys(MADAM_REQUEST_STATUS).map(() => 0),
+              ]
+            }),
         )
-        .map((date) => {
-          const found = result.find(
-            (res) => res.date === moment(date).format(format),
-          )
+      })
 
-          if (found) {
-            return [
-              found.date,
-              found.requestCount,
-              found.acceptCount,
-              found.rejectCount,
-              found.completeCount,
-              found.timeoutCount,
-            ]
-          }
-
-          return [moment(date).format(format), 0, 0, 0, 0, 0]
-        }),
-    )
-  }, [dateRange, helpers.getDateRangeArray, format, rangeOption])
-
-  React.useEffect(() => {
-    if (isMounted()) {
-      fetchData()
-    }
-  }, [isMounted, fetchData])
+    return () => subscription.unsubscribe()
+  }, [
+    dateRange,
+    helpers.getDateRangeArray,
+    format,
+    rangeOption,
+    apiDashboard.apiMadamRequestCount$,
+    MADAM_REQUEST_STATUS,
+  ])
 
   return (
     <ChartBarLine

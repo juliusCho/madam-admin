@@ -1,4 +1,11 @@
-import { collection, orderBy, query, where } from 'firebase/firestore'
+import {
+  collection,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+  where,
+} from 'firebase/firestore'
 import moment from 'moment'
 import { collection as rxCollection, collectionData } from 'rxfire/firestore'
 import { map, zip } from 'rxjs'
@@ -15,37 +22,29 @@ import helpers from '~/utils/helpers'
 const apiUserCountPerStatus$ = () =>
   collectionData(collection(db, 'users')).pipe(
     map((docs) => {
-      const statusList = docs.map((doc) => doc.status)
-
-      return {
-        [USER_STATUS.ACTIVE]: statusList.filter(
-          (status) => status === USER_STATUS.ACTIVE,
-        ).length,
-        [USER_STATUS.INACTIVE]: statusList.filter(
-          (status) => status === USER_STATUS.INACTIVE,
-        ).length,
-        [USER_STATUS.REST]: statusList.filter(
-          (status) => status === USER_STATUS.REST,
-        ).length,
-        [USER_STATUS.BAN]: statusList.filter(
-          (status) => status === USER_STATUS.BAN,
-        ).length,
-        [USER_STATUS.QUIT]: statusList.filter(
-          (status) => status === USER_STATUS.QUIT,
-        ).length,
+      const result: Record<USER_STATUS, number> = {
+        [USER_STATUS.ACTIVE]: 0,
+        [USER_STATUS.INACTIVE]: 0,
+        [USER_STATUS.REST]: 0,
+        [USER_STATUS.BAN]: 0,
+        [USER_STATUS.QUIT]: 0,
       }
+
+      docs.forEach((doc) => {
+        // @ts-ignore
+        result[doc.status] += 1
+      })
+
+      return result
     }),
   )
 
 const apiQuitAndJoinCount$ = (
-  startDate: string,
-  endDate: string,
+  startDate: Date,
+  endDate: Date,
   range: ChartDatePickerOptionType,
 ) => {
-  const startDt = moment(startDate).toDate()
-  const endDt = moment(endDate).toDate()
-
-  const dateArray = helpers.getDateRangeArray(range, [startDt, endDt])
+  const dateArray = helpers.getDateRangeArray(range, [startDate, endDate])
   let format = 'YYYY-MM-DD'
 
   if (range === 'year' || range === '3-months' || range === '6-months') {
@@ -56,9 +55,9 @@ const apiQuitAndJoinCount$ = (
     collectionData(
       query(
         collection(db, 'users'),
-        where('joinedAt', '>=', startDt),
-        where('joinedAt', '<=', endDt),
-        orderBy('joinedAt'),
+        where('joinedAt', '>=', startDate),
+        where('joinedAt', '<=', endDate),
+        orderBy('joinedAt', 'desc'),
       ),
     ).pipe(
       map((docs) =>
@@ -70,9 +69,9 @@ const apiQuitAndJoinCount$ = (
     collectionData(
       query(
         collection(db, 'users'),
-        where('quitAt', '>=', startDt),
-        where('quitAt', '<=', endDt),
-        orderBy('quitAt'),
+        where('quitAt', '>=', startDate),
+        where('quitAt', '<=', endDate),
+        orderBy('quitAt', 'desc'),
       ),
     ).pipe(
       map((docs) =>
@@ -98,14 +97,11 @@ const apiQuitAndJoinCount$ = (
 }
 
 const apiReportCount$ = (
-  startDate: string,
-  endDate: string,
+  startDate: Date,
+  endDate: Date,
   range: ChartDatePickerOptionType,
 ) => {
-  const startDt = moment(startDate).toDate()
-  const endDt = moment(endDate).toDate()
-
-  const dateArray = helpers.getDateRangeArray(range, [startDt, endDt])
+  const dateArray = helpers.getDateRangeArray(range, [startDate, endDate])
   let format = 'YYYY-MM-DD'
 
   if (range === 'year' || range === '3-months' || range === '6-months') {
@@ -115,9 +111,9 @@ const apiReportCount$ = (
   return collectionData(
     query(
       collection(db, 'user-blocks'),
-      where('createdAt', '>=', startDt),
-      where('createdAt', '<=', endDt),
-      orderBy('createdAt'),
+      where('createdAt', '>=', startDate),
+      where('createdAt', '<=', endDate),
+      orderBy('createdAt', 'desc'),
     ),
   ).pipe(
     map((docs) => {
@@ -138,14 +134,11 @@ const apiReportCount$ = (
 }
 
 const apiSendLinkAndJoinCount$ = (
-  startDate: string,
-  endDate: string,
+  startDate: Date,
+  endDate: Date,
   range: ChartDatePickerOptionType,
 ) => {
-  const startDt = moment(startDate).toDate()
-  const endDt = moment(endDate).toDate()
-
-  const dateArray = helpers.getDateRangeArray(range, [startDt, endDt])
+  const dateArray = helpers.getDateRangeArray(range, [startDate, endDate])
   let format = 'YYYY-MM-DD'
 
   if (range === 'year' || range === '3-months' || range === '6-months') {
@@ -156,9 +149,9 @@ const apiSendLinkAndJoinCount$ = (
     collectionData(
       query(
         collection(db, 'user-invites'),
-        where('createdAt', '>=', startDt),
-        where('createdAt', '<=', endDt),
-        orderBy('createdAt'),
+        where('createdAt', '>=', startDate),
+        where('createdAt', '<=', endDate),
+        orderBy('createdAt', 'desc'),
       ),
     ),
     rxCollection(collection(db, 'users')),
@@ -191,673 +184,93 @@ const apiSendLinkAndJoinCount$ = (
   )
 }
 
-const apiMadamRequestStatusPerWeek = async (
-  startDate: string,
-  endDate: string,
-): Promise<Record<MADAM_REQUEST_STATUS, number> | null> => {
-  const result = { REQUEST: 13, ACCEPT: 1, REJECT: 3, COMPLETE: 7, TIMEOUT: 2 }
+const apiMadamRequestStatusPerWeek$ = (startDate: Date, endDate: Date) =>
+  collectionData(
+    query(
+      collection(db, 'requests'),
+      where('modifiedAt', '>=', startDate),
+      where('modifiedAt', '<=', endDate),
+      orderBy('modifiedAt', 'desc'),
+    ),
+  ).pipe(
+    map((docs) => {
+      const result: Record<MADAM_REQUEST_STATUS, number> = {
+        [MADAM_REQUEST_STATUS.ACCEPT]: 0,
+        [MADAM_REQUEST_STATUS.COMPLETE]: 0,
+        [MADAM_REQUEST_STATUS.REJECT]: 0,
+        [MADAM_REQUEST_STATUS.REQUEST]: 0,
+        [MADAM_REQUEST_STATUS.TIMEOUT]: 0,
+      }
 
-  return result
-}
+      docs.forEach((doc) => {
+        // @ts-ignore
+        result[doc.status] += 1
+      })
 
-const apiMadamRequestCount = async (
-  startDate: string,
-  endDate: string,
+      return result
+    }),
+  )
+
+const apiMadamRequestCount$ = (
+  startDate: Date,
+  endDate: Date,
   range: ChartDatePickerOptionType,
-): Promise<Array<{
-  date: string
-  requestCount: number
-  acceptCount: number
-  rejectCount: number
-  completeCount: number
-  timeoutCount: number
-}> | null> => {
-  const dateArray = helpers.getDateRangeArray(range, [
-    moment(startDate).toDate(),
-    moment(endDate).toDate(),
-  ])
+) => {
+  const dateArray = helpers.getDateRangeArray(range, [startDate, endDate])
   let format = 'YYYY-MM-DD'
 
   if (range === 'year' || range === '3-months' || range === '6-months') {
     format = 'YYYY-MM'
   }
 
-  const result = [
-    {
-      date: '',
-      requestCount: 200,
-      acceptCount: 180,
-      rejectCount: 20,
-      completeCount: 140,
-      timeoutCount: 40,
-    },
-    {
-      date: '',
-      requestCount: 358,
-      acceptCount: 308,
-      rejectCount: 50,
-      completeCount: 288,
-      timeoutCount: 20,
-    },
-    {
-      date: '',
-      requestCount: 690,
-      acceptCount: 690,
-      rejectCount: 0,
-      completeCount: 90,
-      timeoutCount: 600,
-    },
-    {
-      date: '',
-      requestCount: 590,
-      acceptCount: 420,
-      rejectCount: 170,
-      completeCount: 420,
-      timeoutCount: 0,
-    },
-    {
-      date: '',
-      requestCount: 1203,
-      acceptCount: 393,
-      rejectCount: 810,
-      completeCount: 390,
-      timeoutCount: 3,
-    },
-    {
-      date: '',
-      requestCount: 1489,
-      acceptCount: 760,
-      rejectCount: 729,
-      completeCount: 710,
-      timeoutCount: 50,
-    },
-    {
-      date: '',
-      requestCount: 1479,
-      acceptCount: 920,
-      rejectCount: 559,
-      completeCount: 140,
-      timeoutCount: 780,
-    },
-  ]
+  return collectionData(
+    query(
+      collection(db, 'requests'),
+      where('modifiedAt', '>=', startDate),
+      where('modifiedAt', '<=', endDate),
+      orderBy('modifiedAt', 'desc'),
+    ),
+  ).pipe(
+    map((docs) => {
+      return dateArray.map((da) => {
+        const date = moment(da).format(format)
+        const list = docs.filter(
+          (doc) =>
+            helpers.timestampColToStringDate(doc.modifiedAt, format) === date,
+        )
 
-  const monthResult = [
-    {
-      date: '',
-      requestCount: 200,
-      acceptCount: 180,
-      rejectCount: 20,
-      completeCount: 140,
-      timeoutCount: 40,
-    },
-    {
-      date: '',
-      requestCount: 358,
-      acceptCount: 308,
-      rejectCount: 50,
-      completeCount: 288,
-      timeoutCount: 20,
-    },
-    {
-      date: '',
-      requestCount: 690,
-      acceptCount: 690,
-      rejectCount: 0,
-      completeCount: 90,
-      timeoutCount: 600,
-    },
-    {
-      date: '',
-      requestCount: 590,
-      acceptCount: 420,
-      rejectCount: 170,
-      completeCount: 420,
-      timeoutCount: 0,
-    },
-    {
-      date: '',
-      requestCount: 1203,
-      acceptCount: 393,
-      rejectCount: 810,
-      completeCount: 390,
-      timeoutCount: 3,
-    },
-    {
-      date: '',
-      requestCount: 1489,
-      acceptCount: 760,
-      rejectCount: 729,
-      completeCount: 710,
-      timeoutCount: 50,
-    },
-    {
-      date: '',
-      requestCount: 1479,
-      acceptCount: 920,
-      rejectCount: 559,
-      completeCount: 140,
-      timeoutCount: 780,
-    },
-    {
-      date: '',
-      requestCount: 200,
-      acceptCount: 180,
-      rejectCount: 20,
-      completeCount: 140,
-      timeoutCount: 40,
-    },
-    {
-      date: '',
-      requestCount: 358,
-      acceptCount: 308,
-      rejectCount: 50,
-      completeCount: 288,
-      timeoutCount: 20,
-    },
-    {
-      date: '',
-      requestCount: 690,
-      acceptCount: 690,
-      rejectCount: 0,
-      completeCount: 90,
-      timeoutCount: 600,
-    },
-    {
-      date: '',
-      requestCount: 590,
-      acceptCount: 420,
-      rejectCount: 170,
-      completeCount: 420,
-      timeoutCount: 0,
-    },
-    {
-      date: '',
-      requestCount: 1203,
-      acceptCount: 393,
-      rejectCount: 810,
-      completeCount: 390,
-      timeoutCount: 3,
-    },
-    {
-      date: '',
-      requestCount: 1489,
-      acceptCount: 760,
-      rejectCount: 729,
-      completeCount: 710,
-      timeoutCount: 50,
-    },
-    {
-      date: '',
-      requestCount: 1479,
-      acceptCount: 920,
-      rejectCount: 559,
-      completeCount: 140,
-      timeoutCount: 780,
-    },
-    {
-      date: '',
-      requestCount: 200,
-      acceptCount: 180,
-      rejectCount: 20,
-      completeCount: 140,
-      timeoutCount: 40,
-    },
-    {
-      date: '',
-      requestCount: 358,
-      acceptCount: 308,
-      rejectCount: 50,
-      completeCount: 288,
-      timeoutCount: 20,
-    },
-    {
-      date: '',
-      requestCount: 690,
-      acceptCount: 690,
-      rejectCount: 0,
-      completeCount: 90,
-      timeoutCount: 600,
-    },
-    {
-      date: '',
-      requestCount: 590,
-      acceptCount: 420,
-      rejectCount: 170,
-      completeCount: 420,
-      timeoutCount: 0,
-    },
-    {
-      date: '',
-      requestCount: 1203,
-      acceptCount: 393,
-      rejectCount: 810,
-      completeCount: 390,
-      timeoutCount: 3,
-    },
-    {
-      date: '',
-      requestCount: 1489,
-      acceptCount: 760,
-      rejectCount: 729,
-      completeCount: 710,
-      timeoutCount: 50,
-    },
-    {
-      date: '',
-      requestCount: 1479,
-      acceptCount: 920,
-      rejectCount: 559,
-      completeCount: 140,
-      timeoutCount: 780,
-    },
-    {
-      date: '',
-      requestCount: 200,
-      acceptCount: 180,
-      rejectCount: 20,
-      completeCount: 140,
-      timeoutCount: 40,
-    },
-    {
-      date: '',
-      requestCount: 358,
-      acceptCount: 308,
-      rejectCount: 50,
-      completeCount: 288,
-      timeoutCount: 20,
-    },
-    {
-      date: '',
-      requestCount: 690,
-      acceptCount: 690,
-      rejectCount: 0,
-      completeCount: 90,
-      timeoutCount: 600,
-    },
-    {
-      date: '',
-      requestCount: 590,
-      acceptCount: 420,
-      rejectCount: 170,
-      completeCount: 420,
-      timeoutCount: 0,
-    },
-    {
-      date: '',
-      requestCount: 1203,
-      acceptCount: 393,
-      rejectCount: 810,
-      completeCount: 390,
-      timeoutCount: 3,
-    },
-    {
-      date: '',
-      requestCount: 1489,
-      acceptCount: 760,
-      rejectCount: 729,
-      completeCount: 710,
-      timeoutCount: 50,
-    },
-    {
-      date: '',
-      requestCount: 1479,
-      acceptCount: 920,
-      rejectCount: 559,
-      completeCount: 140,
-      timeoutCount: 780,
-    },
-    {
-      date: '',
-      requestCount: 1203,
-      acceptCount: 393,
-      rejectCount: 810,
-      completeCount: 390,
-      timeoutCount: 3,
-    },
-    {
-      date: '',
-      requestCount: 1489,
-      acceptCount: 760,
-      rejectCount: 729,
-      completeCount: 710,
-      timeoutCount: 50,
-    },
-    {
-      date: '',
-      requestCount: 1479,
-      acceptCount: 920,
-      rejectCount: 559,
-      completeCount: 140,
-      timeoutCount: 780,
-    },
-  ]
-
-  const month3Result = [
-    {
-      date: '',
-      requestCount: 200,
-      acceptCount: 180,
-      rejectCount: 20,
-      completeCount: 140,
-      timeoutCount: 40,
-    },
-    {
-      date: '',
-      requestCount: 358,
-      acceptCount: 308,
-      rejectCount: 50,
-      completeCount: 288,
-      timeoutCount: 20,
-    },
-    {
-      date: '',
-      requestCount: 690,
-      acceptCount: 690,
-      rejectCount: 0,
-      completeCount: 90,
-      timeoutCount: 600,
-    },
-  ]
-
-  const month6Result = [
-    {
-      date: '',
-      requestCount: 200,
-      acceptCount: 180,
-      rejectCount: 20,
-      completeCount: 140,
-      timeoutCount: 40,
-    },
-    {
-      date: '',
-      requestCount: 358,
-      acceptCount: 308,
-      rejectCount: 50,
-      completeCount: 288,
-      timeoutCount: 20,
-    },
-    {
-      date: '',
-      requestCount: 690,
-      acceptCount: 690,
-      rejectCount: 0,
-      completeCount: 90,
-      timeoutCount: 600,
-    },
-    {
-      date: '',
-      requestCount: 590,
-      acceptCount: 420,
-      rejectCount: 170,
-      completeCount: 420,
-      timeoutCount: 0,
-    },
-    {
-      date: '',
-      requestCount: 1203,
-      acceptCount: 393,
-      rejectCount: 810,
-      completeCount: 390,
-      timeoutCount: 3,
-    },
-    {
-      date: '',
-      requestCount: 1489,
-      acceptCount: 760,
-      rejectCount: 729,
-      completeCount: 710,
-      timeoutCount: 50,
-    },
-  ]
-
-  const yearResult = [
-    {
-      date: '',
-      requestCount: 200,
-      acceptCount: 180,
-      rejectCount: 20,
-      completeCount: 140,
-      timeoutCount: 40,
-    },
-    {
-      date: '',
-      requestCount: 358,
-      acceptCount: 308,
-      rejectCount: 50,
-      completeCount: 288,
-      timeoutCount: 20,
-    },
-    {
-      date: '',
-      requestCount: 690,
-      acceptCount: 690,
-      rejectCount: 0,
-      completeCount: 90,
-      timeoutCount: 600,
-    },
-    {
-      date: '',
-      requestCount: 590,
-      acceptCount: 420,
-      rejectCount: 170,
-      completeCount: 420,
-      timeoutCount: 0,
-    },
-    {
-      date: '',
-      requestCount: 1203,
-      acceptCount: 393,
-      rejectCount: 810,
-      completeCount: 390,
-      timeoutCount: 3,
-    },
-    {
-      date: '',
-      requestCount: 1489,
-      acceptCount: 760,
-      rejectCount: 729,
-      completeCount: 710,
-      timeoutCount: 50,
-    },
-    {
-      date: '',
-      requestCount: 1479,
-      acceptCount: 920,
-      rejectCount: 559,
-      completeCount: 140,
-      timeoutCount: 780,
-    },
-    {
-      date: '',
-      requestCount: 690,
-      acceptCount: 690,
-      rejectCount: 0,
-      completeCount: 90,
-      timeoutCount: 600,
-    },
-    {
-      date: '',
-      requestCount: 590,
-      acceptCount: 420,
-      rejectCount: 170,
-      completeCount: 420,
-      timeoutCount: 0,
-    },
-    {
-      date: '',
-      requestCount: 1203,
-      acceptCount: 393,
-      rejectCount: 810,
-      completeCount: 390,
-      timeoutCount: 3,
-    },
-    {
-      date: '',
-      requestCount: 1489,
-      acceptCount: 760,
-      rejectCount: 729,
-      completeCount: 710,
-      timeoutCount: 50,
-    },
-    {
-      date: '',
-      requestCount: 1479,
-      acceptCount: 920,
-      rejectCount: 559,
-      completeCount: 140,
-      timeoutCount: 780,
-    },
-  ]
-
-  switch (range) {
-    case 'month':
-      return dateArray.map((date, idx) => ({
-        ...monthResult[idx],
-        date: moment(date).format(format),
-      }))
-    case '3-months':
-      return dateArray.map((date, idx) => ({
-        ...month3Result[idx],
-        date: moment(date).format(format),
-      }))
-    case '6-months':
-      return dateArray.map((date, idx) => ({
-        ...month6Result[idx],
-        date: moment(date).format(format),
-      }))
-    case 'year':
-      return dateArray.map((date, idx) => ({
-        ...yearResult[idx],
-        date: moment(date).format(format),
-      }))
-    default:
-      return dateArray.map((date, idx) => ({
-        ...result[idx],
-        date: moment(date).format(format),
-      }))
-  }
+        return {
+          date,
+          [MADAM_REQUEST_STATUS.ACCEPT]: list.filter(
+            (data) => data.status === MADAM_REQUEST_STATUS.ACCEPT,
+          ).length,
+          [MADAM_REQUEST_STATUS.COMPLETE]: list.filter(
+            (data) => data.status === MADAM_REQUEST_STATUS.COMPLETE,
+          ).length,
+          [MADAM_REQUEST_STATUS.REJECT]: list.filter(
+            (data) => data.status === MADAM_REQUEST_STATUS.REJECT,
+          ).length,
+          [MADAM_REQUEST_STATUS.REQUEST]: list.filter(
+            (data) => data.status === MADAM_REQUEST_STATUS.REQUEST,
+          ).length,
+          [MADAM_REQUEST_STATUS.TIMEOUT]: list.filter(
+            (data) => data.status === MADAM_REQUEST_STATUS.TIMEOUT,
+          ).length,
+        }
+      })
+    }),
+  )
 }
 
-const apiPointsPerMadam = async (
-  offset: number,
-  count: number,
-): Promise<{
-  data: Array<{ madam: string; point: number }>
-  isEnd?: boolean
-} | null> => {
-  let tmp: Array<{ madam: string; point: number }> = [
-    {
-      madam: moment()
-        .add(offset - 4, 'weeks')
-        .format('YYYY-MM-DD'),
-      point: 2114,
-    },
-    {
-      madam: moment()
-        .add(offset - 3, 'weeks')
-        .format('YYYY-MM-DD'),
-      point: 3613,
-    },
-    {
-      madam: moment()
-        .add(offset - 2, 'weeks')
-        .format('YYYY-MM-DD'),
-      point: 4321,
-    },
-    {
-      madam: moment()
-        .add(offset - 1, 'weeks')
-        .format('YYYY-MM-DD'),
-      point: 4820,
-    },
-  ]
-
-  const result: Record<
-    string,
-    boolean | Array<{ madam: string; point: number }>
-  > = {
-    data: [...tmp],
-  }
-
-  if (count >= 10) {
-    tmp = [
-      {
-        madam: moment()
-          .add(offset - 10, 'weeks')
-          .format('YYYY-MM-DD'),
-        point: 1422,
-      },
-      {
-        madam: moment()
-          .add(offset - 9, 'weeks')
-          .format('YYYY-MM-DD'),
-        point: 1583,
-      },
-      {
-        madam: moment()
-          .add(offset - 8, 'weeks')
-          .format('YYYY-MM-DD'),
-        point: 1865,
-      },
-      {
-        madam: moment()
-          .add(offset - 7, 'weeks')
-          .format('YYYY-MM-DD'),
-        point: 2114,
-      },
-      {
-        madam: moment()
-          .add(offset - 6, 'weeks')
-          .format('YYYY-MM-DD'),
-        point: 1613,
-      },
-      {
-        madam: moment()
-          .add(offset - 5, 'weeks')
-          .format('YYYY-MM-DD'),
-        point: 1742,
-      },
-      ...tmp,
-    ]
-
-    result.data = [...tmp]
-  }
-
-  if (count >= 20) {
-    result.data = [
-      ...tmp.map((data) => ({
-        ...data,
-        madam: moment(data.madam)
-          .add(offset - 10, 'weeks')
-          .format('YYYY-MM-DD'),
-      })),
-      ...tmp,
-    ]
-  }
-
-  if (count >= 30) {
-    result.data = [
-      ...tmp.map((data) => ({
-        ...data,
-        madam: moment(data.madam)
-          .add(offset - 20, 'weeks')
-          .format('YYYY-MM-DD'),
-      })),
-      ...tmp.map((data) => ({
-        ...data,
-        madam: moment(data.madam)
-          .add(offset - 10, 'weeks')
-          .format('YYYY-MM-DD'),
-      })),
-      ...tmp,
-    ]
-  }
-
-  return { ...result, isEnd: false } as {
-    data: Array<{ madam: string; point: number }>
-    isEnd?: boolean
-  }
-}
+const apiPointsPerMadam$ = (count: number, offset?: Date) =>
+  collectionData(
+    query(
+      collection(db, 'madams'),
+      orderBy('startDate', 'desc'),
+      startAfter(offset ?? moment('9999-12-31').toDate()),
+      limit(count),
+    ),
+  )
 
 const apiUserCountPerGender = async (): Promise<Record<
   GENDER,
@@ -964,9 +377,9 @@ export default {
   apiQuitAndJoinCount$,
   apiReportCount$,
   apiSendLinkAndJoinCount$,
-  apiMadamRequestStatusPerWeek,
-  apiMadamRequestCount,
-  apiPointsPerMadam,
+  apiMadamRequestStatusPerWeek$,
+  apiMadamRequestCount$,
+  apiPointsPerMadam$,
   apiUserCountPerGender,
   apiUserCountPerSexualPreference,
   apiCountryCount,
