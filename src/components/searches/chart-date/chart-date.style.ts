@@ -1,4 +1,4 @@
-import { ScreenOptionType } from '~/enums'
+import { ScreenOptionType } from '~/types'
 import helpers from '~/utils/helpers'
 
 interface StyleProps {

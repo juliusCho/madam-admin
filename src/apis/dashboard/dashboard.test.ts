@@ -603,41 +603,39 @@ describe('API Dashboard', () => {
     })
   })
 
-  it('apiUserCountPerGender', async () => {
-    const result = await api.apiUserCountPerGender()
+  xit('apiUserCountPerGender$', (done) => {
+    api.apiUserCountPerGender$().subscribe((result) => {
+      expect(result).not.toBeNull()
+      if (!result) {
+        done()
+        return
+      }
 
-    expect(result).not.toBeNull()
-    if (!result) return
+      expect(Object.keys(result).some((key) => !(key in GENDER))).toBeFalsy()
+      expect(
+        Object.values(result).some((value) => typeof value !== 'number'),
+      ).toBeFalsy()
 
-    expect(Object.keys(result).some((key) => !(key in GENDER))).toBeFalsy()
-    expect(
-      Object.values(result).some((value) => typeof value !== 'number'),
-    ).toBeFalsy()
+      done()
+    })
   })
 
-  it('apiUserCountPerGender', async () => {
-    const result = await api.apiUserCountPerGender()
+  xit('apiUserCountPerSexualPreference$', (done) => {
+    api.apiUserCountPerSexualPreference$().subscribe((result) => {
+      expect(result).not.toBeNull()
+      if (!result) {
+        done()
+        return
+      }
 
-    expect(result).not.toBeNull()
-    if (!result) return
+      expect(
+        Object.keys(result).some((key) => !(key in SEXUAL_PREFERENCE)),
+      ).toBeFalsy()
+      expect(
+        Object.values(result).some((value) => typeof value !== 'number'),
+      ).toBeFalsy()
 
-    expect(Object.keys(result).some((key) => !(key in GENDER))).toBeFalsy()
-    expect(
-      Object.values(result).some((value) => typeof value !== 'number'),
-    ).toBeFalsy()
-  })
-
-  it('apiUserCountPerSexualPreference', async () => {
-    const result = await api.apiUserCountPerSexualPreference()
-
-    expect(result).not.toBeNull()
-    if (!result) return
-
-    expect(
-      Object.keys(result).some((key) => !(key in SEXUAL_PREFERENCE)),
-    ).toBeFalsy()
-    expect(
-      Object.values(result).some((value) => typeof value !== 'number'),
-    ).toBeFalsy()
+      done()
+    })
   })
 })

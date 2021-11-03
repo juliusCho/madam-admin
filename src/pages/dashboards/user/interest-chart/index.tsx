@@ -16,7 +16,7 @@ function InterestChart({ isLike, className }: Props) {
   const isMounted = customHooks.useIsMounted()
 
   const fetchData = React.useCallback(async () => {
-    const result = await apiDashboard.apiInterestsCount(isLike)
+    const result = await apiDashboard.apiInterestsCount$(isLike)
 
     if (!result) {
       setData((oldList) => oldList.map((old) => ({ ...old, count: 0 })))
@@ -24,7 +24,7 @@ function InterestChart({ isLike, className }: Props) {
     }
 
     setData(() => result)
-  }, [apiDashboard.apiInterestsCount, isLike])
+  }, [apiDashboard.apiInterestsCount$, isLike])
 
   React.useEffect(() => {
     if (isMounted()) {

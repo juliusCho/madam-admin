@@ -2,7 +2,7 @@
 import moment from 'moment'
 import { ROUTER_PATH } from '~/constants/etc'
 import endpointsConfig from '~/endpoints.config'
-import { ChartDatePickerOptionType, ScreenOptionType } from '~/enums'
+import { ChartDatePickerOptionType, ScreenOptionType } from '~/types'
 
 export default {
   convertTextToTailwind(text?: string) {
@@ -612,5 +612,13 @@ export default {
     format = 'YYYY-MM-DD',
   ) {
     return moment(Number(column?.seconds) * 1000).format(format)
+  },
+  getFlagEmoji(countryCode: string) {
+    return String.fromCodePoint(
+      ...countryCode
+        .toUpperCase()
+        .split('')
+        .map((x) => 0x1f1a5 + x.charCodeAt(0)),
+    )
   },
 }

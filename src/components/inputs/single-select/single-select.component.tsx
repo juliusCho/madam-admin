@@ -1,7 +1,7 @@
 import React from 'react'
 import Select, { ActionMeta, SingleValue } from 'react-select'
 import makeAnimated from 'react-select/animated'
-import { ScreenOptionType } from '~/enums'
+import { ScreenOptionType } from '~/types'
 import customHooks from '~/utils/hooks'
 import InputSingleSelectStyle from './single-select.style'
 

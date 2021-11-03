@@ -1,34 +1,39 @@
 import React from 'react'
+import Recoil from 'recoil'
 import { apiDashboard } from '~/apis'
 import { ChartDonut } from '~/components/charts/donut'
-import customHooks from '~/utils/hooks'
+import adminGlobalStates from '~/states/admin'
+import deviceGlobalStates from '~/states/device'
+import helpers from '~/utils/helpers'
 
 interface Props {
   className: string
 }
 
 function CountryChart({ className }: Props) {
+  const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
+  const device = Recoil.useRecoilValue(deviceGlobalStates.getDevice)
+
   const [data, setData] = React.useState<
     Array<{ code: string; label: string; count: number }>
   >([])
 
-  const isMounted = customHooks.useIsMounted()
+  React.useLayoutEffect(() => {
+    if (!admin) return () => {}
 
-  const fetchData = React.useCallback(async () => {
-    const result = await apiDashboard.apiCountryCount()
-    if (!result) {
-      setData(() => [])
-      return
-    }
+    const subscription = apiDashboard.apiCountryCount$().subscribe((result) => {
+      setData(() =>
+        device === 'mobile' || device === 'smallScreen'
+          ? result.map((item) => ({
+              ...item,
+              label: helpers.getFlagEmoji(item.code),
+            }))
+          : result,
+      )
+    })
 
-    setData(() => result)
-  }, [apiDashboard.apiCountryCount])
-
-  React.useEffect(() => {
-    if (isMounted()) {
-      fetchData()
-    }
-  }, [isMounted, fetchData])
+    return () => subscription.unsubscribe()
+  }, [admin, device, apiDashboard.apiCountryCount$, helpers.getFlagEmoji])
 
   return (
     <ChartDonut

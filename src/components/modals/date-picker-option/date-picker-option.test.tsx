@@ -1,6 +1,6 @@
 import { fireEvent, render } from '@testing-library/react'
 import { RecoilRoot } from 'recoil'
-import { ChartDatePickerOptionType } from '~/enums'
+import { ChartDatePickerOptionType } from '~/types'
 import ModalDatePickerOption from './date-picker-option.component'
 
 describe('Components ModalDatePickerOption', () => {

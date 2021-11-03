@@ -1,9 +1,11 @@
 import moment from 'moment'
 import React from 'react'
+import Recoil from 'recoil'
 import { apiDashboard } from '~/apis'
 import { ChartDonut } from '~/components/charts/donut'
 import { MADAM_REQUEST_STATUS_LABEL } from '~/constants/app'
 import { MADAM_REQUEST_STATUS } from '~/enums'
+import adminGlobalStates from '~/states/admin'
 import helpers from '~/utils/helpers'
 
 interface Props {
@@ -11,6 +13,8 @@ interface Props {
 }
 
 function RequestStatusChart({ className }: Props) {
+  const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
+
   const [data, setData] = React.useState<
     Array<{ status: string; count: number; label: string }>
   >(
@@ -25,7 +29,12 @@ function RequestStatusChart({ className }: Props) {
   >([helpers.getLastWeek(), helpers.getYesterday()])
 
   React.useLayoutEffect(() => {
-    if (!dateRange || !Array.isArray(dateRange) || dateRange.length === 1)
+    if (
+      !admin ||
+      !dateRange ||
+      !Array.isArray(dateRange) ||
+      dateRange.length === 1
+    )
       return () => {}
 
     const subscription = apiDashboard
@@ -47,7 +56,7 @@ function RequestStatusChart({ className }: Props) {
       })
 
     return () => subscription.unsubscribe()
-  }, [apiDashboard.apiMadamRequestStatusPerWeek$, dateRange])
+  }, [admin, apiDashboard.apiMadamRequestStatusPerWeek$, dateRange])
 
   const onChangeDate = (date?: Date | Array<Date | undefined>) => {
     if (!date) return

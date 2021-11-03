@@ -6,9 +6,11 @@ import {
 } from 'firebase/firestore'
 import moment from 'moment'
 import React from 'react'
+import Recoil from 'recoil'
 import { apiDashboard } from '~/apis'
 import { ChartLineByDataset } from '~/components/charts/line-by-dataset'
-import { ScreenOptionType } from '~/enums'
+import adminGlobalStates from '~/states/admin'
+import { ScreenOptionType } from '~/types'
 
 interface Props {
   device: ScreenOptionType
@@ -16,6 +18,8 @@ interface Props {
 }
 
 function MadamPointChart({ device, className }: Props) {
+  const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
+
   const [data, setData] = React.useState<{
     isEnd?: boolean
     data: Array<[string, number]>
@@ -43,6 +47,8 @@ function MadamPointChart({ device, className }: Props) {
   }
 
   React.useLayoutEffect(() => {
+    if (!admin) return () => {}
+
     let queryOffset: QueryConstraint | undefined
 
     if (lastStartDate) {
@@ -87,6 +93,7 @@ function MadamPointChart({ device, className }: Props) {
 
     return () => subscription.unsubscribe()
   }, [
+    admin,
     displayCount,
     lastStartDate,
     apiDashboard.apiPointsPerMadam$,

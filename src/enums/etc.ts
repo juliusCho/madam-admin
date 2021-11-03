@@ -1,17 +1,3 @@
-export type ScreenOptionType =
-  | 'mobile'
-  | 'smallScreen'
-  | 'mediumScreen'
-  | 'screen'
-
-export type ChartDatePickerOptionType =
-  | 'day'
-  | 'week'
-  | 'month'
-  | '3-months'
-  | '6-months'
-  | 'year'
-
 export enum CHART_DATE_PICKER_OPTION {
   day = '하루',
   week = '일주일',

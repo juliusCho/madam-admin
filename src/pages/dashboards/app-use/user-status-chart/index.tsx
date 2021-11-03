@@ -1,8 +1,10 @@
 import React from 'react'
+import Recoil from 'recoil'
 import apiDashboard from '~/apis/dashboard'
 import { ChartDonut } from '~/components/charts/donut'
 import { USER_STATUS_LABEL } from '~/constants/app'
 import { USER_STATUS } from '~/enums'
+import adminGlobalStates from '~/states/admin'
 import helpers from '~/utils/helpers'
 
 interface Props {
@@ -10,6 +12,8 @@ interface Props {
 }
 
 function UserStatusChart({ className }: Props) {
+  const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
+
   const [data, setData] = React.useState<
     Array<{ status: string; count: number; label: string }>
   >(
@@ -21,6 +25,8 @@ function UserStatusChart({ className }: Props) {
   )
 
   React.useLayoutEffect(() => {
+    if (!admin) return () => {}
+
     const subscription = apiDashboard
       .apiUserCountPerStatus$()
       .subscribe((fetchedData) => {
@@ -39,7 +45,7 @@ function UserStatusChart({ className }: Props) {
       })
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [admin, apiDashboard.apiUserCountPerStatus$])
 
   return (
     <ChartDonut

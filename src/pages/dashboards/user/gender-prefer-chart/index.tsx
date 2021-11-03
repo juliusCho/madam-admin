@@ -1,15 +1,18 @@
 import React from 'react'
+import Recoil from 'recoil'
 import { apiDashboard } from '~/apis'
 import { ChartDonut } from '~/components/charts/donut'
 import { SEXUAL_PREFERENCE_LABEL } from '~/constants/app'
 import { SEXUAL_PREFERENCE } from '~/enums'
-import customHooks from '~/utils/hooks'
+import adminGlobalStates from '~/states/admin'
 
 interface Props {
   className: string
 }
 
 function GenderPreferChart({ className }: Props) {
+  const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
+
   const [data, setData] = React.useState<
     Array<{ status: string; count: number; label: string }>
   >(
@@ -20,32 +23,26 @@ function GenderPreferChart({ className }: Props) {
     })),
   )
 
-  const isMounted = customHooks.useIsMounted()
+  React.useLayoutEffect(() => {
+    if (!admin) return () => {}
 
-  const fetchData = React.useCallback(async () => {
-    const result = await apiDashboard.apiUserCountPerSexualPreference()
+    const subscription = apiDashboard
+      .apiUserCountPerSexualPreference$()
+      .subscribe((result) => {
+        setData((oldList) =>
+          oldList.map((old) => {
+            const found = Object.keys(result).find((key) => key === old.status)
+            if (found) {
+              // @ts-ignore
+              return { ...old, count: result[found] }
+            }
+            return { ...old, count: 0 }
+          }),
+        )
+      })
 
-    if (!result) {
-      setData((oldList) => oldList.map((old) => ({ ...old, count: 0 })))
-      return
-    }
-    setData((oldList) =>
-      oldList.map((old) => {
-        const found = Object.keys(result).find((key) => key === old.status)
-        if (found) {
-          // @ts-ignore
-          return { ...old, count: result[found] }
-        }
-        return { ...old, count: 0 }
-      }),
-    )
-  }, [apiDashboard.apiUserCountPerSexualPreference])
-
-  React.useEffect(() => {
-    if (isMounted()) {
-      fetchData()
-    }
-  }, [isMounted, fetchData])
+    return () => subscription.unsubscribe()
+  }, [admin, apiDashboard.apiUserCountPerSexualPreference$])
 
   return (
     <ChartDonut

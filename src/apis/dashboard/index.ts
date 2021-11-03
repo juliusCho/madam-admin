@@ -1,5 +1,7 @@
+import axios from 'axios'
 import {
   collection,
+  doc,
   limit,
   orderBy,
   query,
@@ -8,22 +10,23 @@ import {
   where,
 } from 'firebase/firestore'
 import moment from 'moment'
-import { collection as rxCollection, collectionData } from 'rxfire/firestore'
+import { collectionData, doc as rxDoc } from 'rxfire/firestore'
 import { DocumentData } from 'rxfire/firestore/interfaces'
-import { map, Observable, zip } from 'rxjs'
+import { map, Observable, switchMap, zip } from 'rxjs'
+import endpoints from '~/endpoints.config'
 import {
-  ChartDatePickerOptionType,
   GENDER,
   MADAM_REQUEST_STATUS,
   SEXUAL_PREFERENCE,
   USER_STATUS,
 } from '~/enums'
 import { db } from '~/firebaseSetup'
+import { ChartDatePickerOptionType, GeocodeResultType } from '~/types'
 import helpers from '~/utils/helpers'
 
 const apiUserCountPerStatus$ = () =>
   collectionData(collection(db, 'users')).pipe(
-    map((docs) => {
+    map((users) => {
       const result: Record<USER_STATUS, number> = {
         [USER_STATUS.ACTIVE]: 0,
         [USER_STATUS.INACTIVE]: 0,
@@ -32,9 +35,9 @@ const apiUserCountPerStatus$ = () =>
         [USER_STATUS.QUIT]: 0,
       }
 
-      docs.forEach((doc) => {
+      users.forEach((user) => {
         // @ts-ignore
-        result[doc.status] += 1
+        result[user.status] += 1
       })
 
       return result
@@ -62,9 +65,9 @@ const apiQuitAndJoinCount$ = (
         orderBy('joinedAt', 'desc'),
       ),
     ).pipe(
-      map((docs) =>
-        docs.map((doc) =>
-          helpers.timestampColToStringDate(doc.joinedAt, format),
+      map((users) =>
+        users.map((user) =>
+          helpers.timestampColToStringDate(user.joinedAt, format),
         ),
       ),
     ),
@@ -76,8 +79,10 @@ const apiQuitAndJoinCount$ = (
         orderBy('quitAt', 'desc'),
       ),
     ).pipe(
-      map((docs) =>
-        docs.map((doc) => helpers.timestampColToStringDate(doc.quitAt, format)),
+      map((users) =>
+        users.map((user) =>
+          helpers.timestampColToStringDate(user.quitAt, format),
+        ),
       ),
     ),
   ).pipe(
@@ -118,9 +123,9 @@ const apiReportCount$ = (
       orderBy('createdAt', 'desc'),
     ),
   ).pipe(
-    map((docs) => {
-      const countList = docs.map((doc) =>
-        helpers.timestampColToStringDate(doc.createdAt, format),
+    map((userBlocks) => {
+      const countList = userBlocks.map((userBlock) =>
+        helpers.timestampColToStringDate(userBlock.createdAt, format),
       )
 
       return dateArray.map((da) => {
@@ -147,42 +152,45 @@ const apiSendLinkAndJoinCount$ = (
     format = 'YYYY-MM'
   }
 
-  return zip([
-    collectionData(
-      query(
-        collection(db, 'user-invites'),
-        where('createdAt', '>=', startDate),
-        where('createdAt', '<=', endDate),
-        orderBy('createdAt', 'desc'),
+  return collectionData(
+    query(
+      collection(db, 'user-invites'),
+      where('createdAt', '>=', startDate),
+      where('createdAt', '<=', endDate),
+      orderBy('createdAt', 'desc'),
+    ),
+  ).pipe(
+    switchMap((userInvites) =>
+      zip(
+        userInvites.map((userInvite) =>
+          rxDoc(doc(db, `users/${userInvite.targetUserKey}`)),
+        ),
+      ).pipe(
+        map((users) => {
+          const sendList = userInvites.map((ui) =>
+            helpers.timestampColToStringDate(ui.createdAt, format),
+          )
+
+          const joinList = userInvites
+            .filter((ui) =>
+              users.some(
+                (user) => user.id === ui.targetUserKey && user.data()?.joinedAt,
+              ),
+            )
+            .map((ui) => helpers.timestampColToStringDate(ui.createdAt, format))
+
+          return dateArray.map((da) => {
+            const date = moment(da).format(format)
+
+            return {
+              date,
+              sendCount: sendList.filter((d) => d === date).length,
+              joinCount: joinList.filter((d) => d === date).length,
+            }
+          })
+        }),
       ),
     ),
-    rxCollection(collection(db, 'users')),
-  ]).pipe(
-    map((docs) => {
-      const [userInvites, users] = docs
-
-      const sendList = userInvites.map((ui) =>
-        helpers.timestampColToStringDate(ui.createdAt, format),
-      )
-
-      const joinList = userInvites
-        .filter((ui) =>
-          users.some(
-            (user) => user.id === ui.inviteUserKey && !!user.data().joinedAt,
-          ),
-        )
-        .map((ui) => helpers.timestampColToStringDate(ui.createdAt, format))
-
-      return dateArray.map((da) => {
-        const date = moment(da).format(format)
-
-        return {
-          date,
-          sendCount: sendList.filter((d) => d === date).length,
-          joinCount: joinList.filter((d) => d === date).length,
-        }
-      })
-    }),
   )
 }
 
@@ -195,7 +203,7 @@ const apiMadamRequestStatusPerWeek$ = (startDate: Date, endDate: Date) =>
       orderBy('modifiedAt', 'desc'),
     ),
   ).pipe(
-    map((docs) => {
+    map((requests) => {
       const result: Record<MADAM_REQUEST_STATUS, number> = {
         [MADAM_REQUEST_STATUS.ACCEPT]: 0,
         [MADAM_REQUEST_STATUS.COMPLETE]: 0,
@@ -204,9 +212,9 @@ const apiMadamRequestStatusPerWeek$ = (startDate: Date, endDate: Date) =>
         [MADAM_REQUEST_STATUS.TIMEOUT]: 0,
       }
 
-      docs.forEach((doc) => {
+      requests.forEach((request) => {
         // @ts-ignore
-        result[doc.status] += 1
+        result[request.status] += 1
       })
 
       return result
@@ -233,12 +241,13 @@ const apiMadamRequestCount$ = (
       orderBy('modifiedAt', 'desc'),
     ),
   ).pipe(
-    map((docs) => {
+    map((requests) => {
       return dateArray.map((da) => {
         const date = moment(da).format(format)
-        const list = docs.filter(
-          (doc) =>
-            helpers.timestampColToStringDate(doc.modifiedAt, format) === date,
+        const list = requests.filter(
+          (request) =>
+            helpers.timestampColToStringDate(request.modifiedAt, format) ===
+            date,
         )
 
         return {
@@ -285,41 +294,46 @@ const apiPointsPerMadam$ = (
     ),
   )
 
-const apiUserCountPerGender = async (): Promise<Record<
-  GENDER,
-  number
-> | null> => {
-  const result = { MALE: 48291, FEMALE: 29308 }
+const apiUserCountPerGender$ = () =>
+  collectionData(collection(db, 'profiles')).pipe(
+    map((profiles) => ({
+      [GENDER.MALE]: profiles.filter(
+        (profile) => profile.gender === GENDER.MALE,
+      ).length,
+      [GENDER.FEMALE]: profiles.filter(
+        (profile) => profile.gender === GENDER.FEMALE,
+      ).length,
+    })),
+  )
 
-  return result
-}
+const apiUserCountPerSexualPreference$ = () =>
+  collectionData(collection(db, 'profiles')).pipe(
+    map((profiles) => ({
+      [SEXUAL_PREFERENCE.BISEXUAL]: profiles.filter(
+        (profile) => profile.findingFemale && profile.findingMale,
+      ).length,
+      [SEXUAL_PREFERENCE.HOMOSEXUAL]: profiles.filter(
+        (profile) =>
+          (profile.findingFemale && profile.gender === GENDER.FEMALE) ||
+          (profile.findingMale && profile.gender === GENDER.MALE),
+      ).length,
+      [SEXUAL_PREFERENCE.STRAIGHT]: profiles.filter(
+        (profile) =>
+          (profile.findingFemale || profile.findingMale) &&
+          ((profile.findingFemale && profile.gender === GENDER.MALE) ||
+            (profile.findingMale && profile.gender === GENDER.FEMALE)),
+      ).length,
+    })),
+  )
 
-const apiUserCountPerSexualPreference = async (): Promise<Record<
-  SEXUAL_PREFERENCE,
-  number
-> | null> => {
-  const result = { STRAIGHT: 45231, HOMOSEXUAL: 2931, BISEXUAL: 9204 }
-
-  return result
-}
-
-type GeocodeResultType = {
-  address_components: { long_name: string; short_name: string }[]
-  types: string[]
-}
-
-const apiCountryCount = async (): Promise<
-  Array<{ code: string; label: string; count: number }>
-> => {
-  return [{ code: 'KR', label: '대한민국', count: 104340 }]
-
+const apiCountryCount$ = () => {
   // window.navigator.geolocation.getCurrentPosition(
   //   async (position) => {
   //     const { latitude, longitude } = position.coords
-
-  //     (await axios
+  //     ;(await axios
   //       .get<{ results: GeocodeResultType[] }>(
-  //         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${endpoints.firebase.apiKey}`,
+  //         // `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${endpoints.firebase.apiKey}`,
+  //         `https://maps.googleapis.com/maps/api/geocode/json?address="서울"&key=${endpoints.firebase.apiKey}`,
   //       )
   //       .then((res) => {
   //         if (res.status === 200) {
@@ -330,6 +344,7 @@ const apiCountryCount = async (): Promise<
   //             return []
   //           }
 
+  //           console.log(res.data.results)
   //           return [
   //             {
   //               code: foundRow.address_components[0].short_name,
@@ -350,9 +365,71 @@ const apiCountryCount = async (): Promise<
   //     console.log('error Navigator Geolocation API', err)
   //   },
   // )
+
+  return collectionData(collection(db, 'profiles')).pipe(
+    switchMap((profiles) =>
+      zip(
+        profiles.map((profile) =>
+          axios.get<{ results: GeocodeResultType[] }>(
+            `https://maps.googleapis.com/maps/api/geocode/json?components=country:${profile.country}&key=${endpoints.firebase.apiKey}`,
+          ),
+        ),
+      ).pipe(
+        map((geocodes) => {
+          const addresses = geocodes.map((geocode) => {
+            if (geocode.status !== 200) {
+              return null
+            }
+
+            const found = geocode.data.results.find(
+              (item) =>
+                item.types.some((type) => type === 'country') &&
+                item.address_components.length > 0,
+            )
+
+            if (!found) {
+              return null
+            }
+
+            return found.address_components[0]
+          })
+
+          const countries = profiles
+            .filter((profile) =>
+              addresses.some(
+                (address) => address?.short_name === profile.country,
+              ),
+            )
+            .map((profile) => ({
+              code: profile.country as string,
+              label:
+                addresses.find(
+                  (address) => address?.short_name === profile.country,
+                )?.long_name ?? '',
+            }))
+
+          const results: Array<{ code: string; label: string; count: number }> =
+            []
+
+          countries.forEach((country) => {
+            const idx = results.findIndex(
+              (result) => result.code === country.code,
+            )
+            if (idx === -1) {
+              results.push({ ...country, count: 1 })
+            } else {
+              results[idx].count += 1
+            }
+          })
+
+          return results
+        }),
+      ),
+    ),
+  )
 }
 
-const apiInterestsCount = async (
+const apiInterestsCount$ = async (
   isLike: boolean,
 ): Promise<Array<{ id: string; label: string; count: number }> | null> => {
   return [
@@ -363,7 +440,7 @@ const apiInterestsCount = async (
   ]
 }
 
-const apiDynamicProfileItemCount = async (
+const apiDynamicProfileItemCount$ = async (
   id: string,
 ): Promise<Array<{ label: string; count: number }>> => {
   const result = [
@@ -393,9 +470,9 @@ export default {
   apiMadamRequestStatusPerWeek$,
   apiMadamRequestCount$,
   apiPointsPerMadam$,
-  apiUserCountPerGender,
-  apiUserCountPerSexualPreference,
-  apiCountryCount,
-  apiInterestsCount,
-  apiDynamicProfileItemCount,
+  apiUserCountPerGender$,
+  apiUserCountPerSexualPreference$,
+  apiCountryCount$,
+  apiInterestsCount$,
+  apiDynamicProfileItemCount$,
 }

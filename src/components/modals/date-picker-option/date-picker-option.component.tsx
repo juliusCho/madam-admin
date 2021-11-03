@@ -1,8 +1,9 @@
 import React from 'react'
 import Modal from 'react-modal'
 import Recoil from 'recoil'
-import { ChartDatePickerOptionType, CHART_DATE_PICKER_OPTION } from '~/enums'
+import { CHART_DATE_PICKER_OPTION } from '~/enums'
 import deviceGlobalStates from '~/states/device'
+import { ChartDatePickerOptionType } from '~/types'
 import customHooks from '~/utils/hooks'
 import ModalDatePickerOptionStyle from './date-picker-option.style'
 

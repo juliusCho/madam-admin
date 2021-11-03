@@ -1,4 +1,4 @@
-import { ScreenOptionType } from '~/enums'
+import { ScreenOptionType } from '~/types'
 
 interface StyleProps {
   isMobile: boolean

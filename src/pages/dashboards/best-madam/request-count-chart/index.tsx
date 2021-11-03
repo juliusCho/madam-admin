@@ -1,9 +1,12 @@
 import moment from 'moment'
 import React from 'react'
+import Recoil from 'recoil'
 import { apiDashboard } from '~/apis'
 import { ChartBarLine } from '~/components/charts/bar-line'
 import { MADAM_REQUEST_STATUS_LABEL } from '~/constants/app'
-import { ChartDatePickerOptionType, MADAM_REQUEST_STATUS } from '~/enums'
+import { MADAM_REQUEST_STATUS } from '~/enums'
+import adminGlobalStates from '~/states/admin'
+import { ChartDatePickerOptionType } from '~/types'
 import helpers from '~/utils/helpers'
 
 interface Props {
@@ -11,6 +14,8 @@ interface Props {
 }
 
 function RequestCountChart({ className }: Props) {
+  const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
+
   const [dateRange, setDateRange] = React.useState<
     undefined | Date | Array<Date | undefined>
   >([helpers.getLastWeek(), helpers.getYesterday()])
@@ -59,7 +64,12 @@ function RequestCountChart({ className }: Props) {
   }
 
   React.useLayoutEffect(() => {
-    if (!dateRange || !Array.isArray(dateRange) || dateRange.length === 1)
+    if (
+      !admin ||
+      !dateRange ||
+      !Array.isArray(dateRange) ||
+      dateRange.length === 1
+    )
       return () => {}
 
     const subscription = apiDashboard
@@ -97,6 +107,7 @@ function RequestCountChart({ className }: Props) {
 
     return () => subscription.unsubscribe()
   }, [
+    admin,
     dateRange,
     helpers.getDateRangeArray,
     format,

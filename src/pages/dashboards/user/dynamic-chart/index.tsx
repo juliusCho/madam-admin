@@ -17,7 +17,7 @@ function DynamicChart({ id, title, className }: Props) {
   const isMounted = customHooks.useIsMounted()
 
   const fetchValueList = React.useCallback(async () => {
-    const result = await apiDashboard.apiDynamicProfileItemCount(id)
+    const result = await apiDashboard.apiDynamicProfileItemCount$(id)
     if (!result) {
       setData(() => [])
       return

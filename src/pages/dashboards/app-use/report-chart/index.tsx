@@ -1,8 +1,10 @@
 import moment from 'moment'
 import React from 'react'
+import Recoil from 'recoil'
 import apiDashboard from '~/apis/dashboard'
 import { ChartLine } from '~/components/charts/line'
-import { ChartDatePickerOptionType } from '~/enums'
+import adminGlobalStates from '~/states/admin'
+import { ChartDatePickerOptionType } from '~/types'
 import helpers from '~/utils/helpers'
 
 interface Props {
@@ -10,6 +12,8 @@ interface Props {
 }
 
 function ReportChart({ className }: Props) {
+  const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
+
   const [dateRange, setDateRange] = React.useState<
     undefined | Date | Array<Date | undefined>
   >([helpers.getPreviousThreeMonth(), helpers.getLastMonth()])
@@ -58,7 +62,12 @@ function ReportChart({ className }: Props) {
   }
 
   React.useLayoutEffect(() => {
-    if (!dateRange || !Array.isArray(dateRange) || dateRange.length === 1)
+    if (
+      !admin ||
+      !dateRange ||
+      !Array.isArray(dateRange) ||
+      dateRange.length === 1
+    )
       return () => {}
 
     const subscription = apiDashboard
@@ -93,6 +102,7 @@ function ReportChart({ className }: Props) {
 
     return () => subscription.unsubscribe()
   }, [
+    admin,
     dateRange,
     helpers.getDateRangeArray,
     apiDashboard.apiReportCount$,

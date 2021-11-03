@@ -1,13 +1,15 @@
 /* eslint-disable no-case-declarations */
 import moment from 'moment'
 import React from 'react'
+import { Freeze } from 'react-freeze'
 import Recoil from 'recoil'
 import { ButtonPrevNext } from '~/components/buttons/prev-next'
 import { XEIcon } from '~/components/etc/xeicon'
 import { ModalDateTimePicker } from '~/components/modals/date-picker'
 import { ModalDatePickerOption } from '~/components/modals/date-picker-option'
-import { ChartDatePickerOptionType, CHART_DATE_PICKER_OPTION } from '~/enums'
+import { CHART_DATE_PICKER_OPTION } from '~/enums'
 import deviceGlobalStates from '~/states/device'
+import { ChartDatePickerOptionType } from '~/types'
 import helpers from '~/utils/helpers'
 import SearchChartDateStyle from './chart-date.style'
 
@@ -338,20 +340,22 @@ function SearchChartDate({
 
   return (
     <>
-      <ModalDateTimePicker
-        date={date}
-        changeDate={(inputDate?: Date | Array<Date | undefined>) => {
-          setShowPicker(false)
-          onChange(inputDate)
-        }}
-        isOpen={showPicker}
-        selectRange={
-          type === 'week' || type === '3-months' || type === '6-months'
-        }
-        minDate={minDate}
-        maxDate={maxDate}
-        viewType={viewType}
-      />
+      <Freeze freeze={!showPicker}>
+        <ModalDateTimePicker
+          date={date}
+          changeDate={(inputDate?: Date | Array<Date | undefined>) => {
+            setShowPicker(false)
+            onChange(inputDate)
+          }}
+          isOpen={showPicker}
+          selectRange={
+            type === 'week' || type === '3-months' || type === '6-months'
+          }
+          minDate={minDate}
+          maxDate={maxDate}
+          viewType={viewType}
+        />
+      </Freeze>
       <ModalDatePickerOption
         show={showPickerOption}
         type={type}

@@ -1,5 +1,5 @@
 import { CSSObjectWithLabel } from 'react-select'
-import { ScreenOptionType } from '~/enums'
+import { ScreenOptionType } from '~/types'
 
 interface StyleProps {
   width?: string | number
