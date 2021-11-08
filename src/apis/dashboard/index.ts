@@ -2,6 +2,7 @@ import axios from 'axios'
 import {
   collection,
   doc,
+  DocumentReference,
   limit,
   orderBy,
   query,
@@ -11,8 +12,7 @@ import {
 } from 'firebase/firestore'
 import moment from 'moment'
 import { collectionData, doc as rxDoc } from 'rxfire/firestore'
-import { DocumentData } from 'rxfire/firestore/interfaces'
-import { map, Observable, switchMap, zip } from 'rxjs'
+import { from, map, switchMap, zip } from 'rxjs'
 import endpoints from '~/endpoints.config'
 import {
   GENDER,
@@ -21,6 +21,7 @@ import {
   USER_STATUS,
 } from '~/enums'
 import { db } from '~/firebaseSetup'
+import { ProfileInterestItemType } from '~/models/profile-interest-item'
 import { ChartDatePickerOptionType, GeocodeResultType } from '~/types'
 import helpers from '~/utils/helpers'
 
@@ -273,10 +274,7 @@ const apiMadamRequestCount$ = (
   )
 }
 
-const apiPointsPerMadam$ = (
-  count: number,
-  offset?: QueryConstraint,
-): Observable<DocumentData[]> =>
+const apiPointsPerMadam$ = (count: number, offset?: QueryConstraint) =>
   collectionData(
     query(
       collection(db, 'madams'),
@@ -286,11 +284,7 @@ const apiPointsPerMadam$ = (
     ),
   ).pipe(
     map((result) =>
-      result.reverse().map((res) => ({
-        ...res,
-        startDate: moment(Number(res.startDate?.seconds) * 1000).toDate(),
-        endDate: moment(Number(res.endDate?.seconds) * 1000).toDate(),
-      })),
+      result.reverse().map((res) => helpers.convertFirestoreDataToModel(res)),
     ),
   )
 
@@ -429,15 +423,41 @@ const apiCountryCount$ = () => {
   )
 }
 
-const apiInterestsCount$ = async (
-  isLike: boolean,
-): Promise<Array<{ id: string; label: string; count: number }> | null> => {
-  return [
-    { id: '1', label: isLike ? '사랑' : '증오', count: 24543 },
-    { id: '2', label: isLike ? '연애' : '이별', count: 3535 },
-    { id: '3', label: isLike ? '결혼' : '이혼', count: 76435 },
-    { id: '4', label: isLike ? '애인' : '바람', count: 57763 },
-  ]
+const apiInterestsCount$ = (isLike: boolean) => {
+  return collectionData(collection(db, 'profiles')).pipe(
+    switchMap((profiles) => {
+      const interestsOrHates: DocumentReference[] = []
+
+      profiles.forEach((profile) => {
+        profile[isLike ? 'interests' : 'hates']?.forEach(
+          (interest: DocumentReference) => {
+            interestsOrHates.push(interest)
+          },
+        )
+      })
+
+      return interestsOrHates.length > 0
+        ? zip(interestsOrHates.map((interestOrHate) => rxDoc(interestOrHate)))
+        : from([])
+    }),
+    map((data) => {
+      const result: Array<{ id: string; label: string; count: number }> = []
+
+      data.forEach((datum) => {
+        const { id } = datum
+        const foundIndex = result.findIndex((res) => res.id === id)
+
+        if (foundIndex > -1) {
+          result[foundIndex].count += 1
+        } else {
+          const properties = datum.data() as ProfileInterestItemType
+          result.push({ id, label: properties.itemKr, count: 1 })
+        }
+      })
+
+      return result
+    }),
+  )
 }
 
 const apiDynamicProfileItemCount$ = async (

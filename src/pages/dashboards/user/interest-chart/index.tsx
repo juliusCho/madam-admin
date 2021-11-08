@@ -1,7 +1,8 @@
 import React from 'react'
+import Recoil from 'recoil'
 import { apiDashboard } from '~/apis'
 import { ChartDonut } from '~/components/charts/donut'
-import customHooks from '~/utils/hooks'
+import adminGlobalStates from '~/states/admin'
 
 interface Props {
   isLike: boolean
@@ -9,28 +10,30 @@ interface Props {
 }
 
 function InterestChart({ isLike, className }: Props) {
+  const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
+
   const [data, setData] = React.useState<
     Array<{ id: string; count: number; label: string }>
   >([])
 
-  const isMounted = customHooks.useIsMounted()
-
-  const fetchData = React.useCallback(async () => {
-    const result = await apiDashboard.apiInterestsCount$(isLike)
-
-    if (!result) {
-      setData((oldList) => oldList.map((old) => ({ ...old, count: 0 })))
-      return
+  React.useLayoutEffect(() => {
+    if (!admin) {
+      return () => {}
     }
 
-    setData(() => result)
-  }, [apiDashboard.apiInterestsCount$, isLike])
+    const subscription = apiDashboard
+      .apiInterestsCount$(isLike)
+      .subscribe((result) => {
+        if (!result) {
+          setData((oldList) => oldList.map((old) => ({ ...old, count: 0 })))
+          return
+        }
 
-  React.useEffect(() => {
-    if (isMounted()) {
-      fetchData()
-    }
-  }, [isMounted, fetchData])
+        setData(() => result)
+      })
+
+    return () => subscription.unsubscribe()
+  }, [admin, apiDashboard.apiInterestsCount$, isLike])
 
   return (
     <ChartDonut

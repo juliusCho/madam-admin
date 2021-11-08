@@ -6,7 +6,7 @@ export type ProfileExtraItemType = {
   titleEn: string
   type: PROFILE_EXTRA_ITEM_TYPE
   inputLength?: number
-  createdAt?: string
-  modifiedAt?: string
+  createdAt?: Date
+  modifiedAt?: Date
   adminEmail?: string
 }

@@ -4,7 +4,7 @@ export type ProfileSelectItemType = {
   value: string
   valueLength?: number
   use: boolean
-  createdAt: string
-  modifiedAt?: string
+  createdAt: Date
+  modifiedAt?: Date
   adminEmail?: string
 }

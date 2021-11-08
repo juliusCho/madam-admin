@@ -373,4 +373,29 @@ describe('Helpers', () => {
       }, 100)
     })
   })
+
+  it('getFlagEmoji', () => {
+    const emoji = helpers.getFlagEmoji('EN')
+
+    expect(emoji).toBeTruthy()
+  })
+
+  it('convertFirestoreDataToModel', () => {
+    const currMoment = moment()
+
+    const firestoreData = {
+      text: 'text',
+      date: {
+        seconds: currMoment.unix(),
+      },
+    }
+
+    const result = helpers.convertFirestoreDataToModel(firestoreData)
+
+    expect(result.text).toBe('text')
+    expect(typeof result.date).toBe('object')
+    expect(moment(result.date).format('YYYY-MM-DD')).toBe(
+      currMoment.format('YYYY-MM-DD'),
+    )
+  })
 })

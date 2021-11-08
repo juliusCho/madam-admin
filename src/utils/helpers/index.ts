@@ -610,8 +610,15 @@ export default {
   timestampColToStringDate(
     column?: null | { seconds: number },
     format = 'YYYY-MM-DD',
+    toDate?: boolean,
   ) {
-    return moment(Number(column?.seconds) * 1000).format(format)
+    const dateObj = moment(Number(column?.seconds) * 1000)
+
+    if (toDate) {
+      return dateObj.toDate()
+    }
+
+    return dateObj.format(format)
   },
   getFlagEmoji(countryCode: string) {
     return String.fromCodePoint(
@@ -620,5 +627,18 @@ export default {
         .split('')
         .map((x) => 0x1f1a5 + x.charCodeAt(0)),
     )
+  },
+  convertFirestoreDataToModel<T extends Record<string, any>>(data: T) {
+    const result: Record<string, any> = {}
+
+    Object.keys(data).forEach((key) => {
+      if (typeof data[key] === 'object' && 'seconds' in data[key]) {
+        result[key] = this.timestampColToStringDate(data[key], undefined, true)
+      } else {
+        result[key] = data[key]
+      }
+    })
+
+    return result as T
   },
 }

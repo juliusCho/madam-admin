@@ -8,11 +8,11 @@ export type UserType = {
   passwordQuestion?: string
   passwordAnswer?: string
   status: USER_STATUS
-  createdAt: string
-  lastUsedAt?: string
+  createdAt: Date
+  lastUsedAt?: Date
   quitAt?: string
   charm: number
   luckyDrawn?: boolean
   modifierEmail?: string
-  modifiedAt?: string
+  modifiedAt?: Date
 }

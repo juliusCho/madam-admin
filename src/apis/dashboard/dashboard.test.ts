@@ -4,7 +4,7 @@ import {
   GENDER,
   MADAM_REQUEST_STATUS,
   SEXUAL_PREFERENCE,
-  USER_STATUS,
+  USER_STATUS
 } from '~/enums'
 import { initializeTestFirebase } from '~/__fixtures__'
 import api from '.'
@@ -634,6 +634,44 @@ describe('API Dashboard', () => {
       expect(
         Object.values(result).some((value) => typeof value !== 'number'),
       ).toBeFalsy()
+
+      done()
+    })
+  })
+
+  xit('apiCountryCount$', (done) => {
+    api.apiCountryCount$().subscribe((result) => {
+      if (!result || result.length === 0) {
+        done()
+        return
+      }
+
+      Object.keys(result[0]).forEach((key, idx) => {
+        if (idx === 0) {
+          expect(key).toBe('code')
+        } else if (idx === 1) {
+          expect(key).toBe('label')
+        } else {
+          expect(key).toBe('count')
+        }
+      })
+
+      done()
+    })
+  })
+
+  xit('apiInterestsCount$', (done) => {
+    api.apiInterestsCount$(true).subscribe((result) => {
+      if (!result || result.length === 0) {
+        done()
+        return
+      }
+
+      result.forEach((data) => {
+        expect('id' in data).toBeTruthy()
+        expect('label' in data).toBeTruthy()
+        expect('count' in data).toBeTruthy()
+      })
 
       done()
     })
