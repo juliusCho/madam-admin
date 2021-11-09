@@ -11,7 +11,11 @@ import {
   where,
 } from 'firebase/firestore'
 import moment from 'moment'
-import { collectionData, doc as rxDoc } from 'rxfire/firestore'
+import {
+  collection as rxCollection,
+  collectionData,
+  doc as rxDoc,
+} from 'rxfire/firestore'
 import { from, map, switchMap, zip } from 'rxjs'
 import endpoints from '~/endpoints.config'
 import {
@@ -423,8 +427,8 @@ const apiCountryCount$ = () => {
   )
 }
 
-const apiInterestsCount$ = (isLike: boolean) => {
-  return collectionData(collection(db, 'profiles')).pipe(
+const apiInterestsCount$ = (isLike: boolean) =>
+  collectionData(collection(db, 'profiles')).pipe(
     switchMap((profiles) => {
       const interestsOrHates: DocumentReference[] = []
 
@@ -458,29 +462,40 @@ const apiInterestsCount$ = (isLike: boolean) => {
       return result
     }),
   )
-}
 
-const apiDynamicProfileItemCount$ = async (
-  id: string,
-): Promise<Array<{ label: string; count: number }>> => {
-  const result = [
-    { count: 24543 },
-    { count: 3535 },
-    { count: 76435 },
-    { count: 57763 },
-  ]
+const apiDynamicProfileItemCount$ = (id: string) =>
+  rxDoc(doc(db, `/profile-extra-items/${id}`)).pipe(
+    switchMap((profileExtraItem) =>
+      zip(
+        rxCollection(
+          query(
+            collection(db, 'profile-select-items'),
+            where('profileExtraItemKey', '==', profileExtraItem.id),
+          ),
+        ),
+        collectionData(
+          query(
+            collection(db, 'profile-extra-values'),
+            where('profileExtraItem', '==', profileExtraItem.ref),
+          ),
+        ),
+      ).pipe(
+        map((result) => {
+          const [profileSelectItemsSnapshot, profileExtraValues] = result
 
-  switch (id) {
-    case '1':
-      return result.map((res) => ({ ...res, label: 'ISTJ' }))
-    case '2':
-      return result.map((res) => ({ ...res, label: '무교' }))
-    case '3':
-      return result.map((res) => ({ ...res, label: 'B형' }))
-    default:
-      return result.map((res) => ({ ...res, label: '물고기자리' }))
-  }
-}
+          return profileSelectItemsSnapshot.map(
+            (profileSelectItemSnapshot) => ({
+              label: profileSelectItemSnapshot.data().labelKr,
+              count: profileExtraValues.filter(
+                (profileExtraValue) =>
+                  profileExtraValue.value === profileSelectItemSnapshot.id,
+              ).length,
+            }),
+          )
+        }),
+      ),
+    ),
+  )
 
 export default {
   apiUserCountPerStatus$,

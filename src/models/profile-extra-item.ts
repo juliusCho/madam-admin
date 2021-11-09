@@ -1,12 +1,25 @@
 import { PROFILE_EXTRA_ITEM_TYPE } from '~/enums'
 
 export type ProfileExtraItemType = {
-  id: string
+  key: string
   titleKr: string
   titleEn: string
   type: PROFILE_EXTRA_ITEM_TYPE
-  inputLength?: number
-  createdAt?: Date
-  modifiedAt?: Date
-  adminEmail?: string
+  createdAt: Date
+  modifiedAt: Date
+  adminKey: string
+}
+
+export type ProfileExtraItemFilterType = {
+  title?: string
+  type?: PROFILE_EXTRA_ITEM_TYPE
+  createdAt?: {
+    start?: Date
+    end?: Date
+  }
+  modifiedAt?: {
+    start?: Date
+    end?: Date
+  }
+  adminKey?: string
 }

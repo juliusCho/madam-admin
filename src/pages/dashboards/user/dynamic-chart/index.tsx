@@ -1,7 +1,8 @@
 import React from 'react'
+import Recoil from 'recoil'
 import { apiDashboard } from '~/apis'
 import { ChartDonut } from '~/components/charts/donut'
-import customHooks from '~/utils/hooks'
+import adminGlobalStates from '~/states/admin'
 
 interface Props {
   id: string
@@ -10,27 +11,30 @@ interface Props {
 }
 
 function DynamicChart({ id, title, className }: Props) {
+  const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
+
   const [data, setData] = React.useState<
     Array<{ count: number; label: string }>
   >([])
 
-  const isMounted = customHooks.useIsMounted()
-
-  const fetchValueList = React.useCallback(async () => {
-    const result = await apiDashboard.apiDynamicProfileItemCount$(id)
-    if (!result) {
-      setData(() => [])
-      return
+  React.useLayoutEffect(() => {
+    if (!admin) {
+      return () => {}
     }
 
-    setData(() => result)
-  }, [id])
+    const subscription = apiDashboard
+      .apiDynamicProfileItemCount$(id)
+      .subscribe((result) => {
+        if (!result) {
+          setData(() => [])
+          return
+        }
 
-  React.useEffect(() => {
-    if (isMounted()) {
-      fetchValueList()
-    }
-  }, [isMounted, fetchValueList])
+        setData(() => result)
+      })
+
+    return () => subscription.unsubscribe()
+  }, [admin, id, apiDashboard.apiDynamicProfileItemCount$])
 
   return (
     <ChartDonut

@@ -1,11 +1,13 @@
+import { startAfter } from 'firebase/firestore'
+import moment from 'moment'
 import React from 'react'
 import Recoil from 'recoil'
 import { apiSystemVariable } from '~/apis'
 import { PROFILE_EXTRA_ITEM_TYPE } from '~/enums'
 import { ProfileExtraItemType } from '~/models/profile-extra-item'
 import PageDashboardLayout from '~/pages/dashboards/layout.component'
+import adminGlobalStates from '~/states/admin'
 import deviceGlobalStates from '~/states/device'
-import customHooks from '~/utils/hooks'
 import PageDashboardStyle from '../layout.style'
 import CountryChart from './country-chart'
 import DynamicChart from './dynamic-chart'
@@ -17,34 +19,53 @@ export interface PageDashboardUserProps {}
 
 export default function PageDashboardUser({}: PageDashboardUserProps) {
   const device = Recoil.useRecoilValue(deviceGlobalStates.getDevice)
+  const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
 
   const [profileExtraItems, setProfileExtraItems] = React.useState<
     ProfileExtraItemType[]
   >([])
 
-  const isMounted = customHooks.useIsMounted()
-
-  const fetchProfileExtraItems = React.useCallback(async () => {
-    const result = await apiSystemVariable.apiGetProfileExtraItems()
-    if (!result) {
-      setProfileExtraItems(() => [])
-      return
+  React.useLayoutEffect(() => {
+    if (!admin) {
+      return () => {}
     }
 
-    setProfileExtraItems(() =>
-      result.filter(
-        (item) =>
-          item.type === PROFILE_EXTRA_ITEM_TYPE.SELECT ||
-          item.type === PROFILE_EXTRA_ITEM_TYPE.MULTI_SELECT,
-      ),
-    )
-  }, [apiSystemVariable.apiGetProfileExtraItems, PROFILE_EXTRA_ITEM_TYPE])
+    const subscription = apiSystemVariable
+      .apiGetProfileExtraItems$({
+        limit: 10000,
+        offset: startAfter(moment('9999-12-31').toDate()),
+        sort: {
+          column: 'modifiedAt',
+          type: 'desc',
+        },
+        filter: [
+          [
+            'type',
+            'in',
+            [
+              PROFILE_EXTRA_ITEM_TYPE.SELECT,
+              PROFILE_EXTRA_ITEM_TYPE.MULTI_SELECT,
+            ],
+          ],
+        ],
+      })
+      .subscribe((result) => {
+        if (!result) {
+          setProfileExtraItems(() => [])
+          return
+        }
 
-  React.useEffect(() => {
-    if (isMounted()) {
-      fetchProfileExtraItems()
-    }
-  }, [isMounted, fetchProfileExtraItems])
+        setProfileExtraItems(() => result)
+      })
+
+    return () => subscription.unsubscribe()
+  }, [
+    admin,
+    apiSystemVariable.apiGetProfileExtraItems$,
+    startAfter,
+    moment,
+    PROFILE_EXTRA_ITEM_TYPE,
+  ])
 
   return (
     <PageDashboardLayout endpoint="USER">
@@ -65,8 +86,8 @@ export default function PageDashboardUser({}: PageDashboardUserProps) {
           />
           {profileExtraItems.map((item) => (
             <DynamicChart
-              key={item.id}
-              id={item.id}
+              key={item.key}
+              id={item.key}
               title={item.titleKr}
               className={`${PageDashboardStyle.chart({ device })} mt-5`}
             />

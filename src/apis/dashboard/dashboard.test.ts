@@ -1,13 +1,15 @@
 import { deleteApp, FirebaseApp } from 'firebase/app'
+import { startAfter } from 'firebase/firestore'
 import moment from 'moment'
 import {
   GENDER,
   MADAM_REQUEST_STATUS,
   SEXUAL_PREFERENCE,
-  USER_STATUS
+  USER_STATUS,
 } from '~/enums'
 import { initializeTestFirebase } from '~/__fixtures__'
 import api from '.'
+import { apiSystemVariable } from '..'
 
 describe('API Dashboard', () => {
   let app: FirebaseApp
@@ -675,5 +677,34 @@ describe('API Dashboard', () => {
 
       done()
     })
+  })
+
+  xit('apiDynamicProfileItemCount$', (done) => {
+    apiSystemVariable
+      .apiGetProfileExtraItems$({
+        limit: 1,
+        offset: startAfter(moment('9999-12-31').toDate()),
+        sort: {
+          column: 'modifiedAt',
+          type: 'desc',
+        },
+      })
+      .subscribe((profileExtraItems) => {
+        api
+          .apiDynamicProfileItemCount$(profileExtraItems[0].key)
+          .subscribe((result) => {
+            if (!result || result.length === 0) {
+              done()
+              return
+            }
+
+            result.forEach((data) => {
+              expect('label' in data).toBeTruthy()
+              expect('count' in data).toBeTruthy()
+            })
+
+            done()
+          })
+      })
   })
 })

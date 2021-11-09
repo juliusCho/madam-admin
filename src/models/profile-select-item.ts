@@ -1,10 +1,11 @@
 export type ProfileSelectItemType = {
-  profileExtraItemId: string
+  profileExtraItemKey: string
   key: string
   value: string
-  valueLength?: number
+  labelEn: string
+  labelKr: string
   use: boolean
   createdAt: Date
   modifiedAt?: Date
-  adminEmail?: string
+  adminKey?: string
 }
