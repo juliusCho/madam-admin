@@ -1,4 +1,5 @@
 import Recoil from 'recoil'
+import { AlertOrConfirmIconType } from '~/components/modals/shared'
 
 const loadingState = Recoil.atom({
   key: 'loadingState',
@@ -18,7 +19,7 @@ const secondTabLoadingState = Recoil.atom({
 type AlertState = {
   show: boolean
   msg: string
-  type: 'info' | 'success' | 'warning' | 'error'
+  type: AlertOrConfirmIconType
   time: number
 }
 

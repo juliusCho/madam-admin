@@ -1,16 +1,5 @@
 import helpers from '~/utils/helpers'
-
-interface StyleProps {
-  disabled?: boolean
-  backgroundColor?: string
-  disabledBackgroundColor?: string
-  fontSize?: string
-  borderColor?: string
-  disabledBorderColor?: string
-  color?: string
-  disabledColor?: string
-  extraClassName?: string
-}
+import { PrevNextType } from './prev-next.component'
 
 const ButtonPrevNextStyle = {
   container: `
@@ -32,7 +21,7 @@ const ButtonPrevNextStyle = {
     color,
     disabledColor,
     extraClassName,
-  }: StyleProps) {
+  }: PrevNextType) {
     return `
       flex
       justify-center

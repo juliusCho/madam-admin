@@ -2,43 +2,28 @@ import React from 'react'
 import { XEIcon } from '~/components/etc/xeicon'
 import ButtonPrevNextStyle from './prev-next.style'
 
+export type PrevNextType = {
+  onClick: () => void
+  label?: string
+  disabled?: boolean
+  icon?: {
+    name: string
+    color: string
+    size: string | number
+  }
+  backgroundColor?: string
+  disabledBackgroundColor?: string
+  fontSize?: string
+  borderColor?: string
+  disabledBorderColor?: string
+  color?: string
+  disabledColor?: string
+  extraClassName?: string
+}
+
 export interface ButtonPrevNextProps {
-  prev: {
-    onClick: () => void
-    label?: string
-    disabled?: boolean
-    icon?: {
-      name: string
-      color: string
-      size: string | number
-    }
-    backgroundColor?: string
-    disabledBackgroundColor?: string
-    fontSize?: string
-    borderColor?: string
-    disabledBorderColor?: string
-    color?: string
-    disabledColor?: string
-    extraClassName?: string
-  }
-  next: {
-    onClick: () => void
-    label?: string
-    disabled?: boolean
-    icon?: {
-      name: string
-      color: string
-      size: string | number
-    }
-    backgroundColor?: string
-    disabledBackgroundColor?: string
-    fontSize?: string
-    borderColor?: string
-    disabledBorderColor?: string
-    color?: string
-    disabledColor?: string
-    extraClassName?: string
-  }
+  prev: PrevNextType
+  next: PrevNextType
   dividerClassName?: string
   style?: React.CSSProperties
   className?: string
@@ -57,17 +42,7 @@ function ButtonPrevNext({
       style={style}>
       <button
         type="button"
-        className={ButtonPrevNextStyle.prevNext({
-          disabled: prev.disabled,
-          backgroundColor: prev.backgroundColor,
-          disabledBackgroundColor: prev.disabledBackgroundColor,
-          fontSize: prev.fontSize,
-          borderColor: prev.borderColor,
-          disabledBorderColor: prev.disabledBorderColor,
-          color: prev.color,
-          disabledColor: prev.disabledColor,
-          extraClassName: prev.extraClassName,
-        })}
+        className={ButtonPrevNextStyle.prevNext(prev)}
         disabled={prev.disabled}
         onClick={prev.onClick}
         data-testid="components.buttons.prevNext.prevButton">
@@ -82,17 +57,7 @@ function ButtonPrevNext({
       <div className={`${ButtonPrevNextStyle.divider} ${dividerClassName}`} />
       <button
         type="button"
-        className={ButtonPrevNextStyle.prevNext({
-          disabled: next.disabled,
-          backgroundColor: next.backgroundColor,
-          disabledBackgroundColor: next.disabledBackgroundColor,
-          fontSize: next.fontSize,
-          borderColor: next.borderColor,
-          disabledBorderColor: next.disabledBorderColor,
-          color: next.color,
-          disabledColor: next.disabledColor,
-          extraClassName: next.extraClassName,
-        })}
+        className={ButtonPrevNextStyle.prevNext(next)}
         disabled={next.disabled}
         onClick={next.onClick}
         data-testid="components.buttons.prevNext.nextButton">

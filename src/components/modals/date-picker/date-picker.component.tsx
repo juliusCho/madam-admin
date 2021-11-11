@@ -2,100 +2,11 @@ import moment from 'moment'
 import * as React from 'react'
 import { ViewCallbackProperties } from 'react-calendar'
 import ReactDatePicker from 'react-date-picker'
+import helpers from '~/utils/helpers'
 import customHooks from '~/utils/hooks'
 import './date-picker.style.scss'
 import { TimePicker } from './time-picker'
 import { TimePickerRange } from './time-picker-range'
-
-const helper = {
-  makeTwoDigits(num: number) {
-    if (num < 0) {
-      return '00'
-    }
-
-    return num < 10 ? `0${num}` : String(num).substr(0, 2)
-  },
-  setValidDateTime(year: number, month: number, day: number) {
-    const tmpDateStr = `${String(year)}.${this.makeTwoDigits(
-      month + 1,
-    )}.${this.makeTwoDigits(day)}`
-    let resultYear = year
-    let resultMonth = month
-    let resultDay = day
-
-    if (year < 0) resultYear = 1
-
-    if (month < 0) resultMonth = 0
-    else if (month > 11) resultMonth = 11
-
-    if (day < 0) resultDay = 1
-    else if (day > 26 && !moment(tmpDateStr, 'YYYY.MM.DD', true).isValid()) {
-      let dt = 31
-      let text = `${resultYear}.${this.makeTwoDigits(resultMonth + 1)}.${String(
-        dt,
-      )}`
-      while (!moment(text, 'YYYY.MM.DD', true).isValid()) {
-        dt -= 1
-        text = `${resultYear}.${this.makeTwoDigits(resultMonth + 1)}.${String(
-          dt,
-        )}`
-      }
-      resultDay = dt
-    }
-    return { year: resultYear, month: resultMonth, day: resultDay }
-  },
-  convertToDate(input: string) {
-    const strings: string[] = input.split(/[- :]/)
-    const arr: number[] = strings.map((str) => Number(str))
-    if (arr.some((a) => Number.isNaN(a)) || arr.length < 3) return undefined
-
-    const { year, month, day } = this.setValidDateTime(
-      arr[0],
-      arr[1] - 1,
-      arr[2],
-    )
-
-    if (arr.length < 6) {
-      return new Date(year, month, day, 0, 0, 0)
-    }
-
-    let hour = 0
-    let min = 0
-    let sec = 0
-
-    if (arr[3] > 23) {
-      hour = 23
-    } else {
-      hour = arr[3] < 0 ? 0 : arr[3]
-    }
-
-    if (arr[4] > 59) {
-      min = 59
-    } else {
-      min = arr[4] < 0 ? 0 : arr[4]
-    }
-
-    if (arr[5] > 59) {
-      sec = 59
-    } else {
-      sec = arr[5] < 0 ? 0 : arr[5]
-    }
-
-    return new Date(year, month, day, hour, min, sec)
-  },
-  dateValidator(input: string) {
-    const tmp = input.split('.')
-
-    if (tmp.some((t) => Number.isNaN(t)) || tmp.length < 3) return null
-
-    const { year, month, day } = this.setValidDateTime(
-      Number(tmp[0]),
-      Number(tmp[1]) - 1,
-      Number(tmp[2]),
-    )
-    return new Date(year, month, day, 0, 0, 0)
-  },
-}
 
 export interface ModalDateTimePickerProps {
   changeDate:
@@ -524,11 +435,11 @@ function DatePicker({
     setTimeValue(() => pickedTime)
     setTimeSelect(() => !!pickedTime)
 
-    const dtStr = helper.dateValidator(
+    const dtStr = helpers.dateValidator(
       moment(value as Date).format('YYYY.MM.DD'),
     )
     if (dtStr) {
-      const newDate = helper.convertToDate(
+      const newDate = helpers.convertToDate(
         moment(dtStr).format('YYYY-MM-DD') +
           (pickedTime ? ` ${pickedTime}:00` : ' 00:00:00'),
       )
@@ -545,15 +456,15 @@ function DatePicker({
     setTimeSelect(() => [!!pickedTime[0], !!pickedTime[1]])
 
     if (!Array.isArray(value)) {
-      const dtStr = helper.dateValidator(
+      const dtStr = helpers.dateValidator(
         moment(value as Date).format('YYYY.MM.DD'),
       )
       const result = [
-        helper.convertToDate(
+        helpers.convertToDate(
           moment(dtStr).format('YYYY-MM-DD') +
             (pickedTime[0] ? ` ${pickedTime[0]}:00` : ' 00:00:00'),
         ),
-        helper.convertToDate(
+        helpers.convertToDate(
           moment(dtStr).format('YYYY-MM-DD') +
             (pickedTime[1] ? ` ${pickedTime[1]}:00` : ' 00:00:00'),
         ),
@@ -575,13 +486,13 @@ function DatePicker({
             if (Array.isArray(pickedDate)) {
               newDate = [
                 pickedDate[0]
-                  ? helper.convertToDate(
+                  ? helpers.convertToDate(
                       moment(pickedDate[0]).format('YYYY-MM-DD') +
                         (timeValue[0] ? ` ${timeValue[0]}:00` : ' 00:00:00'),
                     )
                   : undefined,
                 pickedDate[1]
-                  ? helper.convertToDate(
+                  ? helpers.convertToDate(
                       moment(pickedDate[1]).format('YYYY-MM-DD') +
                         (timeValue[1] ? ` ${timeValue[1]}:00` : ' 00:00:00'),
                     )
@@ -589,21 +500,21 @@ function DatePicker({
               ]
             } else if (timeRange) {
               newDate = [
-                helper.convertToDate(
+                helpers.convertToDate(
                   moment(pickedDate).format('YYYY-MM-DD') +
                     (timeValue[0] ? ` ${timeValue[0]}:00` : ' 00:00:00'),
                 ),
-                helper.convertToDate(
+                helpers.convertToDate(
                   moment(pickedDate).format('YYYY-MM-DD') +
                     (timeValue[1] ? ` ${timeValue[1]}:00` : ' 00:00:00'),
                 ),
               ]
             } else {
               newDate = [
-                helper.convertToDate(
+                helpers.convertToDate(
                   `${moment(pickedDate).format('YYYY-MM-DD')} 00:00:00`,
                 ),
-                helper.convertToDate(
+                helpers.convertToDate(
                   `${moment(pickedDate).format('YYYY-MM-DD')} 00:00:00`,
                 ),
               ]
@@ -611,13 +522,13 @@ function DatePicker({
           } else if (Array.isArray(pickedDate)) {
             newDate = [
               pickedDate[0]
-                ? helper.convertToDate(
+                ? helpers.convertToDate(
                     moment(pickedDate[0]).format('YYYY-MM-DD') +
                       (timeValue ? ` ${timeValue}:00` : ' 00:00:00'),
                   )
                 : undefined,
               pickedDate[1]
-                ? helper.convertToDate(
+                ? helpers.convertToDate(
                     moment(pickedDate[1]).format('YYYY-MM-DD') +
                       (timeValue ? ` ${timeValue}:00` : ' 00:00:00'),
                   )
@@ -626,34 +537,34 @@ function DatePicker({
           } else if (pickedDate) {
             newDate = timeRange
               ? [
-                  helper.convertToDate(
+                  helpers.convertToDate(
                     moment(pickedDate).format('YYYY-MM-DD') +
                       (timeValue ? ` ${timeValue}:00` : ' 00:00:00'),
                   ),
-                  helper.convertToDate(
+                  helpers.convertToDate(
                     moment(pickedDate).format('YYYY-MM-DD') +
                       (timeValue ? ` ${timeValue}:00` : ' 00:00:00'),
                   ),
                 ]
               : [
-                  helper.convertToDate(
+                  helpers.convertToDate(
                     `${moment(pickedDate).format('YYYY-MM-DD')} 00:00:00`,
                   ),
-                  helper.convertToDate(
+                  helpers.convertToDate(
                     `${moment(pickedDate).format('YYYY-MM-DD')} 00:00:00`,
                   ),
                 ]
           }
         } else {
           newDate = [
-            helper.convertToDate(
+            helpers.convertToDate(
               `${moment(
                 Array.isArray(pickedDate)
                   ? pickedDate[0] || pickedDate[1]
                   : pickedDate,
               ).format('YYYY-MM-DD')} 00:00:00`,
             ),
-            helper.convertToDate(
+            helpers.convertToDate(
               `${moment(
                 Array.isArray(pickedDate)
                   ? pickedDate[1] || pickedDate[0]
@@ -664,7 +575,7 @@ function DatePicker({
         }
       } else {
         newDate = pickedDate
-          ? helper.convertToDate(
+          ? helpers.convertToDate(
               moment(pickedDate as Date).format('YYYY-MM-DD') +
                 (timeValue ? ` ${timeValue as string}:00` : ' 00:00:00'),
             )

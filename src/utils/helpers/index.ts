@@ -641,4 +641,91 @@ export default {
 
     return result as T
   },
+  makeTwoDigits(num: number) {
+    if (num < 0) {
+      return '00'
+    }
+
+    return num < 10 ? `0${num}` : String(num).substr(0, 2)
+  },
+  setValidDateTime(year: number, month: number, day: number) {
+    const tmpDateStr = `${String(year)}.${this.makeTwoDigits(
+      month + 1,
+    )}.${this.makeTwoDigits(day)}`
+    let resultYear = year
+    let resultMonth = month
+    let resultDay = day
+
+    if (year < 0) resultYear = 1
+
+    if (month < 0) resultMonth = 0
+    else if (month > 11) resultMonth = 11
+
+    if (day < 0) resultDay = 1
+    else if (day > 26 && !moment(tmpDateStr, 'YYYY.MM.DD', true).isValid()) {
+      let dt = 31
+      let text = `${resultYear}.${this.makeTwoDigits(resultMonth + 1)}.${String(
+        dt,
+      )}`
+      while (!moment(text, 'YYYY.MM.DD', true).isValid()) {
+        dt -= 1
+        text = `${resultYear}.${this.makeTwoDigits(resultMonth + 1)}.${String(
+          dt,
+        )}`
+      }
+      resultDay = dt
+    }
+    return { year: resultYear, month: resultMonth, day: resultDay }
+  },
+  convertToDate(input: string) {
+    const strings: string[] = input.split(/[- :]/)
+    const arr: number[] = strings.map((str) => Number(str))
+    if (arr.some((a) => Number.isNaN(a)) || arr.length < 3) return undefined
+
+    const { year, month, day } = this.setValidDateTime(
+      arr[0],
+      arr[1] - 1,
+      arr[2],
+    )
+
+    if (arr.length < 6) {
+      return new Date(year, month, day, 0, 0, 0)
+    }
+
+    let hour = 0
+    let min = 0
+    let sec = 0
+
+    if (arr[3] > 23) {
+      hour = 23
+    } else {
+      hour = arr[3] < 0 ? 0 : arr[3]
+    }
+
+    if (arr[4] > 59) {
+      min = 59
+    } else {
+      min = arr[4] < 0 ? 0 : arr[4]
+    }
+
+    if (arr[5] > 59) {
+      sec = 59
+    } else {
+      sec = arr[5] < 0 ? 0 : arr[5]
+    }
+
+    return new Date(year, month, day, hour, min, sec)
+  },
+  dateValidator(input: string) {
+    const tmp = input.split('.')
+
+    if (tmp.some((t) => Number.isNaN(t)) || tmp.length < 3) return null
+
+    const { year, month, day } = this.setValidDateTime(
+      Number(tmp[0]),
+      Number(tmp[1]) - 1,
+      Number(tmp[2]),
+    )
+    return new Date(year, month, day, 0, 0, 0)
+  },
 }
