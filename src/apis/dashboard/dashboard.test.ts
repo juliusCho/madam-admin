@@ -414,15 +414,10 @@ describe('API Dashboard', () => {
     api
       .apiMadamRequestStatusPerWeek$(moment().toDate(), moment().toDate())
       .subscribe((result) => {
-        expect(result).not.toBeNull()
-        if (!result) return
-
-        expect(
-          Object.keys(result).some((key) => !(key in MADAM_REQUEST_STATUS)),
-        ).toBeFalsy()
-        expect(
-          Object.values(result).some((value) => typeof value !== 'number'),
-        ).toBeFalsy()
+        result.forEach((res) => {
+          expect(res.status in MADAM_REQUEST_STATUS).toBeTruthy()
+          expect(typeof res.count).toBe('number')
+        })
 
         done()
       })
@@ -436,24 +431,7 @@ describe('API Dashboard', () => {
       api
         .apiMadamRequestCount$(startDate, endDate, 'week')
         .subscribe((result) => {
-          expect(result).not.toBeNull()
-          if (!result) {
-            done()
-            return
-          }
-
           expect(result.length).toBe(7)
-          expect(
-            Object.keys(result[0]).some(
-              (key) =>
-                key !== 'date' &&
-                key !== MADAM_REQUEST_STATUS.ACCEPT &&
-                key !== MADAM_REQUEST_STATUS.COMPLETE &&
-                key !== MADAM_REQUEST_STATUS.REJECT &&
-                key !== MADAM_REQUEST_STATUS.REQUEST &&
-                key !== MADAM_REQUEST_STATUS.TIMEOUT,
-            ),
-          ).toBeFalsy()
           expect(result[0][0]).toBe(startDate)
           expect(result[6][0]).toBe(endDate)
 
@@ -577,16 +555,10 @@ describe('API Dashboard', () => {
 
   xit('apiUserCountPerGender$', (done) => {
     api.apiUserCountPerGender$().subscribe((result) => {
-      expect(result).not.toBeNull()
-      if (!result) {
-        done()
-        return
-      }
-
-      expect(Object.keys(result).some((key) => !(key in GENDER))).toBeFalsy()
-      expect(
-        Object.values(result).some((value) => typeof value !== 'number'),
-      ).toBeFalsy()
+      result.forEach((res) => {
+        expect(res.status in GENDER).toBeTruthy()
+        expect(typeof res.count).toBe('number')
+      })
 
       done()
     })
@@ -594,18 +566,10 @@ describe('API Dashboard', () => {
 
   xit('apiUserCountPerSexualPreference$', (done) => {
     api.apiUserCountPerSexualPreference$().subscribe((result) => {
-      expect(result).not.toBeNull()
-      if (!result) {
-        done()
-        return
-      }
-
-      expect(
-        Object.keys(result).some((key) => !(key in SEXUAL_PREFERENCE)),
-      ).toBeFalsy()
-      expect(
-        Object.values(result).some((value) => typeof value !== 'number'),
-      ).toBeFalsy()
+      result.forEach((res) => {
+        expect(res.status in SEXUAL_PREFERENCE).toBeTruthy()
+        expect(typeof res.count).toBe('number')
+      })
 
       done()
     })
@@ -815,12 +779,10 @@ describe('API Dashboard', () => {
 
   xit('apiCoupleStatus$', (done) => {
     api.apiCoupleStatus$().subscribe((result) => {
-      expect(
-        Object.keys(result).some((key) => !(key in COUPLE_ACTION)),
-      ).toBeFalsy()
-      expect(
-        Object.values(result).some((value) => typeof value !== 'number'),
-      ).toBeFalsy()
+      result.forEach((res) => {
+        expect(res.status in COUPLE_ACTION).toBeTruthy()
+        expect(typeof res.count === 'number').toBeTruthy()
+      })
 
       done()
     })

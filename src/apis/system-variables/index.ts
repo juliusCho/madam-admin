@@ -25,45 +25,6 @@ const apiGetProfileExtraItems$ = (
         })) as ProfileExtraItemType[],
     ),
   )
-
-  // return [
-  //   {
-  //     id: '1',
-  //     titleKr: 'MBTI',
-  //     titleEn: 'MBTI',
-  //     type: PROFILE_EXTRA_ITEM_TYPE.SELECT,
-  //     createdAt: moment().toDate(),
-  //     modifiedAt: moment().toDate(),
-  //     adminKey: '1',
-  //   },
-  //   {
-  //     id: '2',
-  //     titleKr: '종교',
-  //     titleEn: 'Religion',
-  //     type: PROFILE_EXTRA_ITEM_TYPE.SELECT,
-  //     createdAt: moment().toDate(),
-  //     modifiedAt: moment().toDate(),
-  //     adminKey: '1',
-  //   },
-  //   {
-  //     id: '3',
-  //     titleKr: '혈액형',
-  //     titleEn: 'Blood Type',
-  //     type: PROFILE_EXTRA_ITEM_TYPE.SELECT,
-  //     createdAt: moment().toDate(),
-  //     modifiedAt: moment().toDate(),
-  //     adminKey: '1',
-  //   },
-  //   {
-  //     id: '4',
-  //     titleKr: '별자리',
-  //     titleEn: 'Star Sign',
-  //     type: PROFILE_EXTRA_ITEM_TYPE.SELECT,
-  //     createdAt: moment().toDate(),
-  //     modifiedAt: moment().toDate(),
-  //     adminKey: '1',
-  //   },
-  // ]
 }
 
 export default {
