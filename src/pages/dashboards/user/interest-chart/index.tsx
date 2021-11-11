@@ -24,11 +24,6 @@ function InterestChart({ isLike, className }: Props) {
     const subscription = apiDashboard
       .apiInterestsCount$(isLike)
       .subscribe((result) => {
-        if (!result) {
-          setData((oldList) => oldList.map((old) => ({ ...old, count: 0 })))
-          return
-        }
-
         setData(() => result)
       })
 

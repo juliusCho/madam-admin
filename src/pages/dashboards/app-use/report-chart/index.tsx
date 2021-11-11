@@ -77,39 +77,11 @@ function ReportChart({ className }: Props) {
         rangeOption,
       )
       .subscribe((result) => {
-        setData(() =>
-          helpers
-            .getDateRangeArray(rangeOption, dateRange as Date[])
-            .filter(
-              (date) =>
-                !!result.find(
-                  (res) => res.date === moment(date).format(format),
-                ),
-            )
-            .map((date) => {
-              const found = result.find(
-                (res) => res.date === moment(date).format(format),
-              )
-
-              if (found) {
-                return [found.date, found.count]
-              }
-
-              return [moment(date).format(format), 0]
-            }),
-        )
+        setData(() => result)
       })
 
     return () => subscription.unsubscribe()
-  }, [
-    admin,
-    dateRange,
-    helpers.getDateRangeArray,
-    apiDashboard.apiReportCount$,
-    moment,
-    format,
-    rangeOption,
-  ])
+  }, [admin, dateRange, apiDashboard.apiReportCount$, moment, rangeOption])
 
   return (
     <ChartLine

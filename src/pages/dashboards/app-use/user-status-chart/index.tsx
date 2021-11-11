@@ -30,18 +30,7 @@ function UserStatusChart({ className }: Props) {
     const subscription = apiDashboard
       .apiUserCountPerStatus$()
       .subscribe((fetchedData) => {
-        setData((oldList) =>
-          oldList.map((old) => {
-            const found = Object.keys(fetchedData).find(
-              (key) => key === old.status,
-            )
-            if (found) {
-              // @ts-ignore
-              return { ...old, count: fetchedData[found] }
-            }
-            return { ...old, count: 0 }
-          }),
-        )
+        setData(() => fetchedData)
       })
 
     return () => subscription.unsubscribe()

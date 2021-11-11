@@ -17,9 +17,18 @@ import {
   doc as rxDoc,
 } from 'rxfire/firestore'
 import { from, map, switchMap, zip } from 'rxjs'
+import {
+  COUPLE_ACTION_LABEL,
+  GENDER_LABEL,
+  MADAM_REQUEST_STATUS_LABEL,
+  SEXUAL_PREFERENCE_LABEL,
+  USER_STATUS_LABEL,
+} from '~/constants/app'
 import endpoints from '~/endpoints.config'
 import {
+  COUPLE_ACTION,
   GENDER,
+  INQUIRY_TYPE,
   MADAM_REQUEST_STATUS,
   SEXUAL_PREFERENCE,
   USER_STATUS,
@@ -41,11 +50,14 @@ const apiUserCountPerStatus$ = () =>
       }
 
       users.forEach((user) => {
-        // @ts-ignore
-        result[user.status] += 1
+        result[user.status as USER_STATUS] += 1
       })
 
-      return result
+      return Object.keys(result).map((key) => ({
+        status: key as string,
+        label: USER_STATUS_LABEL[key as USER_STATUS],
+        count: result[key as USER_STATUS],
+      }))
     }),
   )
 
@@ -98,11 +110,7 @@ const apiQuitAndJoinCount$ = (
           (datum) => datum.filter((d) => d === date).length,
         )
 
-        return {
-          date,
-          joinCount,
-          quitCount,
-        }
+        return [date, joinCount, quitCount] as [string, number, number]
       }),
     ),
   )
@@ -136,10 +144,10 @@ const apiReportCount$ = (
       return dateArray.map((da) => {
         const date = moment(da).format(format)
 
-        return {
-          date,
-          count: countList.filter((datum) => datum === date).length,
-        }
+        return [date, countList.filter((datum) => datum === date).length] as [
+          string,
+          number,
+        ]
       })
     }),
   )
@@ -187,11 +195,11 @@ const apiSendLinkAndJoinCount$ = (
           return dateArray.map((da) => {
             const date = moment(da).format(format)
 
-            return {
+            return [
               date,
-              sendCount: sendList.filter((d) => d === date).length,
-              joinCount: joinList.filter((d) => d === date).length,
-            }
+              sendList.filter((d) => d === date).length,
+              joinList.filter((d) => d === date).length,
+            ] as [string, number, number]
           })
         }),
       ),
@@ -218,11 +226,14 @@ const apiMadamRequestStatusPerWeek$ = (startDate: Date, endDate: Date) =>
       }
 
       requests.forEach((request) => {
-        // @ts-ignore
-        result[request.status] += 1
+        result[request.status as MADAM_REQUEST_STATUS] += 1
       })
 
-      return result
+      return Object.keys(result).map((key) => ({
+        status: key,
+        count: result[key as MADAM_REQUEST_STATUS],
+        label: MADAM_REQUEST_STATUS_LABEL[key as MADAM_REQUEST_STATUS],
+      }))
     }),
   )
 
@@ -255,24 +266,19 @@ const apiMadamRequestCount$ = (
             date,
         )
 
-        return {
+        return [
           date,
-          [MADAM_REQUEST_STATUS.ACCEPT]: list.filter(
-            (data) => data.status === MADAM_REQUEST_STATUS.ACCEPT,
-          ).length,
-          [MADAM_REQUEST_STATUS.COMPLETE]: list.filter(
-            (data) => data.status === MADAM_REQUEST_STATUS.COMPLETE,
-          ).length,
-          [MADAM_REQUEST_STATUS.REJECT]: list.filter(
-            (data) => data.status === MADAM_REQUEST_STATUS.REJECT,
-          ).length,
-          [MADAM_REQUEST_STATUS.REQUEST]: list.filter(
-            (data) => data.status === MADAM_REQUEST_STATUS.REQUEST,
-          ).length,
-          [MADAM_REQUEST_STATUS.TIMEOUT]: list.filter(
-            (data) => data.status === MADAM_REQUEST_STATUS.TIMEOUT,
-          ).length,
-        }
+          list.filter((data) => data.status === MADAM_REQUEST_STATUS.ACCEPT)
+            .length,
+          list.filter((data) => data.status === MADAM_REQUEST_STATUS.COMPLETE)
+            .length,
+          list.filter((data) => data.status === MADAM_REQUEST_STATUS.REJECT)
+            .length,
+          list.filter((data) => data.status === MADAM_REQUEST_STATUS.REQUEST)
+            .length,
+          list.filter((data) => data.status === MADAM_REQUEST_STATUS.TIMEOUT)
+            .length,
+        ] as Array<string | number>
       })
     }),
   )
@@ -302,6 +308,13 @@ const apiUserCountPerGender$ = () =>
         (profile) => profile.gender === GENDER.FEMALE,
       ).length,
     })),
+    map((result) =>
+      Object.keys(result).map((key) => ({
+        status: key,
+        label: GENDER_LABEL[key as GENDER],
+        count: result[key as GENDER],
+      })),
+    ),
   )
 
 const apiUserCountPerSexualPreference$ = () =>
@@ -322,6 +335,13 @@ const apiUserCountPerSexualPreference$ = () =>
             (profile.findingMale && profile.gender === GENDER.FEMALE)),
       ).length,
     })),
+    map((result) =>
+      Object.keys(result).map((key) => ({
+        status: key,
+        label: SEXUAL_PREFERENCE_LABEL[key as SEXUAL_PREFERENCE],
+        count: result[key as SEXUAL_PREFERENCE],
+      })),
+    ),
   )
 
 const apiCountryCount$ = () => {
@@ -497,6 +517,180 @@ const apiDynamicProfileItemCount$ = (id: string) =>
     ),
   )
 
+const apiMatchPerCouplingCount$ = (
+  startDate: Date,
+  endDate: Date,
+  range: ChartDatePickerOptionType,
+) => {
+  const dateArray = helpers.getDateRangeArray(range, [startDate, endDate])
+  let format = 'YYYY-MM-DD'
+
+  if (range === 'year' || range === '3-months' || range === '6-months') {
+    format = 'YYYY-MM'
+  }
+
+  return collectionData(
+    query(
+      collection(db, 'couples'),
+      where('modifiedAt', '>=', startDate),
+      where('modifiedAt', '<=', endDate),
+      orderBy('modifiedAt', 'desc'),
+    ),
+  ).pipe(
+    map((couples) => {
+      const couplingList = couples.map((ui) => ({
+        date: helpers.timestampColToStringDate(ui.modifiedAt, format),
+        isMatched: ui.isMatched,
+      }))
+
+      return dateArray.map((da) => {
+        const date = moment(da).format(format)
+        const filteredList = couplingList.filter((d) => d.date === date)
+
+        return [
+          date,
+          filteredList.length,
+          filteredList.filter((d) => d.isMatched).length,
+        ] as [string, number, number]
+      })
+    }),
+  )
+}
+
+const apiCoupleStatus$ = () =>
+  collectionData(collection(db, 'couples')).pipe(
+    map((couples) => {
+      const result: Record<COUPLE_ACTION, number> = {
+        [COUPLE_ACTION.BLOCK]: 0,
+        [COUPLE_ACTION.DELETE]: 0,
+        [COUPLE_ACTION.HATE]: 0,
+        [COUPLE_ACTION.LIKE]: 0,
+        [COUPLE_ACTION.MADAM]: 0,
+        [COUPLE_ACTION.NONE]: 0,
+        [COUPLE_ACTION.SUPER]: 0,
+      }
+
+      couples.forEach((couple) => {
+        result[couple.firstUserStatus as COUPLE_ACTION] += 1
+        result[couple.secondUserStatus as COUPLE_ACTION] += 1
+      })
+
+      return Object.keys(result).map((key) => ({
+        status: key,
+        label: COUPLE_ACTION_LABEL[key as COUPLE_ACTION],
+        count: result[key as COUPLE_ACTION],
+      }))
+    }),
+  )
+
+const apiCharmPurchaseCount$ = () =>
+  collectionData(collection(db, 'charm-plans')).pipe(
+    map((charmPlans) =>
+      charmPlans
+        .sort((a, b) => {
+          const aDollar = Number(a.dollar)
+          const bDollar = Number(b.dollar)
+
+          if (aDollar > bDollar) {
+            return 1
+          }
+          if (bDollar > aDollar) {
+            return -1
+          }
+          return 0
+        })
+        .map(
+          (charmPlan) =>
+            [
+              (charmPlan.label ?? `$${charmPlan.dollar}`) as string,
+              charmPlan.purchaseCount as number,
+            ] as [string, number],
+        ),
+    ),
+  )
+
+const apiChatCount$ = (
+  startDate: Date,
+  endDate: Date,
+  range: ChartDatePickerOptionType,
+) => {
+  const dateArray = helpers.getDateRangeArray(range, [startDate, endDate])
+  let format = 'YYYY-MM-DD'
+
+  if (range === 'year' || range === '3-months' || range === '6-months') {
+    format = 'YYYY-MM'
+  }
+
+  return collectionData(
+    query(
+      collection(db, 'chats'),
+      where('createdAt', '>=', startDate),
+      where('createdAt', '<=', endDate),
+      orderBy('createdAt', 'desc'),
+    ),
+  )
+    .pipe(
+      map((users) =>
+        users.map((user) =>
+          helpers.timestampColToStringDate(user.createdAt, format),
+        ),
+      ),
+    )
+    .pipe(
+      map((data) =>
+        dateArray.map((da) => {
+          const date = moment(da).format(format)
+
+          return [date, data.filter((d) => d === date).length] as [
+            string,
+            number,
+          ]
+        }),
+      ),
+    )
+}
+
+const apiCountPerInquiryType$ = (
+  startDate: Date,
+  endDate: Date,
+  range: ChartDatePickerOptionType,
+) => {
+  const dateArray = helpers.getDateRangeArray(range, [startDate, endDate])
+  let format = 'YYYY-MM-DD'
+
+  if (range === 'year' || range === '3-months' || range === '6-months') {
+    format = 'YYYY-MM'
+  }
+
+  return collectionData(
+    query(
+      collection(db, 'inquiries'),
+      where('createdAt', '>=', startDate),
+      where('createdAt', '<=', endDate),
+      orderBy('createdAt', 'desc'),
+    ),
+  ).pipe(
+    map((inquiries) => {
+      const inquiryList = inquiries.map((ui) => ({
+        date: helpers.timestampColToStringDate(ui.createdAt, format),
+        type: ui.type,
+      }))
+
+      return dateArray.map((da) => {
+        const date = moment(da).format(format)
+        const filteredList = inquiryList.filter((d) => d.date === date)
+
+        return [
+          date,
+          filteredList.filter((d) => d.type === INQUIRY_TYPE.INQUIRY).length,
+          filteredList.filter((d) => d.type === INQUIRY_TYPE.REQUEST).length,
+          filteredList.filter((d) => d.type === INQUIRY_TYPE.ETC).length,
+        ] as [string, number, number, number]
+      })
+    }),
+  )
+}
+
 export default {
   apiUserCountPerStatus$,
   apiQuitAndJoinCount$,
@@ -510,4 +704,9 @@ export default {
   apiCountryCount$,
   apiInterestsCount$,
   apiDynamicProfileItemCount$,
+  apiCountPerInquiryType$,
+  apiCoupleStatus$,
+  apiCharmPurchaseCount$,
+  apiMatchPerCouplingCount$,
+  apiChatCount$,
 }

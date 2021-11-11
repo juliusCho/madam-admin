@@ -79,30 +79,7 @@ function RequestCountChart({ className }: Props) {
         rangeOption,
       )
       .subscribe((result) => {
-        setData(() =>
-          helpers
-            .getDateRangeArray(rangeOption, dateRange as Date[])
-            .filter(
-              (date) =>
-                !!result.find(
-                  (res) => res.date === moment(date).format(format),
-                ),
-            )
-            .map((date) => {
-              const found = result.find(
-                (res) => res.date === moment(date).format(format),
-              )
-
-              if (found) {
-                return Object.values(found)
-              }
-
-              return [
-                moment(date).format(format),
-                ...Object.keys(MADAM_REQUEST_STATUS).map(() => 0),
-              ]
-            }),
-        )
+        setData(() => result)
       })
 
     return () => subscription.unsubscribe()

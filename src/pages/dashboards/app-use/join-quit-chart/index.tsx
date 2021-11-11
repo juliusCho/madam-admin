@@ -77,39 +77,11 @@ function JoinQuitChart({ className }: Props) {
         rangeOption,
       )
       .subscribe((result) => {
-        setData(() =>
-          helpers
-            .getDateRangeArray(rangeOption, dateRange as Date[])
-            .filter(
-              (date) =>
-                !!result.find(
-                  (res) => res.date === moment(date).format(format),
-                ),
-            )
-            .map((date) => {
-              const found = result.find(
-                (res) => res.date === moment(date).format(format),
-              )
-
-              if (found) {
-                return [found.date, found.joinCount, found.quitCount]
-              }
-
-              return [moment(date).format(format), 0, 0]
-            }),
-        )
+        setData(() => result)
       })
 
     return () => subscription.unsubscribe()
-  }, [
-    admin,
-    dateRange,
-    apiDashboard.apiQuitAndJoinCount$,
-    helpers.getDateRangeArray,
-    moment,
-    format,
-    rangeOption,
-  ])
+  }, [admin, dateRange, apiDashboard.apiQuitAndJoinCount$, moment, rangeOption])
 
   return (
     <ChartLine

@@ -43,16 +43,7 @@ function RequestStatusChart({ className }: Props) {
         moment(dateRange[1]).toDate(),
       )
       .subscribe((result) => {
-        setData((oldList) =>
-          oldList.map((old) => {
-            const found = Object.keys(result).find((key) => key === old.status)
-            if (found) {
-              // @ts-ignore
-              return { ...old, count: result[found] }
-            }
-            return { ...old, count: 0 }
-          }),
-        )
+        setData(() => result)
       })
 
     return () => subscription.unsubscribe()

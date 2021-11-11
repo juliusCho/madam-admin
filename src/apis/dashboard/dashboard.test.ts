@@ -2,6 +2,7 @@ import { deleteApp, FirebaseApp } from 'firebase/app'
 import { startAfter } from 'firebase/firestore'
 import moment from 'moment'
 import {
+  COUPLE_ACTION,
   GENDER,
   MADAM_REQUEST_STATUS,
   SEXUAL_PREFERENCE,
@@ -25,12 +26,11 @@ describe('API Dashboard', () => {
 
   xit('apiUserCountPerStatus$', (done) => {
     api.apiUserCountPerStatus$().subscribe((result) => {
-      expect(
-        Object.keys(result).some((key) => !(key in USER_STATUS)),
-      ).toBeFalsy()
-      expect(
-        Object.values(result).some((value) => typeof value !== 'number'),
-      ).toBeFalsy()
+      result.forEach((res) => {
+        expect(res.status in USER_STATUS).toBeTruthy()
+        expect(typeof res.count).toBe('number')
+      })
+
       done()
     })
   })
@@ -50,23 +50,14 @@ describe('API Dashboard', () => {
           }
 
           expect(result.length).toBe(7)
+          expect(typeof result[0][0]).toBe('string')
+          expect(result[0][0]).toBe(startDate)
+          expect(result[6][0]).toBe(endDate)
           expect(
-            Object.keys(result[0]).some(
-              (key) =>
-                key !== 'date' && key !== 'joinCount' && key !== 'quitCount',
-            ),
-          ).toBeFalsy()
-          expect(result[0].date).toBe(startDate)
-          expect(result[6].date).toBe(endDate)
-          expect(
-            result
-              .map((res) => res.joinCount)
-              .some((res) => typeof res !== 'number'),
+            result.map((res) => res[1]).some((res) => typeof res !== 'number'),
           ).toBeFalsy()
           expect(
-            result
-              .map((res) => res.quitCount)
-              .some((res) => typeof res !== 'number'),
+            result.map((res) => res[2]).some((res) => typeof res !== 'number'),
           ).toBeFalsy()
 
           done()
@@ -91,8 +82,8 @@ describe('API Dashboard', () => {
 
           expect(result.length + 4).toBeGreaterThanOrEqual(30)
           expect(result.length + 4).toBeLessThan(40)
-          expect(result[0].date).toBe(startDate)
-          expect(result[result.length - 1].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[result.length - 1][0]).toBe(endDate)
 
           done()
         })
@@ -112,8 +103,8 @@ describe('API Dashboard', () => {
           }
 
           expect(result.length).toBe(3)
-          expect(result[0].date).toBe(startDate)
-          expect(result[2].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[2][0]).toBe(endDate)
 
           done()
         })
@@ -133,8 +124,8 @@ describe('API Dashboard', () => {
           }
 
           expect(result.length).toBe(6)
-          expect(result[0].date).toBe(startDate)
-          expect(result[5].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[5][0]).toBe(endDate)
 
           done()
         })
@@ -164,8 +155,8 @@ describe('API Dashboard', () => {
           }
 
           expect(result.length).toBe(12)
-          expect(result[0].date).toBe(startDate)
-          expect(result[11].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[11][0]).toBe(endDate)
 
           done()
         })
@@ -185,15 +176,11 @@ describe('API Dashboard', () => {
         }
 
         expect(result.length).toBe(7)
+        expect(typeof result[0][0]).toBe('string')
+        expect(result[0][0]).toBe(startDate)
+        expect(result[6][0]).toBe(endDate)
         expect(
-          Object.keys(result[0]).some(
-            (key) => key !== 'date' && key !== 'count',
-          ),
-        ).toBeFalsy()
-        expect(result[0].date).toBe(startDate)
-        expect(result[6].date).toBe(endDate)
-        expect(
-          result.map((res) => res.count).some((res) => typeof res !== 'number'),
+          result.map((res) => res[1]).some((res) => typeof res !== 'number'),
         ).toBeFalsy()
 
         done()
@@ -216,8 +203,8 @@ describe('API Dashboard', () => {
 
         expect(result.length + 4).toBeGreaterThanOrEqual(30)
         expect(result.length + 4).toBeLessThan(40)
-        expect(result[0].date).toBe(startDate)
-        expect(result[result.length - 1].date).toBe(endDate)
+        expect(result[0][0]).toBe(startDate)
+        expect(result[result.length - 1][0]).toBe(endDate)
 
         done()
       })
@@ -237,8 +224,8 @@ describe('API Dashboard', () => {
           }
 
           expect(result.length).toBe(3)
-          expect(result[0].date).toBe(startDate)
-          expect(result[2].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[2][0]).toBe(endDate)
 
           done()
         })
@@ -258,8 +245,8 @@ describe('API Dashboard', () => {
           }
 
           expect(result.length).toBe(6)
-          expect(result[0].date).toBe(startDate)
-          expect(result[5].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[5][0]).toBe(endDate)
 
           done()
         })
@@ -287,8 +274,8 @@ describe('API Dashboard', () => {
         }
 
         expect(result.length).toBe(12)
-        expect(result[0].date).toBe(startDate)
-        expect(result[11].date).toBe(endDate)
+        expect(result[0][0]).toBe(startDate)
+        expect(result[11][0]).toBe(endDate)
 
         done()
       })
@@ -310,23 +297,14 @@ describe('API Dashboard', () => {
           }
 
           expect(result.length).toBe(7)
+          expect(typeof result[0][0]).toBe('string')
+          expect(result[0][0]).toBe(startDate)
+          expect(result[6][0]).toBe(endDate)
           expect(
-            Object.keys(result[0]).some(
-              (key) =>
-                key !== 'date' && key !== 'joinCount' && key !== 'sendCount',
-            ),
-          ).toBeFalsy()
-          expect(result[0].date).toBe(startDate)
-          expect(result[6].date).toBe(endDate)
-          expect(
-            result
-              .map((res) => res.joinCount)
-              .some((res) => typeof res !== 'number'),
+            result.map((res) => res[1]).some((res) => typeof res !== 'number'),
           ).toBeFalsy()
           expect(
-            result
-              .map((res) => res.sendCount)
-              .some((res) => typeof res !== 'number'),
+            result.map((res) => res[2]).some((res) => typeof res !== 'number'),
           ).toBeFalsy()
 
           done()
@@ -351,8 +329,8 @@ describe('API Dashboard', () => {
 
           expect(result.length + 4).toBeGreaterThanOrEqual(30)
           expect(result.length + 4).toBeLessThan(40)
-          expect(result[0].date).toBe(startDate)
-          expect(result[result.length - 1].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[result.length - 1][0]).toBe(endDate)
 
           done()
         })
@@ -372,8 +350,8 @@ describe('API Dashboard', () => {
           }
 
           expect(result.length).toBe(3)
-          expect(result[0].date).toBe(startDate)
-          expect(result[2].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[2][0]).toBe(endDate)
 
           done()
         })
@@ -393,8 +371,8 @@ describe('API Dashboard', () => {
           }
 
           expect(result.length).toBe(6)
-          expect(result[0].date).toBe(startDate)
-          expect(result[5].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[5][0]).toBe(endDate)
 
           done()
         })
@@ -424,8 +402,8 @@ describe('API Dashboard', () => {
           }
 
           expect(result.length).toBe(12)
-          expect(result[0].date).toBe(startDate)
-          expect(result[11].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[11][0]).toBe(endDate)
 
           done()
         })
@@ -476,16 +454,8 @@ describe('API Dashboard', () => {
                 key !== MADAM_REQUEST_STATUS.TIMEOUT,
             ),
           ).toBeFalsy()
-          expect(result[0].date).toBe(startDate)
-          expect(result[6].date).toBe(endDate)
-          Object.keys(MADAM_REQUEST_STATUS).forEach((key) => {
-            expect(
-              result
-                // @ts-ignore
-                .map((res) => res[key])
-                .some((res) => typeof res !== 'number'),
-            ).toBeFalsy()
-          })
+          expect(result[0][0]).toBe(startDate)
+          expect(result[6][0]).toBe(endDate)
 
           done()
         })
@@ -509,8 +479,8 @@ describe('API Dashboard', () => {
 
           expect(result.length + 4).toBeGreaterThanOrEqual(30)
           expect(result.length + 4).toBeLessThan(40)
-          expect(result[0].date).toBe(startDate)
-          expect(result[result.length - 1].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[result.length - 1][0]).toBe(endDate)
 
           done()
         })
@@ -530,8 +500,8 @@ describe('API Dashboard', () => {
           }
 
           expect(result.length).toBe(3)
-          expect(result[0].date).toBe(startDate)
-          expect(result[2].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[2][0]).toBe(endDate)
 
           done()
         })
@@ -551,8 +521,8 @@ describe('API Dashboard', () => {
           }
 
           expect(result.length).toBe(6)
-          expect(result[0].date).toBe(startDate)
-          expect(result[5].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[5][0]).toBe(endDate)
 
           done()
         })
@@ -582,8 +552,8 @@ describe('API Dashboard', () => {
           }
 
           expect(result.length).toBe(12)
-          expect(result[0].date).toBe(startDate)
-          expect(result[11].date).toBe(endDate)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[11][0]).toBe(endDate)
 
           done()
         })
@@ -706,5 +676,408 @@ describe('API Dashboard', () => {
             done()
           })
       })
+  })
+
+  describe('apiMatchPerCouplingCount$', () => {
+    xit('일주일', (done) => {
+      const startDate = moment().hour(0).add(-7, 'days').toDate()
+      const endDate = moment().hour(0).add(-1, 'days').toDate()
+
+      api
+        .apiMatchPerCouplingCount$(startDate, endDate, 'week')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length).toBe(7)
+          expect(
+            Object.keys(result[0]).some(
+              (key) =>
+                key !== 'date' &&
+                key !== 'couplingCount' &&
+                key !== 'matchCount',
+            ),
+          ).toBeFalsy()
+          expect(result[0][0]).toBe(startDate)
+          expect(result[6][0]).toBe(endDate)
+          expect(
+            result.map((res) => res[1]).some((res) => typeof res !== 'number'),
+          ).toBeFalsy()
+          expect(
+            result.map((res) => res[2]).some((res) => typeof res !== 'number'),
+          ).toBeFalsy()
+
+          done()
+        })
+    })
+
+    xit('한달', (done) => {
+      const startDate = moment().hour(0).add(-1, 'months').date(1).toDate()
+      const end = moment().hour(0).toDate()
+      const endDate = moment(
+        new Date(end.getFullYear(), end.getMonth(), 0),
+      ).toDate()
+
+      api
+        .apiMatchPerCouplingCount$(startDate, endDate, 'month')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length + 4).toBeGreaterThanOrEqual(30)
+          expect(result.length + 4).toBeLessThan(40)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[result.length - 1][0]).toBe(endDate)
+
+          done()
+        })
+    })
+
+    xit('3개월', (done) => {
+      const startDate = moment().hour(0).add(-3, 'months').toDate()
+      const endDate = moment().hour(0).add(-1, 'months').toDate()
+
+      api
+        .apiMatchPerCouplingCount$(startDate, endDate, '3-months')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length).toBe(3)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[2][0]).toBe(endDate)
+
+          done()
+        })
+    })
+
+    xit('6개월', (done) => {
+      const startDate = moment().hour(0).add(-6, 'months').toDate()
+      const endDate = moment().hour(0).add(-1, 'months').toDate()
+
+      api
+        .apiMatchPerCouplingCount$(startDate, endDate, '6-months')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length).toBe(6)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[5][0]).toBe(endDate)
+
+          done()
+        })
+    })
+
+    xit('1년', (done) => {
+      const startDate = moment()
+        .hour(0)
+        .date(0)
+        .add(-1, 'years')
+        .month(0)
+        .toDate()
+      const endDate = moment()
+        .hour(0)
+        .date(0)
+        .add(-1, 'years')
+        .month(11)
+        .toDate()
+
+      api
+        .apiMatchPerCouplingCount$(startDate, endDate, 'year')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length).toBe(12)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[11][0]).toBe(endDate)
+
+          done()
+        })
+    })
+  })
+
+  xit('apiCoupleStatus$', (done) => {
+    api.apiCoupleStatus$().subscribe((result) => {
+      expect(
+        Object.keys(result).some((key) => !(key in COUPLE_ACTION)),
+      ).toBeFalsy()
+      expect(
+        Object.values(result).some((value) => typeof value !== 'number'),
+      ).toBeFalsy()
+
+      done()
+    })
+  })
+
+  xit('apiCharmPurchaseCount$', (done) => {
+    api.apiCharmPurchaseCount$().subscribe((result) => {
+      expect(typeof result).toBe('array')
+      expect(typeof result[0]).toBe('array')
+      expect(typeof result[0][0]).toBe('string')
+      expect(typeof result[0][1]).toBe('number')
+
+      done()
+    })
+  })
+
+  describe('apiChatCount$', () => {
+    xit('일주일', (done) => {
+      const startDate = moment().hour(0).add(-7, 'days').toDate()
+      const endDate = moment().hour(0).add(-1, 'days').toDate()
+
+      api.apiChatCount$(startDate, endDate, 'week').subscribe((result) => {
+        expect(result).not.toBeNull()
+        if (!result) {
+          done()
+          return
+        }
+
+        expect(result.length).toBe(7)
+        expect(typeof result[0][0]).toBe('string')
+        expect(typeof result[0][1]).toBe('number')
+        expect(result[0][0]).toBe(startDate)
+        expect(result[6][0]).toBe(endDate)
+        expect(
+          result.map((res) => res[1]).some((res) => typeof res !== 'number'),
+        ).toBeFalsy()
+
+        done()
+      })
+    })
+
+    xit('한달', (done) => {
+      const startDate = moment().hour(0).add(-1, 'months').date(1).toDate()
+      const end = moment().hour(0).toDate()
+      const endDate = moment(
+        new Date(end.getFullYear(), end.getMonth(), 0),
+      ).toDate()
+
+      api.apiChatCount$(startDate, endDate, 'month').subscribe((result) => {
+        expect(result).not.toBeNull()
+        if (!result) {
+          done()
+          return
+        }
+
+        expect(result.length + 4).toBeGreaterThanOrEqual(30)
+        expect(result.length + 4).toBeLessThan(40)
+        expect(result[0][0]).toBe(startDate)
+        expect(result[result.length - 1][0]).toBe(endDate)
+
+        done()
+      })
+    })
+
+    xit('3개월', (done) => {
+      const startDate = moment().hour(0).add(-3, 'months').toDate()
+      const endDate = moment().hour(0).add(-1, 'months').toDate()
+
+      api.apiChatCount$(startDate, endDate, '3-months').subscribe((result) => {
+        expect(result).not.toBeNull()
+        if (!result) {
+          done()
+          return
+        }
+
+        expect(result.length).toBe(3)
+        expect(result[0][0]).toBe(startDate)
+        expect(result[2][0]).toBe(endDate)
+
+        done()
+      })
+    })
+
+    xit('6개월', (done) => {
+      const startDate = moment().hour(0).add(-6, 'months').toDate()
+      const endDate = moment().hour(0).add(-1, 'months').toDate()
+
+      api.apiChatCount$(startDate, endDate, '6-months').subscribe((result) => {
+        expect(result).not.toBeNull()
+        if (!result) {
+          done()
+          return
+        }
+
+        expect(result.length).toBe(6)
+        expect(result[0][0]).toBe(startDate)
+        expect(result[5][0]).toBe(endDate)
+
+        done()
+      })
+    })
+
+    xit('1년', (done) => {
+      const startDate = moment()
+        .hour(0)
+        .date(0)
+        .add(-1, 'years')
+        .month(0)
+        .toDate()
+      const endDate = moment()
+        .hour(0)
+        .date(0)
+        .add(-1, 'years')
+        .month(11)
+        .toDate()
+
+      api.apiChatCount$(startDate, endDate, 'year').subscribe((result) => {
+        expect(result).not.toBeNull()
+        if (!result) {
+          done()
+          return
+        }
+
+        expect(result.length).toBe(12)
+        expect(result[0][0]).toBe(startDate)
+        expect(result[11][0]).toBe(endDate)
+
+        done()
+      })
+    })
+  })
+
+  describe('apiCountPerInquiryType$', () => {
+    xit('일주일', (done) => {
+      const startDate = moment().hour(0).add(-7, 'days').toDate()
+      const endDate = moment().hour(0).add(-1, 'days').toDate()
+
+      api
+        .apiCountPerInquiryType$(startDate, endDate, 'week')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length).toBe(7)
+          expect(typeof result[0][0]).toBe('string')
+          expect(typeof result[0][1]).toBe('number')
+          expect(typeof result[0][2]).toBe('number')
+          expect(typeof result[0][3]).toBe('number')
+          expect(result[0][0]).toBe(startDate)
+          expect(result[6][0]).toBe(endDate)
+          expect(
+            result.map((res) => res[1]).some((res) => typeof res !== 'number'),
+          ).toBeFalsy()
+
+          done()
+        })
+    })
+
+    xit('한달', (done) => {
+      const startDate = moment().hour(0).add(-1, 'months').date(1).toDate()
+      const end = moment().hour(0).toDate()
+      const endDate = moment(
+        new Date(end.getFullYear(), end.getMonth(), 0),
+      ).toDate()
+
+      api
+        .apiCountPerInquiryType$(startDate, endDate, 'month')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length + 4).toBeGreaterThanOrEqual(30)
+          expect(result.length + 4).toBeLessThan(40)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[result.length - 1][0]).toBe(endDate)
+
+          done()
+        })
+    })
+
+    xit('3개월', (done) => {
+      const startDate = moment().hour(0).add(-3, 'months').toDate()
+      const endDate = moment().hour(0).add(-1, 'months').toDate()
+
+      api
+        .apiCountPerInquiryType$(startDate, endDate, '3-months')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length).toBe(3)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[2][0]).toBe(endDate)
+
+          done()
+        })
+    })
+
+    xit('6개월', (done) => {
+      const startDate = moment().hour(0).add(-6, 'months').toDate()
+      const endDate = moment().hour(0).add(-1, 'months').toDate()
+
+      api
+        .apiCountPerInquiryType$(startDate, endDate, '6-months')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length).toBe(6)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[5][0]).toBe(endDate)
+
+          done()
+        })
+    })
+
+    xit('1년', (done) => {
+      const startDate = moment()
+        .hour(0)
+        .date(0)
+        .add(-1, 'years')
+        .month(0)
+        .toDate()
+      const endDate = moment()
+        .hour(0)
+        .date(0)
+        .add(-1, 'years')
+        .month(11)
+        .toDate()
+
+      api
+        .apiCountPerInquiryType$(startDate, endDate, 'year')
+        .subscribe((result) => {
+          expect(result).not.toBeNull()
+          if (!result) {
+            done()
+            return
+          }
+
+          expect(result.length).toBe(12)
+          expect(result[0][0]).toBe(startDate)
+          expect(result[11][0]).toBe(endDate)
+
+          done()
+        })
+    })
   })
 })
