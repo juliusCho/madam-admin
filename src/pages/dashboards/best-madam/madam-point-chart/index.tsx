@@ -59,36 +59,39 @@ function MadamPointChart({ device, className }: Props) {
 
     const subscription = apiDashboard
       .apiPointsPerMadam$(displayCount, queryOffset)
-      .subscribe((result) => {
-        if (result.length > 0) {
-          let snapshot = !result[result.length - 1].latest
-          const offset = result[0].startDate
+      .subscribe({
+        next: (result) => {
+          if (result.length > 0) {
+            let snapshot = !result[result.length - 1].latest
+            const offset = result[0].startDate
 
-          if (lastStartDate) {
-            const snapshotDt = moment(lastStartDate.date).format('YYYYMMDD')
-            const lastSnapshot = moment(offset).format('YYYYMMDD')
+            if (lastStartDate) {
+              const snapshotDt = moment(lastStartDate.date).format('YYYYMMDD')
+              const lastSnapshot = moment(offset).format('YYYYMMDD')
 
-            if (snapshotDt === lastSnapshot) {
-              snapshot = false
+              if (snapshotDt === lastSnapshot) {
+                snapshot = false
+              }
             }
-          }
 
-          if (snapshot) {
-            setLastStartDate(() => ({
-              date: offset,
-              isFirst: true,
+            if (snapshot) {
+              setLastStartDate(() => ({
+                date: offset,
+                isFirst: true,
+              }))
+            }
+
+            setDocuments(() => result)
+            setData(() => ({
+              isEnd: result.some((res) => res.latest),
+              data: result.map((res) => [
+                moment(res.startDate).format('YYYY-MM-DD'),
+                res.charm,
+              ]) as Array<[string, number]>,
             }))
           }
-
-          setDocuments(() => result)
-          setData(() => ({
-            isEnd: result.some((res) => res.latest),
-            data: result.map((res) => [
-              moment(res.startDate).format('YYYY-MM-DD'),
-              res.charm,
-            ]) as Array<[string, number]>,
-          }))
-        }
+        },
+        error: () => setData(() => ({ data: [] })),
       })
 
     return () => subscription.unsubscribe()

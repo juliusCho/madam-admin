@@ -6,6 +6,7 @@ import { ChartLine } from '~/components/charts/line'
 import adminGlobalStates from '~/states/admin'
 import { ChartDatePickerOptionType } from '~/types'
 import helpers from '~/utils/helpers'
+import { useMaxDateAndFormat } from '../../shared'
 
 interface Props {
   className: string
@@ -21,45 +22,27 @@ function ChatCountChart({ className }: Props) {
     React.useState<ChartDatePickerOptionType>('week')
   const [data, setData] = React.useState<Array<[string, number]>>([])
 
-  const maxDate = React.useMemo(() => {
-    switch (rangeOption) {
-      case 'day':
-      case 'week':
-        return helpers.getYesterday()
-      case 'year':
-        return helpers.getLastYear()
-      default:
-        return helpers.getLastMonth()
-    }
-  }, [rangeOption])
+  const { maxDate, format } = useMaxDateAndFormat(rangeOption)
 
-  const format = React.useMemo(() => {
-    switch (rangeOption) {
-      case 'day':
-      case 'week':
-      case 'month':
-        return 'YYYY-MM-DD'
-      default:
-        return 'YYYY-MM'
-    }
-  }, [rangeOption])
+  const onChangeDate = React.useCallback(
+    (
+      date?: Date | Array<Date | undefined>,
+      inputOption?: ChartDatePickerOptionType,
+    ) => {
+      if (!date) {
+        return
+      }
 
-  const onChangeDate = (
-    date?: Date | Array<Date | undefined>,
-    inputOption?: ChartDatePickerOptionType,
-  ) => {
-    if (!date) {
-      return
-    }
+      if (inputOption) {
+        setRangeOption(() => inputOption)
+        helpers.changeChartDate(setDateRange, date, inputOption)
+        return
+      }
 
-    if (inputOption) {
-      setRangeOption(inputOption)
-      helpers.changeChartDate(setDateRange, date, inputOption)
-      return
-    }
-
-    helpers.changeChartDate(setDateRange, date, rangeOption)
-  }
+      helpers.changeChartDate(setDateRange, date, rangeOption)
+    },
+    [helpers.changeChartDate],
+  )
 
   React.useLayoutEffect(() => {
     if (
@@ -76,8 +59,9 @@ function ChatCountChart({ className }: Props) {
         moment(dateRange[1]).toDate(),
         rangeOption,
       )
-      .subscribe((result) => {
-        setData(() => result)
+      .subscribe({
+        next: setData,
+        error: () => setData(() => []),
       })
 
     return () => subscription.unsubscribe()

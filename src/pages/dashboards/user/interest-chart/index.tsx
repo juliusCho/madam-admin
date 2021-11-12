@@ -14,18 +14,17 @@ function InterestChart({ isLike, className }: Props) {
 
   const [data, setData] = React.useState<
     Array<{ id: string; count: number; label: string }>
-  >([])
+  >([{ id: '1', label: '', count: 0 }])
 
   React.useLayoutEffect(() => {
     if (!admin) {
       return () => {}
     }
 
-    const subscription = apiDashboard
-      .apiInterestsCount$(isLike)
-      .subscribe((result) => {
-        setData(() => result)
-      })
+    const subscription = apiDashboard.apiInterestsCount$(isLike).subscribe({
+      next: setData,
+      error: () => setData(() => [{ id: '1', label: '', count: 0 }]),
+    })
 
     return () => subscription.unsubscribe()
   }, [admin, apiDashboard.apiInterestsCount$, isLike])

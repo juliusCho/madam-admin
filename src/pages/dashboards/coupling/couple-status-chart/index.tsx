@@ -27,11 +27,11 @@ function CoupleStatusChart({ className }: Props) {
   React.useLayoutEffect(() => {
     if (!admin) return () => {}
 
-    const subscription = apiDashboard
-      .apiCoupleStatus$()
-      .subscribe((fetchedData) => {
-        setData(() => fetchedData)
-      })
+    const subscription = apiDashboard.apiCoupleStatus$().subscribe({
+      next: setData,
+      error: () =>
+        setData((oldList) => oldList.map((old) => ({ ...old, count: 0 }))),
+    })
 
     return () => subscription.unsubscribe()
   }, [admin, apiDashboard.apiCoupleStatus$])

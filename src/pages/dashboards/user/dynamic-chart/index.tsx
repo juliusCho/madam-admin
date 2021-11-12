@@ -24,8 +24,9 @@ function DynamicChart({ id, title, className }: Props) {
 
     const subscription = apiDashboard
       .apiDynamicProfileItemCount$(id)
-      .subscribe((result) => {
-        setData(() => result)
+      .subscribe({
+        next: setData,
+        error: () => setData(() => []),
       })
 
     return () => subscription.unsubscribe()

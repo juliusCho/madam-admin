@@ -398,4 +398,49 @@ describe('Helpers', () => {
       currMoment.format('YYYY-MM-DD'),
     )
   })
+
+  it('makeTwoDigits', () => {
+    expect(helpers.makeTwoDigits(10)).toBe('10')
+    expect(helpers.makeTwoDigits(1)).toBe('01')
+  })
+
+  it('setValidDateTime', () => {
+    const { year, month, day } = helpers.setValidDateTime(2021, 11, 1)
+    expect(year).toBe(2021)
+    expect(month).toBe(11)
+    expect(day).toBe(1)
+
+    const { month: invalidMonth } = helpers.setValidDateTime(2021, 12, 1)
+    expect(invalidMonth).toBe(11)
+
+    const { month: underMonth } = helpers.setValidDateTime(2021, -1, 1)
+    expect(underMonth).toBe(0)
+
+    const { day: overDay } = helpers.setValidDateTime(2021, 2, 32)
+    expect(overDay).toBe(31)
+
+    const { day: underDay } = helpers.setValidDateTime(2021, 3, 0)
+    expect(underDay).toBe(1)
+  })
+
+  it('convertToDate', () => {
+    const result = helpers.convertToDate('2021-04-07 00:00:00')
+    expect(moment(result).format('YYYY-MM-DD HH:mm:ss')).toBe(
+      '2021-04-07 00:00:00',
+    )
+    const second = helpers.convertToDate('2021-04-07 59:00')
+    expect(moment(second).format('YYYY-MM-DD HH:mm:ss')).toBe(
+      '2021-04-07 00:00:00',
+    )
+  })
+
+  it('dateValidator', () => {
+    expect(
+      moment(helpers.dateValidator('2021.12.01')).format('YYYY-MM-DD HH:mm:ss'),
+    ).toBe('2021-12-01 00:00:00')
+    expect(
+      moment(helpers.dateValidator('2021.53.01')).format('YYYY-MM-DD HH:mm:ss'),
+    ).toBe('2021-12-01 00:00:00')
+    expect(helpers.dateValidator('w34yshr')).toBeNull()
+  })
 })

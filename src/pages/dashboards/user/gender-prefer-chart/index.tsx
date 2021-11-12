@@ -28,8 +28,10 @@ function GenderPreferChart({ className }: Props) {
 
     const subscription = apiDashboard
       .apiUserCountPerSexualPreference$()
-      .subscribe((result) => {
-        setData(() => result)
+      .subscribe({
+        next: setData,
+        error: () =>
+          setData((oldList) => oldList.map((old) => ({ ...old, count: 0 }))),
       })
 
     return () => subscription.unsubscribe()

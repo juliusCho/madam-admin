@@ -26,11 +26,11 @@ function GenderChart({ className }: Props) {
   React.useLayoutEffect(() => {
     if (!admin) return () => {}
 
-    const subscription = apiDashboard
-      .apiUserCountPerGender$()
-      .subscribe((result) => {
-        setData(() => result)
-      })
+    const subscription = apiDashboard.apiUserCountPerGender$().subscribe({
+      next: setData,
+      error: () =>
+        setData((oldList) => oldList.map((old) => ({ ...old, count: 0 }))),
+    })
 
     return () => subscription.unsubscribe()
   }, [admin, apiDashboard.apiUserCountPerGender$])

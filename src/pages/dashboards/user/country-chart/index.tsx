@@ -16,20 +16,23 @@ function CountryChart({ className }: Props) {
 
   const [data, setData] = React.useState<
     Array<{ code: string; label: string; count: number }>
-  >([])
+  >([{ code: 'KR', label: '', count: 0 }])
 
   React.useLayoutEffect(() => {
     if (!admin) return () => {}
 
-    const subscription = apiDashboard.apiCountryCount$().subscribe((result) => {
-      setData(() =>
-        device === 'mobile' || device === 'smallScreen'
-          ? result.map((item) => ({
-              ...item,
-              label: helpers.getFlagEmoji(item.code),
-            }))
-          : result,
-      )
+    const subscription = apiDashboard.apiCountryCount$().subscribe({
+      next: (result) => {
+        setData(() =>
+          device === 'mobile' || device === 'smallScreen'
+            ? result.map((item) => ({
+                ...item,
+                label: helpers.getFlagEmoji(item.code),
+              }))
+            : result,
+        )
+      },
+      error: () => setData(() => [{ code: 'KR', label: '', count: 0 }]),
     })
 
     return () => subscription.unsubscribe()

@@ -628,11 +628,13 @@ export default {
         .map((x) => 0x1f1a5 + x.charCodeAt(0)),
     )
   },
-  convertFirestoreDataToModel<T extends Record<string, any>>(data: T) {
-    const result: Record<string, any> = {}
+  convertFirestoreDataToModel<T extends Record<string, unknown>>(data: T) {
+    const result: Record<string, unknown> = {}
 
     Object.keys(data).forEach((key) => {
+      // @ts-ignore
       if (typeof data[key] === 'object' && 'seconds' in data[key]) {
+        // @ts-ignore
         result[key] = this.timestampColToStringDate(data[key], undefined, true)
       } else {
         result[key] = data[key]
@@ -661,7 +663,7 @@ export default {
     if (month < 0) resultMonth = 0
     else if (month > 11) resultMonth = 11
 
-    if (day < 0) resultDay = 1
+    if (day <= 0) resultDay = 1
     else if (day > 26 && !moment(tmpDateStr, 'YYYY.MM.DD', true).isValid()) {
       let dt = 31
       let text = `${resultYear}.${this.makeTwoDigits(resultMonth + 1)}.${String(

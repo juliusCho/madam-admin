@@ -42,8 +42,10 @@ function RequestStatusChart({ className }: Props) {
         moment(dateRange[0]).toDate(),
         moment(dateRange[1]).toDate(),
       )
-      .subscribe((result) => {
-        setData(() => result)
+      .subscribe({
+        next: setData,
+        error: () =>
+          setData((oldList) => oldList.map((old) => ({ ...old, count: 0 }))),
       })
 
     return () => subscription.unsubscribe()

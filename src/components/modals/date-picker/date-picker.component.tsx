@@ -734,7 +734,9 @@ function DatePicker({
           view={viewMode}
           defaultView={viewType}
           calendarType="US"
-          formatDay={(_: any, d: moment.MomentInput) => moment(d).format('D')}
+          formatDay={(_: unknown, d: moment.MomentInput) =>
+            moment(d).format('D')
+          }
         />
         {timeDisplay &&
           show &&

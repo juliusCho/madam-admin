@@ -18,11 +18,10 @@ function CharmPurchaseChart({ className }: Props) {
       return () => {}
     }
 
-    const subscription = apiDashboard
-      .apiCharmPurchaseCount$()
-      .subscribe((result) => {
-        setData(() => result)
-      })
+    const subscription = apiDashboard.apiCharmPurchaseCount$().subscribe({
+      next: setData,
+      error: () => setData(() => []),
+    })
 
     return () => subscription.unsubscribe()
   }, [admin, apiDashboard.apiCharmPurchaseCount$])
