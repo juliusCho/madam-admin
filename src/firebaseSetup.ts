@@ -3,11 +3,7 @@ import { initializeApp } from 'firebase/app'
 import 'firebase/app-check'
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 import 'firebase/auth'
-import {
-  browserSessionPersistence,
-  getAuth,
-  setPersistence,
-} from 'firebase/auth'
+import { browserLocalPersistence, getAuth, setPersistence } from 'firebase/auth'
 import 'firebase/database'
 import 'firebase/firestore'
 import { getFirestore } from 'firebase/firestore'
@@ -25,7 +21,7 @@ initializeAppCheck(app, {
 
 const auth = getAuth(app)
 
-setPersistence(auth, browserSessionPersistence)
+setPersistence(auth, browserLocalPersistence)
 
 export const db = firestore
 
