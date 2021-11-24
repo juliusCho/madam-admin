@@ -1,19 +1,20 @@
+import { TailwindColorPalette } from '~/types'
 import helpers from '~/utils/helpers'
 
 interface StyleProps {
-  color: string
+  color?: TailwindColorPalette
   disabled?: boolean
-  disabledColor?: string
+  disabledColor?: TailwindColorPalette
 }
 
 interface ButtonStyleProps extends StyleProps {
-  borderColor: string
-  disabledBorderColor: string
+  borderColor?: TailwindColorPalette
+  disabledBorderColor?: TailwindColorPalette
 }
 
 interface LabelStyleProps extends StyleProps {
   active: boolean
-  activeColor: string
+  activeColor?: TailwindColorPalette
 }
 
 const InputDateTimeStyle = {
@@ -76,7 +77,7 @@ const InputDateTimeStyle = {
   axe: `
     bg-transparent 
     z-10 
-    ${helpers.convertTextToTailwind('textMedium')}
+    ${helpers.convertFontToTailwindClass('textMedium')}
     mr-3
     px-2
   `,

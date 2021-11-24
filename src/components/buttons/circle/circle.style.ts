@@ -1,13 +1,14 @@
+import { TailwindColorPalette, TailwindFontSize } from '~/types'
 import helpers from '~/utils/helpers'
 
 interface ButtonStyleProps {
   padding?: number
-  backgroundColor?: string
+  backgroundColor?: TailwindColorPalette
 }
 
 interface TextStyleProps {
-  fontSize?: string
-  color?: string
+  fontSize?: TailwindFontSize
+  color?: TailwindColorPalette
 }
 
 const ButtonCircleStyle = {
@@ -24,7 +25,7 @@ const ButtonCircleStyle = {
   },
   text({ fontSize, color }: TextStyleProps) {
     return `
-      ${helpers.convertTextToTailwind(fontSize)}
+      ${helpers.convertFontToTailwindClass(fontSize)}
       ${helpers.convertColorToTailwind('text', color)}
     `
   },

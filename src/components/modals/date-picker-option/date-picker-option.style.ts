@@ -1,7 +1,8 @@
+import { TailwindColorPalette } from '~/types'
 import helpers from '~/utils/helpers'
 
 interface StyleProps {
-  backgroundColor?: string
+  backgroundColor?: TailwindColorPalette
 }
 
 interface OptionStyleProps {
@@ -42,7 +43,7 @@ const ModalDatePickerOptionStyle = {
       border
       border-solid
       ${helpers.convertColorToTailwind('border', 'main-navy')}
-      ${helpers.convertTextToTailwind('subTitleBig')}
+      ${helpers.convertFontToTailwindClass('subTitleBig')}
       ${
         selected
           ? `${helpers.convertColorToTailwind('bg', 'main-navy')}

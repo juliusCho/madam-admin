@@ -13,6 +13,7 @@ const InputMultiSelectStyle = ({ width, fontSize }: StyleProps) => ({
   control: (provided: CSSObjectWithLabel) => ({
     ...provided,
     borderColor: 'gray',
+    cursor: 'pointer',
     borderWidth: '2px',
     borderRadius: '99999px',
   }),
@@ -25,6 +26,7 @@ const InputMultiSelectStyle = ({ width, fontSize }: StyleProps) => ({
     ...provided,
     fontSize,
     borderRadius: '99999px',
+    cursor: 'pointer',
   }),
   menu: (provided: CSSObjectWithLabel) => ({
     ...provided,

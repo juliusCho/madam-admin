@@ -27,7 +27,7 @@ const ButtonPrevNextStyle = {
       justify-center
       items-center
       p-2
-      ${helpers.convertTextToTailwind(fontSize)}
+      ${helpers.convertFontToTailwindClass(fontSize)}
       ${
         disabled
           ? `

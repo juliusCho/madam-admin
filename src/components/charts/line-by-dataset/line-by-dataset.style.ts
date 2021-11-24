@@ -1,4 +1,4 @@
-import { ScreenOptionType } from '~/types'
+import { ScreenOptionType, TailwindColorPalette } from '~/types'
 
 interface StyleProps {
   isMobile: boolean
@@ -58,7 +58,7 @@ const ChartLineByDatasetStyle = {
   ) {
     return {
       name,
-      color: disabled ? 'mono-gray' : color,
+      color: (disabled ? 'mono-gray' : color) as TailwindColorPalette,
       size:
         device === 'mobile' || device === 'smallScreen' ? '0.75rem' : '2rem',
     }

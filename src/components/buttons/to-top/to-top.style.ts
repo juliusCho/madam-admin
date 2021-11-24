@@ -29,7 +29,7 @@ const ButtonToTopStyle = {
   },
   label: `
     mt-1
-    ${helpers.convertTextToTailwind('subMedium')}
+    ${helpers.convertFontToTailwindClass('subMedium')}
     ${helpers.convertColorToTailwind('text', 'mono-white')}
   `,
 }

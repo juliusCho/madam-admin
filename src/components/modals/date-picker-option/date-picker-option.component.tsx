@@ -3,7 +3,7 @@ import Modal from 'react-modal'
 import Recoil from 'recoil'
 import { CHART_DATE_PICKER_OPTION } from '~/enums'
 import deviceGlobalStates from '~/states/device'
-import { ChartDatePickerOptionType } from '~/types'
+import { ChartDatePickerOptionType, TailwindColorPalette } from '~/types'
 import customHooks from '~/utils/hooks'
 import ModalDatePickerOptionStyle from './date-picker-option.style'
 
@@ -17,7 +17,7 @@ export interface ModalDatePickerOptionProps {
   show3Month?: boolean
   show6Month?: boolean
   showYear?: boolean
-  backgroundColor?: string
+  backgroundColor?: TailwindColorPalette
   className?: string
 }
 

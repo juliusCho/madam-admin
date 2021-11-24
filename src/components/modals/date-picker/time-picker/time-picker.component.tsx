@@ -1,17 +1,61 @@
 import moment from 'moment'
-import TmPicker from 'rc-time-picker'
 import * as React from 'react'
 import { XEIcon } from '~/components/etc/xeicon'
-import './time-picker.style.scss'
+import customHooks from '~/utils/hooks'
+import TimePickerStyle from './time-picker.style'
 
 export interface TimePickerProps {
   id?: 'start' | 'end'
   value?: string
   date?: Date
   onChange: (time?: string, id?: 'start' | 'end') => void
-  style?: React.CSSProperties
   clearIcon?: string
   testID?: string
+  locale?: 'kr' | 'en'
+  startHour?: number
+  minuteInterval?: 1 | 5 | 10
+}
+
+const makeTwoDigits = (num: number) => {
+  if (num < 0) {
+    return '00'
+  }
+
+  return num < 10 ? `0${num}` : String(num).substr(0, 2)
+}
+
+const makeMinuteArray = (minuteInterval: 1 | 5 | 10 = 1) => {
+  const result: string[] = []
+
+  let maxNum = 0
+
+  switch (minuteInterval) {
+    case 5:
+      maxNum = 55
+      break
+    case 10:
+      maxNum = 50
+      break
+    default:
+      maxNum = 59
+      break
+  }
+
+  for (let i = 0; i <= maxNum; i += minuteInterval) {
+    result.push(makeTwoDigits(i))
+  }
+
+  return result
+}
+
+const makeHourArray = () => {
+  const result: string[] = []
+
+  for (let i = 0; i <= 23; i += 1) {
+    result.push(makeTwoDigits(i))
+  }
+
+  return result
 }
 
 function TimePicker({
@@ -19,64 +63,181 @@ function TimePicker({
   value,
   date,
   onChange,
-  style,
   clearIcon,
   testID,
+  locale,
+  startHour,
+  minuteInterval,
 }: TimePickerProps) {
-  // 시간 선택 컴포넌트 활성화 시
-  const onOpen = () => {
-    onChange(value || '00:00', id)
-  }
+  const [show, setShow] = React.useState(false)
+  const [hours, setHours] = React.useState<string[]>([])
+  const [minutes, setMinutes] = React.useState<string[]>([])
+  const [hour, setHour] = React.useState('')
+  const [minute, setMinute] = React.useState('')
 
-  // 시간 선택 시
-  const onTimeChange = (e: moment.Moment) => {
-    if (e === null) {
-      onChange(undefined, id)
+  const isMounted = customHooks.useIsMounted()
+
+  const hourRefs: React.RefObject<HTMLLIElement>[] = []
+
+  const makeHours = React.useCallback(() => makeHourArray(), [makeHourArray])
+  const makeMinutes = React.useCallback(
+    () => makeMinuteArray(minuteInterval),
+    [minuteInterval, makeMinuteArray],
+  )
+
+  React.useLayoutEffect(() => {
+    setHours(() => makeHours())
+    setMinutes(() => makeMinutes())
+  }, [makeHours, makeMinutes])
+
+  React.useLayoutEffect(() => {
+    if (value) {
+      setHour(() => value.substr(0, 2))
+      setMinute(() => value.substr(3, 2))
+    } else {
+      setHour(() => '')
+      setMinute(() => '')
+    }
+  }, [value])
+
+  React.useLayoutEffect(() => {
+    hours.forEach(() => {
+      hourRefs.push(React.createRef<HTMLLIElement>())
+    })
+  }, [hours, hourRefs])
+
+  React.useEffect(() => {
+    if (!isMounted()) return
+    if (!show) return
+    if (typeof startHour === 'undefined' || startHour <= 0 || startHour >= 24)
+      return
+    if (hours.length === 0) return
+    if (!hourRefs) {
       return
     }
-    if (!e.isValid()) return
 
-    onChange(e === null ? undefined : e.format('HH:mm'), id)
-  }
+    const idx = hours.findIndex((h) => h === makeTwoDigits(startHour))
 
-  // 시간 초기화 버튼 클릭 시
-  const clickedClear = () => {
-    if (!date) return
-
-    onChange(value ? undefined : '00:00', id)
-  }
+    if (idx > -1 && hourRefs[idx]?.current) {
+      hourRefs[idx].current?.scrollIntoView({
+        block: 'center',
+        inline: 'start',
+      })
+    }
+  }, [isMounted, show, startHour, hourRefs, hours.length, makeTwoDigits])
 
   return (
-    <div className="time-container" style={style}>
-      <span className="time-text" data-testid={testID}>
+    <div {...TimePickerStyle.container(id)}>
+      <span {...TimePickerStyle.dateLabel}>
         {date ? moment(date).format('YYYY/MM/DD') : ''}
       </span>
-      <div className="time-picker">
-        <TmPicker
-          value={
-            value
-              ? moment(`${moment(new Date()).format('YYYY-MM-DD')} ${value}:00`)
-              : undefined
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => {
+          if (date) {
+            setShow(true)
           }
-          showSecond={false}
-          onOpen={onOpen}
-          onChange={onTimeChange}
-          className="time-picker"
-          format="HH:mm"
-          use12Hours={false}
-          inputReadOnly
-          clearIcon={clearIcon}
-          disabled={!date}
-          minuteStep={5}
-        />
+        }}
+        onKeyPress={(e) => {
+          e.preventDefault()
+        }}
+        {...TimePickerStyle.inputButton(!date)}
+        data-testid={testID}>
         <XEIcon
           name={clearIcon?.replace('xi-', '') || ''}
-          color="main-blue"
-          size="0.875rem"
-          className="time-button"
-          onClick={clickedClear}
+          {...TimePickerStyle.toggleIcon(!date)}
+          disabled={!date}
+          onClick={date ? () => setShow(true) : undefined}
           testID={`${testID}-button`}
         />
+        {value ?? '--:--'}
+        {show && (
+          <>
+            <div
+              role="button"
+              {...TimePickerStyle.listExterior(id)}
+              onClick={(e) => {
+                e.stopPropagation()
+                setShow(false)
+              }}
+              tabIndex={0}
+              onKeyPress={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+              }}>
+              {' '}
+            </div>
+            <div {...TimePickerStyle.listContainer}>
+              <button
+                type="button"
+                {...TimePickerStyle.listTitle}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setShow(false)
+                }}>
+                {value ?? '--:--'}
+              </button>
+              <div {...TimePickerStyle.listBottom}>
+                <div className="w-1/2 h-full">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onKeyPress={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onChange(undefined, id)
+                    }}
+                    {...TimePickerStyle.item(!value)}>
+                    {locale === 'kr' ? '미정' : 'Unselected'}
+                  </div>
+                  <ol {...TimePickerStyle.list()}>
+                    {hours.map((h, idx) => (
+                      <li
+                        key={h}
+                        role="option"
+                        aria-selected={false}
+                        ref={hourRefs[idx]}
+                        onKeyPress={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onChange(`${h}:${minute || '00'}`, id)
+                        }}
+                        {...TimePickerStyle.item(value?.substr(0, 2) === h)}>
+                        {h}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+                <ol {...TimePickerStyle.list(true)}>
+                  {minutes.map((m) => (
+                    <li
+                      key={m}
+                      role="option"
+                      aria-selected={false}
+                      onKeyPress={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onChange(`${hour || '00'}:${m}`, id)
+                      }}
+                      {...TimePickerStyle.item(value?.substr(3, 2) === m)}>
+                      {m}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
@@ -86,9 +247,11 @@ TimePicker.defaultProps = {
   id: undefined,
   value: undefined,
   date: undefined,
-  style: {},
   clearIcon: 'close',
   testID: undefined,
+  locale: 'kr',
+  startHour: 9,
+  minuteInterval: 1,
 }
 
 export default React.memo(TimePicker)

@@ -1,42 +1,25 @@
 .exterior {
-  background-color: rgba(153, 153, 153, 1);
-  opacity: 0.7;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0px;
-  left: 0px;
-  border-style: none;
+  @apply bg-mono-darkGray opacity-70 fixed w-full h-full top-0 left-0 border-none;
   z-index: 100;
 }
 
 .container {
-  border-style: none;
-  position: fixed;
-  background-color: rgba(255, 255, 255, 1);
+  @apply border-none fixed bg-mono-white rounded-lg shadow-glow;
   left: calc(50% - 8.75rem);
   top: 20%;
-  border-radius: 0.625rem;
   z-index: 101;
   width: 17.5rem !important;
-  box-shadow: 0 0 0.625rem #ccc;
 
   .btn {
-    font-size: 0.875rem /* 14px */;
-    line-height: 0.85rem /* 13.6px */;
-    font-weight: 500;
-    margin: 0.25rem;
-    white-space: pre;
-    overflow-wrap: break-word;
-    position: absolute;
-    bottom: 1.25rem;
-    color: rgba(255, 255, 255, 1);
-    background-color: rgba(48, 103, 168, 1);
-    border-radius: 0.25rem;
+    @apply text-subMedium font-subMedium m-1 whitespace-pre break-words absolute bottom-5 text-mono-white bg-main-blue rounded;
+  }
+
+  .disabled {
+    @apply bg-mono-lightGray text-mono-darkGray;
   }
 
   & * {
-    cursor: pointer;
+    @apply cursor-pointer;
   }
 
   & .react-date-picker__calendar {
@@ -46,7 +29,7 @@
   }
 
   & .react-date-picker__calendar--closed {
-    display: block;
+    @apply block;
   }
 
   & .react-date-picker__button {
@@ -76,116 +59,99 @@
   }
 
   & .react-calendar__navigation__label {
+    @apply rounded-xl;
     margin-top: 0.313rem;
-    border-radius: 0.625rem;
   }
 
   & .react-calendar__navigation__label__labelText {
-    font-size: 1rem /* 16px */;
-    line-height: 1rem /* 16px */;
-    word-break: keep-all;
+    @apply text-textMedium font-textMedium;
   }
 
   & .react-calendar__month-view__days__day--neighboringMonth {
-    opacity: 0.2;
+    @apply opacity-20;
   }
 
   & .react-date-picker {
-    width: 100%;
-    text-align: center;
-    background-color: rgba(255, 255, 255, 1);
-    border-radius: 1.875rem;
+    @apply w-full text-center bg-mono-white rounded-3xl;
   }
 
   & .react-date-picker__wrapper {
-    border-style: none;
-    color: rgba(153, 153, 153, 1);
+    @apply border-none text-mono-gray;
     padding: 0.313rem;
   }
 
   & .react-date-picker__inputGroup input {
-    color: rgba(204, 204, 204, 1);
-    font-size: 0.875rem /* 14px */;
-    line-height: 0.85rem /* 13.6px */;
-    font-weight: 500;
+    @apply text-mono-gray text-textMedium font-textMedium;
   }
 
   & .react-date-picker__inputGroup input:focus {
-    border-radius: 1.875rem;
-    background-color: rgba(255, 255, 255, 1);
+    @apply rounded-3xl bg-mono-white;
   }
 
   & .react-date-picker__inputGroup input:active {
-    color: rgba(221, 221, 221, 1);
-    background-color: rgba(255, 255, 255, 1);
+    @apply text-mono-white bg-mono-white;
   }
 
   & .react-date-picker__inputGroup__leadingZero {
-    color: rgba(204, 204, 204, 1);
-    font-size: 0.875rem /* 14px */;
-    line-height: 0.85rem /* 13.6px */;
-    font-weight: 500;
+    @apply text-mono-gray text-textMedium font-textMedium;
   }
 
   & .react-date-picker__inputGroup__leadingZero:focus {
-    border-radius: 1.875rem;
-    background-color: rgba(255, 255, 255, 1);
+    @apply rounded-3xl bg-mono-white;
   }
 
   & .react-date-picker__inputGroup__leadingZero:focus {
-    color: rgba(247, 247, 247, 1);
-    background-color: rgba(255, 255, 255, 1);
+    @apply text-mono-white bg-mono-white;
   }
 
   & .react-calendar {
-    border-style: none;
-    background-color: transparent;
+    @apply border-none bg-transparent;
     z-index: 101;
     padding: 0.313rem;
   }
 
+  & .react-calendar__decade-view__years {
+    @apply flex justify-center items-start;
+  }
+
   & .react-calendar__tile {
-    background-color: rgba(255, 255, 255, 1);
-    width: 2.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    @apply bg-mono-white w-10 flex justify-center items-center text-subMedium font-subMedium;
     z-index: 104;
     height: 2.313rem;
     border-radius: 0.625rem !important;
   }
 
   & .react-calendar__tile:hover {
-    border-radius: 9999px;
+    @apply rounded-full;
   }
 
   & .react-calendar__month-view__days__day {
-    color: rgba(51, 51, 51, 1);
+    @apply text-mono-black;
   }
 
   & .react-calendar__tile--active {
-    border-radius: 9999px;
-    color: rgba(255, 255, 255, 1);
-    background-color: rgba(48, 103, 168, 1);
-    font-weight: 900;
+    @apply rounded-full text-mono-white bg-main-blue font-titleBig;
   }
 
   & .react-calendar__tile--range {
+    @apply text-mono-white bg-main-blue font-titleBig;
     border-radius: 0px !important;
-    color: rgba(255, 255, 255, 1);
-    background-color: rgba(48, 103, 168, 1);
-    font-weight: 900;
   }
 
   & .react-calendar__tile--hasActive {
-    border-radius: 9999px;
-    color: rgba(255, 255, 255, 1);
-    background-color: rgba(48, 103, 168, 1);
-    font-weight: 900;
+    @apply rounded-full text-mono-white bg-main-blue font-titleBig;
   }
 
   & .react-calendar__tile--now {
-    color: rgba(234, 191, 128, 1);
+    @apply text-sub-paleYellow;
+  }
+
+  & .react-calendar__tile--now.react-calendar__year-view__months__month {
+    @apply text-sub-sky;
+  }
+
+  & .react-calendar__tile--now.react-calendar__decade-view__years__year {
+    @apply text-sub-sky;
   }
 
   & .react-calendar__tile--rangeStart {
@@ -206,32 +172,22 @@
   }
 
   & .react-calendar__tile:disabled {
-    background-color: rgba(255, 255, 255, 1);
-    color: rgba(247, 247, 247, 1);
+    @apply bg-mono-white text-mono-white;
   }
 
   & .react-calendar__navigation__arrow {
-    font-size: 1.25rem /* 20px */;
-    line-height: 1.2rem /* 19.2px */;
-    font-weight: 700;
-    color: rgba(70, 149, 236, 1);
+    @apply text-titleMedium font-titleMedium text-main-blue opacity-50;
   }
 
   & .react-calendar__navigation__arrow:disabled {
-    background-color: rgba(255, 255, 255, 1);
-    color: rgba(255, 255, 255, 1);
+    @apply bg-transparent text-transparent;
   }
 
   & .react-calendar__month-view__days__day--weekend {
-    color: rgba(248, 90, 94, 1);
+    @apply text-main-red;
   }
 
   & .react-calendar__month-view__weekdays__weekday {
-    color: rgba(102, 102, 102, 1);
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    @apply text-subMedium font-subMedium no-underline text-mono-gray w-10 h-10 flex justify-center items-center;
   }
 }

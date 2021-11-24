@@ -1,13 +1,14 @@
+import { TailwindFontSize } from '~/types'
 import helpers from '~/utils/helpers'
 
 interface StyleProps {
-  size?: string
+  size?: TailwindFontSize
 }
 
 const LabelMadamStyle = {
   text({ size }: StyleProps) {
     return `
-      ${helpers.convertTextToTailwind(size)}
+      ${helpers.convertFontToTailwindClass(size)}
       font-titleBig
     `
   },

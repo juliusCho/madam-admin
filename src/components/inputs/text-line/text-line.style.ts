@@ -1,18 +1,19 @@
+import { TailwindColorPalette } from '~/types'
 import helpers from '~/utils/helpers'
 
 interface StyleProps {
-  color: string
+  color?: TailwindColorPalette
   disabled?: boolean
-  disabledColor?: string
+  disabledColor?: TailwindColorPalette
 }
 
 interface InputContainerStyleProps extends StyleProps {
-  borderColor: string
+  borderColor?: TailwindColorPalette
 }
 
 interface InputStyleProps extends StyleProps {
-  placeholderColor: string
-  disabledPlaceholderColor?: string
+  placeholderColor?: TailwindColorPalette
+  disabledPlaceholderColor?: TailwindColorPalette
 }
 
 const InputTextLineStyle = {
@@ -59,7 +60,7 @@ const InputTextLineStyle = {
   }: InputStyleProps) {
     return `
       border-none 
-      ${helpers.convertTextToTailwind('textSmall')}
+      ${helpers.convertFontToTailwindClass('textSmall')}
       rounded-md 
       h-full 
       w-full 
@@ -97,7 +98,7 @@ const InputTextLineStyle = {
   axe: `
     bg-transparent 
     z-10 
-    ${helpers.convertTextToTailwind('textMedium')}
+    ${helpers.convertFontToTailwindClass('textMedium')}
   `,
 }
 

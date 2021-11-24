@@ -1,21 +1,14 @@
 import React from 'react'
 import Select, { ActionMeta, SingleValue } from 'react-select'
 import makeAnimated from 'react-select/animated'
-import { ScreenOptionType } from '~/types'
+import { ScreenOptionType, SelectOptionType } from '~/types'
 import customHooks from '~/utils/hooks'
 import InputSingleSelectStyle from './single-select.style'
 
 const animatedComponents = makeAnimated()
 
-type OptionType = {
-  value: string | number
-  label: string
-  isDisabled?: boolean
-  isSelected?: boolean
-}
-
 export interface InputSingleSelectProps {
-  options: OptionType[]
+  options: SelectOptionType<string | number>[]
   onChange: (value?: string | number) => void
   value?: string | number
   disabled?: boolean
@@ -37,9 +30,9 @@ function InputSingleSelect({
   fontSize,
   device,
 }: InputSingleSelectProps) {
-  const [selected, setSelected] = React.useState<OptionType | undefined>(
-    options.find((option) => option.value === value),
-  )
+  const [selected, setSelected] = React.useState<
+    SelectOptionType<string | number> | undefined
+  >(options.find((option) => option.value === value))
 
   const isMounted = customHooks.useIsMounted()
 
@@ -51,8 +44,8 @@ function InputSingleSelect({
   }, [isMounted, selected, onChange, value])
 
   const onChangeOption = (
-    selectedOption: SingleValue<OptionType>,
-    actionMeta: ActionMeta<OptionType>,
+    selectedOption: SingleValue<SelectOptionType<string | number>>,
+    actionMeta: ActionMeta<SelectOptionType<string | number>>,
   ) => {
     switch (actionMeta.action) {
       case 'select-option':
@@ -69,7 +62,7 @@ function InputSingleSelect({
   }
 
   return (
-    <Select<OptionType>
+    <Select<SelectOptionType<string | number>>
       value={selected}
       options={options}
       isMulti={false}

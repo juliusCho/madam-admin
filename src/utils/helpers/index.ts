@@ -2,14 +2,17 @@
 import moment from 'moment'
 import { ROUTER_PATH } from '~/constants/etc'
 import endpointsConfig from '~/endpoints.config'
-import { ChartDatePickerOptionType, ScreenOptionType } from '~/types'
+import {
+  BorderDirection,
+  BorderRadius,
+  BorderRadiusDirection,
+  BorderStyle,
+  ChartDatePickerOptionType,
+  ScreenOptionType,
+  TailwindFontSize,
+} from '~/types'
 
 export default {
-  convertTextToTailwind(text?: string) {
-    if (!text) return ''
-
-    return `text-${text} font-${text}`
-  },
   convertColorToTailwind(
     type: 'bg' | 'text' | 'border' | 'placeholder',
     color?: string,
@@ -24,6 +27,110 @@ export default {
         ? ''
         : ` hover:${type}-${color}Hover active:${type}-${color}Active`
     }`
+  },
+  convertFontToTailwindClass(font?: TailwindFontSize) {
+    if (!font) {
+      return ''
+    }
+
+    return `text-${font} font-${font}`
+  },
+  convertFontSizeToCSSSize(font?: TailwindFontSize) {
+    switch (font) {
+      case 'titleMassive':
+        return '2rem'
+      case 'titleBig':
+        return '1.5rem'
+      case 'titleMedium':
+      case 'titleSmall':
+        return '1.25rem'
+      case 'subTitleBig':
+        return '1.125rem'
+      case 'textBig':
+      case 'textMedium':
+      case 'textSmall':
+      case 'subBig':
+        return '0.875rem'
+      case 'subMedium':
+        return '0.75rem'
+      case 'subSmall':
+        return '0.625rem'
+      default:
+        return '1rem'
+    }
+  },
+  convertBorderRadiusDirectionToTailwindClass(
+    borderRadiusDirection?: BorderRadiusDirection,
+  ) {
+    switch (borderRadiusDirection) {
+      case 'top':
+        return '-t'
+      case 'left':
+        return '-l'
+      case 'bottom':
+        return '-b'
+      case 'right':
+        return '-r'
+      case 'top-left':
+        return '-tl'
+      case 'top-right':
+        return '-tr'
+      case 'bottom-left':
+        return '-bl'
+      case 'bottom-right':
+        return '-br'
+      default:
+        return ''
+    }
+  },
+  convertBorderRadiusToTailwindClass(
+    borderRadius?: BorderRadius,
+    borderRadiusDirection?: BorderRadiusDirection,
+  ) {
+    return borderRadius
+      ? `rounded${this.convertBorderRadiusDirectionToTailwindClass(
+          borderRadiusDirection,
+        )}${borderRadius === 'basic' ? '' : `-${borderRadius}`}`
+      : ''
+  },
+  convertBorderDirectionToTailwindClass(borderDirection?: BorderDirection) {
+    switch (borderDirection) {
+      case 'top':
+        return '-t'
+      case 'left':
+        return '-l'
+      case 'bottom':
+        return '-b'
+      case 'right':
+        return '-r'
+      default:
+        return ''
+    }
+  },
+  convertBorderStyleToTailwindClass(
+    borderStyle?: BorderStyle,
+    borderBold?: boolean,
+    borderDirection?: BorderDirection,
+  ) {
+    if (!borderStyle || borderStyle === 'none') {
+      return ''
+    }
+
+    return `border${this.convertBorderDirectionToTailwindClass(
+      borderDirection,
+    )}${borderBold ? '-2' : ''} border-${borderStyle}`
+  },
+  separateCSSValueToLengthAndUnit(num?: string | number) {
+    if (!num) {
+      return { length: 0, unit: 'px' }
+    }
+    const length = Number(
+      String(num).replace(/px|em|rem|ex|ch|vw|vh|%|vmin|vmax/g, ''),
+    )
+    return {
+      length,
+      unit: String(num).substr(String(length).length, String(num).length),
+    }
   },
   encode(input: string | number) {
     return btoa(

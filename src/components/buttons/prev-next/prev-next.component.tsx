@@ -1,5 +1,6 @@
 import React from 'react'
 import { XEIcon } from '~/components/etc/xeicon'
+import { TailwindColorPalette, TailwindFontSize } from '~/types'
 import ButtonPrevNextStyle from './prev-next.style'
 
 export type PrevNextType = {
@@ -8,16 +9,16 @@ export type PrevNextType = {
   disabled?: boolean
   icon?: {
     name: string
-    color: string
+    color: TailwindColorPalette
     size: string | number
   }
-  backgroundColor?: string
-  disabledBackgroundColor?: string
-  fontSize?: string
-  borderColor?: string
-  disabledBorderColor?: string
-  color?: string
-  disabledColor?: string
+  backgroundColor?: TailwindColorPalette
+  disabledBackgroundColor?: TailwindColorPalette
+  fontSize?: TailwindFontSize
+  borderColor?: TailwindColorPalette
+  disabledBorderColor?: TailwindColorPalette
+  color?: TailwindColorPalette
+  disabledColor?: TailwindColorPalette
   extraClassName?: string
 }
 

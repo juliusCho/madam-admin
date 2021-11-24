@@ -15,6 +15,7 @@ const InputSingleSelectStyle = ({ width, fontSize, device }: StyleProps) => ({
   control: (provided: CSSObjectWithLabel) => ({
     ...provided,
     borderColor: 'gray',
+    cursor: 'pointer',
     borderWidth:
       device === 'mobile' || device === 'smallScreen' ? '1px' : '2px',
     borderRadius: '99999px',
@@ -27,6 +28,7 @@ const InputSingleSelectStyle = ({ width, fontSize, device }: StyleProps) => ({
   option: (provided: CSSObjectWithLabel) => ({
     ...provided,
     fontSize,
+    cursor: 'pointer',
     borderRadius: '99999px',
   }),
   menu: (provided: CSSObjectWithLabel) => ({

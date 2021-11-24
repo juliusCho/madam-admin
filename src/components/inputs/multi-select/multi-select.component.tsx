@@ -1,20 +1,14 @@
 import React from 'react'
 import Select, { ActionMeta, SingleValue } from 'react-select'
 import makeAnimated from 'react-select/animated'
+import { SelectOptionType } from '~/types'
 import customHooks from '~/utils/hooks'
 import InputMultiSelectStyle from './multi-select.style'
 
 const animatedComponents = makeAnimated()
 
-type OptionType = {
-  value: string | number
-  label: string
-  isDisabled?: boolean
-  isSelected?: boolean
-}
-
 export interface InputMultiSelectProps {
-  options: OptionType[]
+  options: SelectOptionType<string | number>[]
   onChange: (value?: Array<string | number>) => void
   value?: Array<string | number>
   disabled?: boolean
@@ -34,9 +28,9 @@ function InputMultiSelect({
   width,
   fontSize,
 }: InputMultiSelectProps) {
-  const [selected, setSelected] = React.useState<OptionType[] | undefined>(
-    options.filter((option) => value?.some((val) => val === option.value)),
-  )
+  const [selected, setSelected] = React.useState<
+    SelectOptionType<string | number>[] | undefined
+  >(options.filter((option) => value?.some((val) => val === option.value)))
 
   const isMounted = customHooks.useIsMounted()
 
@@ -49,8 +43,8 @@ function InputMultiSelect({
   }, [isMounted, selected, onChange, value])
 
   const onChangeOption = (
-    selectedOption: SingleValue<OptionType>,
-    actionMeta: ActionMeta<OptionType>,
+    selectedOption: SingleValue<SelectOptionType<string | number>>,
+    actionMeta: ActionMeta<SelectOptionType<string | number>>,
   ) => {
     switch (actionMeta.action) {
       case 'select-option':
@@ -69,7 +63,7 @@ function InputMultiSelect({
   }
 
   return (
-    <Select<OptionType>
+    <Select<SelectOptionType<string | number>>
       value={selected}
       options={options}
       onChange={onChangeOption}

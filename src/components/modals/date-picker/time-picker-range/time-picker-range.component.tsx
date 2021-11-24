@@ -1,6 +1,4 @@
-import moment from 'moment'
 import * as React from 'react'
-import customHooks from '~/utils/hooks'
 import { TimePicker } from '../time-picker'
 import TimePickerRangeStyle from './time-picker-range.style'
 
@@ -9,7 +7,6 @@ export interface TimePickerRangeProps {
   date?: Date | Array<Date | undefined>
   onChange: (value: Array<string | undefined>) => void
   clearIcons?: string[]
-  timeRange: boolean
   testID1?: string
   testID2?: string
 }
@@ -19,66 +16,45 @@ function TimePickerRange({
   date,
   onChange,
   clearIcons,
-  timeRange,
   testID1,
   testID2,
 }: TimePickerRangeProps) {
-  const isMounted = customHooks.useIsMounted()
-
-  const onTimeChange = (time?: string, id?: 'start' | 'end') => {
-    if (!isMounted() || !id) return
-    if (value) {
-      if (id === 'start') {
-        onChange([time, value[1]])
-      } else {
-        onChange([value[0], time])
-      }
-      if (
-        timeRange &&
-        !!time &&
-        date &&
-        (!Array.isArray(date) ||
-          date.length === 1 ||
-          moment(date[0]).format('YYYYMMDD') ===
-            moment(date[1]).format('YYYYMMDD'))
-      ) {
-        if (id === 'start') {
-          if (
-            !!value[1] &&
-            Number(time.replace(':', '')) > Number(value[1].replace(':', ''))
-          ) {
-            onChange([value[1], value[1]])
+  const onTimeChange = React.useCallback(
+    (time?: string, id?: 'start' | 'end') => {
+      if (!id) return
+      if (time) {
+        if (value) {
+          const timeNum = Number(`${time.substr(0, 2)}${time.substr(3, 2)}`)
+          if (id === 'start') {
+            const valueNum = Number(
+              `${value[1].substr(0, 2)}${value[1].substr(3, 2)}`,
+            )
+            onChange([time, timeNum > valueNum ? time : value[1]])
+          } else {
+            const valueNum = Number(
+              `${value[0].substr(0, 2)}${value[0].substr(3, 2)}`,
+            )
+            onChange([value[0], timeNum < valueNum ? value[0] : time])
           }
-        } else if (
-          !!value[0] &&
-          Number(time.replace(':', '')) < Number(value[0].replace(':', ''))
-        ) {
-          onChange([value[0], value[0]])
+        } else {
+          onChange([time, time])
         }
+      } else {
+        onChange([undefined, undefined])
       }
-    } else if (id === 'start') {
-      onChange([time, undefined])
-    } else {
-      onChange([undefined, time])
-    }
-  }
+    },
+    [value, onChange],
+  )
 
   const getDate = React.useCallback(
     (idx: number) => {
-      if (!isMounted()) return undefined
-
       if (date) {
         return Array.isArray(date) ? date[idx] : date
       }
       return undefined
     },
-    [isMounted, date],
+    [date],
   )
-
-  const removingStyle: React.CSSProperties = {
-    position: 'unset' as const,
-    bottom: 0,
-  }
 
   return (
     <div className={TimePickerRangeStyle.container}>
@@ -88,7 +64,6 @@ function TimePickerRange({
         value={value ? value[0] : undefined}
         date={getDate(0)}
         onChange={onTimeChange}
-        style={removingStyle}
         clearIcon={clearIcons ? clearIcons[0] : undefined}
         testID={testID1}
       />
@@ -98,7 +73,6 @@ function TimePickerRange({
         value={value ? value[1] : undefined}
         date={getDate(1)}
         onChange={onTimeChange}
-        style={{ ...removingStyle, marginRight: '0.7rem' }}
         clearIcon={clearIcons ? clearIcons[1] : undefined}
         testID={testID2}
       />

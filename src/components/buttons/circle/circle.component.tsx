@@ -1,15 +1,16 @@
 import React from 'react'
+import { TailwindColorPalette, TailwindFontSize } from '~/types'
 import ButtonCircleStyle from './circle.style'
 
 export interface ButtonCircleProps {
   children: string
   onClick: () => void
   buttonSize?: string
-  fontSize?: string
+  fontSize?: TailwindFontSize
   padding?: number
   borderWidth?: string
-  backgroundColor?: string
-  color?: string
+  backgroundColor?: TailwindColorPalette
+  color?: TailwindColorPalette
   style?: React.CSSProperties
   className?: string
 }

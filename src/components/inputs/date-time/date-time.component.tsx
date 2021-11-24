@@ -2,6 +2,7 @@ import moment from 'moment'
 import * as React from 'react'
 import { XEIcon } from '~/components/etc/xeicon'
 import { ModalDateTimePicker } from '~/components/modals/date-picker'
+import { TailwindColorPalette } from '~/types'
 import customHooks from '~/utils/hooks'
 import InputDateTimeStyle from './date-time.style'
 
@@ -19,15 +20,15 @@ export interface InputDateTimeProps {
   disabledText?: string
   style?: React.CSSProperties
   className?: string
-  backgroundColor?: string // eg) mono.black, main.red, ...
-  borderColor?: string // eg) mono.black, main.red, ...
-  textColor?: string // eg) mono.black, main.red, ...
-  placeholderColor?: string // eg) mono.black, main.red, ...
-  resetColor?: string // eg) mono.black, main.red, ...
+  backgroundColor?: TailwindColorPalette // eg) mono.black, main.red, ...
+  borderColor?: TailwindColorPalette // eg) mono.black, main.red, ...
+  textColor?: TailwindColorPalette // eg) mono.black, main.red, ...
+  placeholderColor?: TailwindColorPalette // eg) mono.black, main.red, ...
+  resetColor?: TailwindColorPalette // eg) mono.black, main.red, ...
   disabled?: boolean
-  disabledBackgroundColor?: string // eg) mono.black, main.red, ...
-  disabledBorderColor?: string // eg) mono.black, main.red, ...
-  disabledTextColor?: string // eg) mono.black, main.red, ...
+  disabledBackgroundColor?: TailwindColorPalette // eg) mono.black, main.red, ...
+  disabledBorderColor?: TailwindColorPalette // eg) mono.black, main.red, ...
+  disabledTextColor?: TailwindColorPalette // eg) mono.black, main.red, ...
 }
 
 function InputDateTime({
@@ -146,11 +147,11 @@ function InputDateTime({
         onClick={onClick}
         disabled={disabled}
         className={`${InputDateTimeStyle.container({
-          color: backgroundColor || '',
+          color: backgroundColor,
           disabled,
           disabledColor: disabledBackgroundColor,
-          borderColor: borderColor || '',
-          disabledBorderColor: disabledBorderColor || '',
+          borderColor,
+          disabledBorderColor,
         })} ${className}`}
         style={{
           justifyContent: disabled || !dateValue ? 'center' : 'space-between',
@@ -167,9 +168,9 @@ function InputDateTime({
           className={InputDateTimeStyle.text({
             active: !!dateValue,
             disabled: !!disabled,
-            activeColor: textColor || '',
-            color: placeholderColor || '',
-            disabledColor: disabledTextColor || '',
+            activeColor: textColor,
+            color: placeholderColor,
+            disabledColor: disabledTextColor,
           })}>
           {text()}
         </p>

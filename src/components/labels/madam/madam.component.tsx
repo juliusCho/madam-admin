@@ -1,8 +1,9 @@
 import React from 'react'
+import { TailwindFontSize } from '~/types'
 import LabelMadamStyle from './madam.style'
 
 export interface LabelMadamProps {
-  size?: string
+  size?: TailwindFontSize
   style?: React.CSSProperties
   className?: string
 }

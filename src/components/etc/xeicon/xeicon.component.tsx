@@ -1,13 +1,15 @@
 import React from 'react'
+import { TailwindColorPalette } from '~/types'
 import helpers from '~/utils/helpers'
 
 export interface XEIconProps {
   name: string
   size?: number | string
-  color?: string // eg) mono.black, main.red, ...
+  color?: TailwindColorPalette | string // eg) mono.black, main.red, ...
   style?: React.CSSProperties
   className?: string
   onClick?: () => void
+  disabled?: boolean
   testID?: string
 }
 
@@ -18,8 +20,24 @@ function XEIcon({
   style,
   className,
   onClick,
+  disabled,
   testID,
 }: XEIconProps) {
+  const colorClass = React.useMemo(() => {
+    if (color) {
+      if (color.includes('-')) {
+        return helpers.convertColorToTailwind(
+          'text',
+          color ?? 'mono.black',
+          !onClick,
+        )
+      }
+      return color
+    }
+
+    return ''
+  }, [color, helpers.convertColorToTailwind, onClick])
+
   return (
     <div
       role="button"
@@ -27,30 +45,28 @@ function XEIcon({
       onClick={(e) => {
         e.stopPropagation()
 
-        if (onClick) {
+        if (!disabled && onClick) {
           onClick()
         }
       }}
       onKeyPress={(e) => {
         e.stopPropagation()
 
-        if (onClick) {
+        if (!disabled && onClick) {
           onClick()
         }
       }}
       className={`${className} flex justify-center items-center ${
-        onClick ? '' : 'cursor-default'
+        onClick ? 'pointer' : `cursor-${disabled ? 'not-allowed' : 'default'}`
       }`}>
       <i
-        className={`xi-${name} ${helpers.convertColorToTailwind(
-          'text',
-          color,
-          !onClick,
-        )}`}
+        className={`xi-${name} ${colorClass}`}
         data-testid={testID}
         style={{
           ...style,
           fontSize: size,
+          fontFamily: 'xeicon',
+          color: color?.includes('.') ? undefined : color,
         }}
       />
     </div>

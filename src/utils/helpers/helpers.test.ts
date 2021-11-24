@@ -3,12 +3,6 @@ import { ROUTER_PATH } from '~/constants/etc'
 import helpers from '.'
 
 describe('Helpers', () => {
-  it('convertTextToTailwind', () => {
-    expect(helpers.convertTextToTailwind('textBig')).toBe(
-      'text-textBig font-textBig',
-    )
-  })
-
   it('convertColorToTailwind', () => {
     expect(helpers.convertColorToTailwind('bg')).toBe('bg-transparent')
     expect(helpers.convertColorToTailwind('bg', 'mono-black', true)).toBe(
@@ -17,6 +11,71 @@ describe('Helpers', () => {
     expect(helpers.convertColorToTailwind('bg', 'mono-black')).toBe(
       'bg-mono-black hover:bg-mono-blackHover active:bg-mono-blackActive',
     )
+  })
+
+  it('convertFontToTailwindClass', () => {
+    expect(helpers.convertFontToTailwindClass()).toBe('')
+    expect(helpers.convertFontToTailwindClass('subBig')).toBe(
+      'text-subBig font-subBig',
+    )
+  })
+
+  it('convertFontSizeToCSSSize', () => {
+    expect(helpers.convertFontSizeToCSSSize()).toBe('1rem')
+    expect(helpers.convertFontSizeToCSSSize('subTitleBig')).toBe('1.125rem')
+  })
+
+  it('convertBorderRadiusDirectionToTailwindClass', () => {
+    expect(helpers.convertBorderRadiusDirectionToTailwindClass()).toBe('')
+    expect(helpers.convertBorderRadiusDirectionToTailwindClass('top')).toBe(
+      '-t',
+    )
+    expect(
+      helpers.convertBorderRadiusDirectionToTailwindClass('bottom-left'),
+    ).toBe('-bl')
+  })
+
+  it('convertBorderRadiusToTailwindClass', () => {
+    expect(helpers.convertBorderRadiusToTailwindClass()).toBe('')
+    expect(helpers.convertBorderRadiusToTailwindClass('2xl')).toBe(
+      'rounded-2xl',
+    )
+    expect(helpers.convertBorderRadiusToTailwindClass('full', 'bottom')).toBe(
+      'rounded-b-full',
+    )
+    expect(
+      helpers.convertBorderRadiusToTailwindClass('basic', 'top-left'),
+    ).toBe('rounded-tl')
+  })
+
+  it('convertBorderDirectionToTailwindClass', () => {
+    expect(helpers.convertBorderDirectionToTailwindClass()).toBe('')
+    expect(helpers.convertBorderDirectionToTailwindClass('bottom')).toBe('-b')
+  })
+
+  it('convertBorderStyleToTailwindClass', () => {
+    expect(helpers.convertBorderStyleToTailwindClass()).toBe('')
+    expect(
+      helpers.convertBorderStyleToTailwindClass('solid', false, 'bottom'),
+    ).toBe('border-b border-solid')
+    expect(
+      helpers.convertBorderStyleToTailwindClass('dashed', true, 'top'),
+    ).toBe('border-t-2 border-dashed')
+  })
+
+  it('separateCSSValueToLengthAndUnit', () => {
+    expect(helpers.separateCSSValueToLengthAndUnit()).toStrictEqual({
+      length: 0,
+      unit: 'px',
+    })
+    expect(helpers.separateCSSValueToLengthAndUnit('2px')).toStrictEqual({
+      length: 2,
+      unit: 'px',
+    })
+    expect(helpers.separateCSSValueToLengthAndUnit('480rem')).toStrictEqual({
+      length: 480,
+      unit: 'rem',
+    })
   })
 
   it('encode && decode', () => {

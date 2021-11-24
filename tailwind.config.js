@@ -149,8 +149,32 @@ module.exports = {
       subSmall: '500',
     },
     extend: {
-      zIndex: {
-        max: '900',
+      spacing: {
+        neg11: '-11rem',
+        neg13: '-13rem',
+        0.1: '0.25rem',
+        2.3: '0.6rem',
+        4.3: '1.125rem',
+        4.5: '1.188rem',
+        5.5: '1.375rem',
+        7.5: '1.875rem',
+        8.5: '2.125rem',
+        9.5: '2.375rem',
+        12.5: '3.125rem',
+        13: '3.25rem',
+        15: '3.625rem',
+        15.5: '3.75rem',
+        17: '4.6rem',
+        20.5: '5.25rem',
+        21: '5.75rem',
+        px59: '59px',
+      },
+      borderWidth: {
+        0.5: '0.5px',
+      },
+      minWidth: {
+        60: '3.75rem',
+        70: '4.375rem',
       },
       width: () => ({
         fit: 'fit-content',
@@ -158,8 +182,14 @@ module.exports = {
       minWidth: () => ({
         fit: 'fit-content',
       }),
-      spacing: {
-        13: '3.25rem',
+      zIndex: {
+        max: '900',
+      },
+      boxShadow: {
+        glow: '0 0 4px 1.5px #DDD',
+      },
+      opacity: {
+        85: '0.85',
       },
     },
   },

@@ -7,6 +7,7 @@ import customHooks from '~/utils/hooks'
 import './date-picker.style.scss'
 import { TimePicker } from './time-picker'
 import { TimePickerRange } from './time-picker-range'
+import TimePickerRangeStyle from './time-picker-range/time-picker-range.style'
 
 export interface ModalDateTimePickerProps {
   changeDate:
@@ -52,26 +53,8 @@ function DatePicker({
   const [value, setValue] = React.useState<
     Date | Array<Date | undefined> | undefined
   >()
-  // 시간 선택 여부
-  const [timeSelect, setTimeSelect] = React.useState<boolean | Array<boolean>>(
-    false,
-  )
-  // 시간 값
-  const [timeValue, setTimeValue] = React.useState<
-    string | Array<string | undefined> | undefined
-  >()
 
   const isMounted = customHooks.useIsMounted()
-
-  // const forceUpdate = customHooks.useForceUpdate()
-
-  // React.useEffect(() => {
-  //   if (!isMounted() || !isOpen) return
-
-  //   setTimeout(() => {
-  //     forceUpdate()
-  //   }, 300)
-  // }, [isMounted, isOpen, forceUpdate])
 
   React.useEffect(() => {
     if (!isMounted()) return
@@ -86,7 +69,7 @@ function DatePicker({
   }, [isMounted, isOpen])
 
   const setLocalDateValue = React.useCallback(() => {
-    if (selectRange) {
+    if (selectRange || timeRange) {
       if (!date) {
         setValue(() => [undefined, undefined])
         return
@@ -162,7 +145,7 @@ function DatePicker({
 
       setValue(() => moment(date).toDate())
     }
-  }, [date, selectRange])
+  }, [date, selectRange, timeRange])
 
   React.useEffect(() => {
     if (!isMounted()) return
@@ -171,182 +154,67 @@ function DatePicker({
     setLocalDateValue()
   }, [isMounted, isOpen, setLocalDateValue])
 
-  const setLocalTimeSelect = React.useCallback(() => {
+  const timeValue = React.useMemo(() => {
+    if (!timeDisplay) return undefined
+
     if (selectRange || timeRange) {
-      if (!date) {
-        setTimeSelect(() => [false, false])
-        return
+      if (!value) {
+        return [undefined, undefined]
       }
 
-      if (Array.isArray(date)) {
-        if (date.length === 0) {
-          setTimeSelect(() => [false, false])
-          return
-        }
-
-        if (date.length === 1) {
-          if (date[0]) {
-            const select = moment(date[0]).format('HH::mm') !== '00:00'
-            setTimeSelect(() => [select, select])
-          } else {
-            setTimeSelect(() => [false, false])
-          }
-          return
-        }
-
-        if (date[0]) {
-          setTimeSelect(() => [
-            moment(date[0]).format('HH::mm') !== '00:00',
-            moment(date[1] ? date[1] : date[0]).format('HH::mm') !== '00:00',
-          ])
-          return
-        }
-
-        if (date[1]) {
-          const select = moment(date[1]).format('HH::mm') !== '00:00'
-          setTimeSelect(() => [select, select])
-          return
-        }
-
-        setTimeSelect(() => [false, false])
-        return
-      }
-
-      const select = moment(date).format('HH::mm') !== '00:00'
-      setTimeSelect(() => [select, select])
-    } else {
-      if (!date) {
-        setTimeSelect(() => false)
-        return
-      }
-
-      if (Array.isArray(date)) {
-        if (date.length === 0) {
-          setTimeSelect(() => false)
-          return
-        }
-
-        if (date.length === 1) {
-          if (date[0]) {
-            setTimeSelect(() => moment(date[0]).format('HH:mm') !== '00:00')
-          } else {
-            setTimeSelect(() => false)
-          }
-          return
-        }
-
-        if (date[0]) {
-          setTimeSelect(() => moment(date[0]).format('HH:mm') !== '00:00')
-          return
-        }
-
-        if (date[1]) {
-          setTimeSelect(() => moment(date[1]).format('HH:mm') !== '00:00')
-          return
-        }
-
-        setTimeSelect(() => false)
-        return
-      }
-
-      setTimeSelect(() => moment(date).format('HH:mm') !== '00:00')
-    }
-  }, [date, selectRange, timeRange])
-
-  React.useEffect(() => {
-    if (!isMounted()) return
-    if (!isOpen) return
-    if (!timeDisplay) return
-
-    setLocalTimeSelect()
-  }, [isMounted, isOpen, timeDisplay, setLocalTimeSelect])
-
-  const calculateTimeValue = React.useCallback(
-    (dt?: Date | Array<Date | undefined>) => {
-      if (selectRange || timeRange) {
-        if (!dt) {
+      if (Array.isArray(value)) {
+        if (value.length === 0) {
           return [undefined, undefined]
         }
 
-        if (Array.isArray(dt)) {
-          if (dt.length === 0) {
-            return [undefined, undefined]
-          }
-
-          if (dt.length === 1) {
-            if (dt[0]) {
-              const time = moment(dt[0]).format('HH:mm')
-              return [time, time]
-            }
-            return [undefined, undefined]
-          }
-
-          if (dt[0]) {
-            return [
-              moment(dt[0]).format('HH:mm'),
-              moment(dt[1] ? dt[1] : dt[0]).format('HH:mm'),
-            ]
-          }
-
-          if (dt[1]) {
-            const time = moment(dt[1]).format('HH:mm')
+        if (value.length === 1) {
+          if (value[0]) {
+            const time = moment(value[0]).format('HH:mm')
             return [time, time]
           }
-
           return [undefined, undefined]
         }
 
-        const time = moment(dt).format('HH:mm')
-        return [time, time]
+        if (value[0]) {
+          return [
+            moment(value[0]).format('HH:mm'),
+            moment(value[1] ? value[1] : value[0]).format('HH:mm'),
+          ]
+        }
+
+        if (value[1]) {
+          const time = moment(value[1]).format('HH:mm')
+          return [time, time]
+        }
+
+        return [undefined, undefined]
       }
-      if (!dt) {
+
+      const time = moment(value).format('HH:mm')
+      return [time, time]
+    }
+    if (!value) {
+      return undefined
+    }
+
+    if (Array.isArray(value)) {
+      if (value.length === 0) {
         return undefined
       }
 
-      if (Array.isArray(dt)) {
-        if (dt.length === 0) {
-          return undefined
-        }
-
-        if (dt.length === 1) {
-          return dt[0] ? moment(dt[0]).format('HH:mm') : undefined
-        }
-
-        if (dt[0]) {
-          return moment(dt[0]).format('HH:mm')
-        }
-
-        return dt[1] ? moment(dt[1]).format('HH:mm') : undefined
+      if (value.length === 1) {
+        return value[0] ? moment(value[0]).format('HH:mm') : undefined
       }
 
-      return moment(dt).format('HH:mm')
-    },
-    [selectRange, timeRange],
-  )
+      if (value[0]) {
+        return moment(value[0]).format('HH:mm')
+      }
 
-  const setLocalTimeValue = React.useCallback(() => {
-    setTimeValue(() => calculateTimeValue(date))
-  }, [date, selectRange, timeRange])
+      return value[1] ? moment(value[1]).format('HH:mm') : undefined
+    }
 
-  React.useEffect(() => {
-    if (!isMounted()) return
-    if (!isOpen) return
-    if (!timeDisplay) return
-
-    setLocalTimeValue()
-  }, [isMounted, isOpen, timeDisplay, setLocalTimeValue])
-
-  const refreshLocalTimeValue = React.useCallback(() => {
-    setTimeValue(() => calculateTimeValue(value))
-  }, [value, selectRange, timeRange])
-
-  React.useEffect(() => {
-    if (!isMounted()) return
-    if (!isOpen) return
-    if (!timeDisplay) return
-
-    refreshLocalTimeValue()
-  }, [isMounted, isOpen, timeDisplay, refreshLocalTimeValue])
+    return moment(value).format('HH:mm')
+  }, [value, selectRange, timeRange, timeDisplay])
 
   React.useEffect(() => {
     if (!isMounted()) return
@@ -420,7 +288,6 @@ function DatePicker({
     } else if (timeRange) {
       setValue(() => pickedDate)
     }
-    // forceUpdate()
   }
 
   // 날짜 변경 이벤트
@@ -432,9 +299,6 @@ function DatePicker({
 
   // 시간 변경 이벤트
   const onTimeChange = (pickedTime?: string) => {
-    setTimeValue(() => pickedTime)
-    setTimeSelect(() => !!pickedTime)
-
     const dtStr = helpers.dateValidator(
       moment(value as Date).format('YYYY.MM.DD'),
     )
@@ -451,29 +315,40 @@ function DatePicker({
   }
 
   // 시간 범위 변경 이벤트
-  const onTimeRangeChange = (pickedTime: Array<string | undefined>) => {
-    setTimeValue(() => pickedTime)
-    setTimeSelect(() => [!!pickedTime[0], !!pickedTime[1]])
+  const onTimeRangeChange = React.useCallback(
+    (pickedTime: Array<string | undefined>) => {
+      if (!Array.isArray(value)) {
+        const dtStr = helpers.dateValidator(
+          moment(value as Date).format('YYYY.MM.DD'),
+        )
+        const result = [
+          helpers.convertToDate(
+            moment(dtStr).format('YYYY-MM-DD') +
+              (pickedTime[0] ? ` ${pickedTime[0]}:00` : ' 00:00:00'),
+          ),
+          helpers.convertToDate(
+            moment(dtStr).format('YYYY-MM-DD') +
+              (pickedTime[1] ? ` ${pickedTime[1]}:00` : ' 00:00:00'),
+          ),
+        ]
+        if (result.some((r) => r === null)) return
 
-    if (!Array.isArray(value)) {
-      const dtStr = helpers.dateValidator(
-        moment(value as Date).format('YYYY.MM.DD'),
-      )
-      const result = [
-        helpers.convertToDate(
-          moment(dtStr).format('YYYY-MM-DD') +
-            (pickedTime[0] ? ` ${pickedTime[0]}:00` : ' 00:00:00'),
-        ),
-        helpers.convertToDate(
-          moment(dtStr).format('YYYY-MM-DD') +
-            (pickedTime[1] ? ` ${pickedTime[1]}:00` : ' 00:00:00'),
-        ),
-      ]
-      if (result.some((r) => r === null)) return
-
-      setValue(() => result as Date[])
-    }
-  }
+        setValue(() => result as Date[])
+      } else if (value.length === 2 && value[0] && value[1]) {
+        setValue(() => [
+          helpers.convertToDate(
+            moment(value[0]).format('YYYY-MM-DD') +
+              (pickedTime[0] ? ` ${pickedTime[0]}:00` : ' 00:00:00'),
+          ),
+          helpers.convertToDate(
+            moment(value[1]).format('YYYY-MM-DD') +
+              (pickedTime[1] ? ` ${pickedTime[1]}:00` : ' 00:00:00'),
+          ),
+        ])
+      }
+    },
+    [value, helpers.dateValidator, helpers.convertToDate],
+  )
 
   // 해당 컴포넌트 내 설정된 값 변경 후에 데이터 가공
   const onChange = React.useCallback(
@@ -686,6 +561,107 @@ function DatePicker({
     }
   }
 
+  const timeComponent = React.useMemo(() => {
+    if (!show || !timeDisplay || viewType !== 'month') {
+      return null
+    }
+
+    if (selectRange && Array.isArray(value)) {
+      return (
+        <div className={TimePickerRangeStyle.container}>
+          <TimePicker
+            id="start"
+            value={(timeValue as Array<string | undefined>)[0]}
+            date={(value as Array<Date | undefined>)[0]}
+            onChange={(time) =>
+              onTimeRangeChange([
+                time,
+                (timeValue as Array<string | undefined>)[1],
+              ])
+            }
+            clearIcon={
+              (timeValue as Array<string | undefined>)[0]
+                ? 'radiobox-checked'
+                : 'radiobox-blank'
+            }
+            testID="calendarPeriod.timepicker1"
+          />
+          <TimePicker
+            id="start"
+            value={(timeValue as Array<string | undefined>)[1]}
+            date={(value as Array<Date | undefined>)[1]}
+            onChange={(time) =>
+              onTimeRangeChange([
+                (timeValue as Array<string | undefined>)[0],
+                time,
+              ])
+            }
+            clearIcon={
+              (timeValue as Array<string | undefined>)[1]
+                ? 'radiobox-checked'
+                : 'radiobox-blank'
+            }
+            testID="calendarPeriod.timepicker2"
+          />
+        </div>
+      )
+    }
+
+    if (timeRange) {
+      return (
+        <TimePickerRange
+          value={timeValue as string[] | undefined}
+          date={value}
+          onChange={onTimeRangeChange}
+          clearIcons={[
+            (timeValue as Array<string | undefined>)[0]
+              ? 'radiobox-checked'
+              : 'radiobox-blank',
+            (timeValue as Array<string | undefined>)[1]
+              ? 'radiobox-checked'
+              : 'radiobox-blank',
+          ]}
+          testID1="calendarPeriod.timepicker1"
+          testID2="calendarPeriod.timepicker2"
+        />
+      )
+    }
+
+    return (
+      <TimePicker
+        value={timeValue as string | undefined}
+        date={value as Date | undefined}
+        onChange={onTimeChange}
+        clearIcon={timeValue ? 'radiobox-checked' : 'radiobox-blank'}
+        testID="calendarPeriod.timepicker"
+      />
+    )
+  }, [
+    timeDisplay,
+    show,
+    viewType,
+    timeRange,
+    selectRange,
+    value,
+    timeValue,
+    onTimeChange,
+    onTimeRangeChange,
+  ])
+
+  const confirmDisabled = React.useMemo(() => {
+    if (selectRange || timeRange) {
+      return (
+        !value ||
+        !Array.isArray(value) ||
+        value.length < 2 ||
+        !value[0] ||
+        !value[1]
+      )
+    }
+
+    return !value
+  }, [value, selectRange, timeRange])
+
   return (
     <>
       <div
@@ -738,41 +714,12 @@ function DatePicker({
             moment(d).format('D')
           }
         />
-        {timeDisplay &&
-          show &&
-          viewType === 'month' &&
-          ((selectRange && Array.isArray(value)) || timeRange ? (
-            <TimePickerRange
-              value={timeValue as string[] | undefined}
-              date={value}
-              onChange={onTimeRangeChange}
-              clearIcons={[
-                (timeSelect as boolean[])[0]
-                  ? 'radiobox-checked'
-                  : 'radiobox-blank',
-                (timeSelect as boolean[])[1]
-                  ? 'radiobox-checked'
-                  : 'radiobox-blank',
-              ]}
-              timeRange={timeRange}
-              testID1="calendarPeriod.timepicker1"
-              testID2="calendarPeriod.timepicker2"
-            />
-          ) : (
-            <TimePicker
-              value={timeValue as string | undefined}
-              date={value as Date | undefined}
-              onChange={onTimeChange}
-              clearIcon={
-                (timeSelect as boolean) ? 'radiobox-checked' : 'radiobox-blank'
-              }
-              testID="calendarPeriod.timepicker"
-            />
-          ))}
+        {timeComponent}
         {(timeDisplay || selectRange) && (
           <button
             type="button"
-            className="btn"
+            className={`btn ${confirmDisabled ? 'disabled' : ''}`}
+            disabled={confirmDisabled}
             onClick={() => changeDate(onChange(value))}
             data-testid="calendarPeriod.confirm"
             style={{
