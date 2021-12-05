@@ -131,7 +131,9 @@ function ChartLineByDataset({
           <InputSingleSelect
             value={displayCount}
             options={options}
-            onChange={onChangeDisplayCount}
+            onChange={(val) =>
+              onChangeDisplayCount(val as undefined | string | number)
+            }
             device={device}
             width={
               device === 'mobile' || device === 'smallScreen'
@@ -139,7 +141,9 @@ function ChartLineByDataset({
                 : '150px'
             }
             fontSize={
-              device === 'mobile' || device === 'smallScreen' ? '12px' : '15px'
+              device === 'mobile' || device === 'smallScreen'
+                ? 'subMedium'
+                : 'subTitleSmall'
             }
           />
         </div>

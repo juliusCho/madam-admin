@@ -7,7 +7,7 @@ import { MADAM_REQUEST_STATUS_LABEL } from '~/constants/app'
 import { MADAM_REQUEST_STATUS } from '~/enums'
 import adminGlobalStates from '~/states/admin'
 import { ChartDatePickerOptionType } from '~/types'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 import { useMaxDateAndFormat } from '../../shared'
 
 interface Props {

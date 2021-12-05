@@ -13,7 +13,7 @@ export interface InputDateTimeProps {
   range?: boolean
   timeSelect?: boolean
   timeRange?: boolean
-  datePick?: boolean
+  viewType?: 'month' | 'year' | 'decade' | 'century'
   locale?: 'kr' | 'en'
   minDate?: Date
   maxDate?: Date
@@ -41,7 +41,7 @@ function InputDateTime({
   locale,
   minDate,
   maxDate,
-  datePick,
+  viewType,
   disabledText,
   style,
   className,
@@ -139,7 +139,7 @@ function InputDateTime({
         timeRange={timeRange}
         minDate={minDate}
         maxDate={maxDate}
-        viewType={datePick ? 'month' : 'year'}
+        viewType={viewType}
       />
       <button
         type="button"
@@ -196,7 +196,7 @@ InputDateTime.defaultProps = {
   timeRange: false,
   date: undefined,
   locale: 'kr',
-  datePick: true,
+  viewType: 'month',
   disabledText: undefined,
   style: {},
   className: '',

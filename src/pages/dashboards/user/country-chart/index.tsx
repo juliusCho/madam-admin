@@ -4,7 +4,7 @@ import { apiDashboard } from '~/apis'
 import { ChartDonut } from '~/components/charts/donut'
 import adminGlobalStates from '~/states/admin'
 import deviceGlobalStates from '~/states/device'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 
 interface Props {
   className: string

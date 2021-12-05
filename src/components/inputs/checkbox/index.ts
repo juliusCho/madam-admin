@@ -1,2 +1,2 @@
-export { default as Checkbox } from './checkbox.component'
-export type { CheckboxProps } from './checkbox.component'
+export { default as InputCheckbox } from './checkbox.component'
+export type { InputCheckboxProps } from './checkbox.component'

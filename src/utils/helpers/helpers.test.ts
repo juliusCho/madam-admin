@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { ROUTER_PATH } from '~/constants/etc'
-import helpers from '.'
+import * as helpers from './helpers'
 
 describe('Helpers', () => {
   it('convertColorToTailwind', () => {

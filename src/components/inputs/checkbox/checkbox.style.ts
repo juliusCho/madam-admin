@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react'
 import { TailwindColorPalette, TailwindFontSize } from '~/types'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 
 interface ContainerStyle {
   width?: string | number

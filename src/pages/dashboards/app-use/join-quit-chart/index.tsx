@@ -5,7 +5,7 @@ import apiDashboard from '~/apis/dashboard'
 import { ChartLine } from '~/components/charts/line'
 import adminGlobalStates from '~/states/admin'
 import { ChartDatePickerOptionType } from '~/types'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 import { useMaxDateAndFormat } from '../../shared'
 
 interface Props {

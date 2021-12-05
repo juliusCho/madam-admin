@@ -6,7 +6,7 @@ import { ChartBarLine } from '~/components/charts/bar-line'
 import { useMaxDateAndFormat } from '~/pages/dashboards/shared'
 import adminGlobalStates from '~/states/admin'
 import { ChartDatePickerOptionType } from '~/types'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 
 interface Props {
   className: string

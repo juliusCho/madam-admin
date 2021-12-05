@@ -6,7 +6,7 @@ import { ChartDonut } from '~/components/charts/donut'
 import { MADAM_REQUEST_STATUS_LABEL } from '~/constants/app'
 import { MADAM_REQUEST_STATUS } from '~/enums'
 import adminGlobalStates from '~/states/admin'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 
 interface Props {
   className: string

@@ -7,10 +7,10 @@ import {
 } from '~/types'
 import CheckboxStyle from './checkbox.style'
 
-export interface CheckboxProps {
-  options: SelectOptionType<string | number>[]
-  onSelect: (value?: string | number) => void
-  value?: Array<string | number>
+export interface InputCheckboxProps {
+  options: SelectOptionType<string | number | null>[]
+  onSelect: (value?: string | number | null) => void
+  value?: Array<string | number | null>
   width?: string | number
   backgroundColor?: TailwindColorPalette
   marginInBetween?: string | number
@@ -21,7 +21,7 @@ export interface CheckboxProps {
   className?: string
 }
 
-function Checkbox({
+function InputCheckbox({
   options,
   onSelect,
   value,
@@ -33,13 +33,13 @@ function Checkbox({
   fontSize,
   style,
   className,
-}: CheckboxProps) {
+}: InputCheckboxProps) {
   const getItem = React.useCallback(
     (
       all: boolean,
       label: string,
       index: number,
-      inputValue?: string | number,
+      inputValue?: string | number | null,
     ) => {
       const selected = all
         ? !!value && !options.some((o) => !value.includes(o.value))
@@ -101,7 +101,7 @@ function Checkbox({
   )
 }
 
-Checkbox.defaultProps = {
+InputCheckbox.defaultProps = {
   value: undefined,
   width: undefined,
   backgroundColor: undefined,
@@ -113,4 +113,4 @@ Checkbox.defaultProps = {
   className: undefined,
 }
 
-export default React.memo(Checkbox)
+export default React.memo(InputCheckbox)

@@ -59,7 +59,7 @@ export type TailwindColorPalette =
   | 'sns-kakao'
   | 'sns-google'
   | 'sns-apple'
-  | 'sns-phone'
+  | 'sns-other'
 
 export type TailwindFontSize =
   | 'titleMassive'
@@ -100,3 +100,10 @@ export type BorderRadiusDirection =
 export type BorderStyle = 'dotted' | 'dashed' | 'solid' | 'none'
 
 export type BorderDirection = 'top' | 'left' | 'bottom' | 'right'
+
+export type BorderCSS = {
+  borderStyle?: BorderStyle
+  borderBold?: boolean
+  borderRadius?: BorderRadius
+  borderColor?: TailwindColorPalette
+}

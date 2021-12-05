@@ -91,7 +91,7 @@ function TimePicker({
   }, [makeHours, makeMinutes])
 
   React.useLayoutEffect(() => {
-    if (value) {
+    if (typeof value === 'string' && value.length === 5) {
       setHour(() => value.substr(0, 2))
       setMinute(() => value.substr(3, 2))
     } else {
@@ -126,11 +126,21 @@ function TimePicker({
     }
   }, [isMounted, show, startHour, hourRefs, hours.length, makeTwoDigits])
 
+  const dateLabel = React.useMemo(() => {
+    if (!date) return ''
+
+    if (Array.isArray(date)) {
+      if (date.length === 0) return ''
+
+      return moment(date[0]).format('YYYY/MM/DD')
+    }
+
+    return moment(date).format('YYYY/MM/DD')
+  }, [date])
+
   return (
     <div {...TimePickerStyle.container(id)}>
-      <span {...TimePickerStyle.dateLabel}>
-        {date ? moment(date).format('YYYY/MM/DD') : ''}
-      </span>
+      <span {...TimePickerStyle.dateLabel}>{dateLabel}</span>
       <div
         role="button"
         tabIndex={0}

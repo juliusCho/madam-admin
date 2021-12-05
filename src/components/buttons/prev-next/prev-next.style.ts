@@ -1,4 +1,4 @@
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 import { PrevNextType } from './prev-next.component'
 
 const ButtonPrevNextStyle = {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { ChartDatePickerOptionType } from '~/types'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 
 export function useMaxDateAndFormat(rangeOption: ChartDatePickerOptionType) {
   const maxDate = React.useMemo(() => {

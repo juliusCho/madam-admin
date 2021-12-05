@@ -1,5 +1,5 @@
 import React from 'react'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 import { useMaxDateAndFormat } from '.'
 
 describe('dashboard - shared test', () => {

@@ -1,2 +1,2 @@
-export { default as Radio } from './radio.component'
-export type { RadioProps } from './radio.component'
+export { default as InputRadio } from './radio.component'
+export type { InputRadioProps } from './radio.component'

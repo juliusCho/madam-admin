@@ -2,7 +2,7 @@ import moment from 'moment'
 import * as React from 'react'
 import { ViewCallbackProperties } from 'react-calendar'
 import ReactDatePicker from 'react-date-picker'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 import customHooks from '~/utils/hooks'
 import './date-picker.style.scss'
 import { TimePicker } from './time-picker'
@@ -157,7 +157,7 @@ function DatePicker({
   const timeValue = React.useMemo(() => {
     if (!timeDisplay) return undefined
 
-    if (selectRange || timeRange) {
+    if (timeRange) {
       if (!value) {
         return [undefined, undefined]
       }
@@ -193,6 +193,22 @@ function DatePicker({
       const time = moment(value).format('HH:mm')
       return [time, time]
     }
+
+    if (selectRange) {
+      if (Array.isArray(value)) {
+        if (value.length === 0) {
+          return [undefined, undefined]
+        }
+
+        return [
+          moment(value[0]).format('HH:mm'),
+          value.length === 2 ? moment(value[1]).format('HH:mm') : undefined,
+        ]
+      }
+
+      return moment(value).format('HH:mm')
+    }
+
     if (!value) {
       return undefined
     }
@@ -274,10 +290,10 @@ function DatePicker({
   const onClickDay = (pickedDate: Date) => {
     if (!selectRange && !timeRange) return
 
-    if (Array.isArray(value) || value === undefined) {
-      setValue(() => pickedDate)
-    } else if (selectRange) {
-      if (
+    if (selectRange) {
+      if (Array.isArray(value) || value === undefined) {
+        setValue(() => pickedDate)
+      } else if (
         Number(moment(pickedDate).format('YYYYMMDD')) <
         Number(moment(value).format('YYYYMMDD'))
       ) {
@@ -286,7 +302,7 @@ function DatePicker({
         setValue(() => [value, pickedDate])
       }
     } else if (timeRange) {
-      setValue(() => pickedDate)
+      setValue(() => [pickedDate, pickedDate])
     }
   }
 
@@ -587,7 +603,7 @@ function DatePicker({
             testID="calendarPeriod.timepicker1"
           />
           <TimePicker
-            id="start"
+            id="end"
             value={(timeValue as Array<string | undefined>)[1]}
             date={(value as Array<Date | undefined>)[1]}
             onChange={(time) =>

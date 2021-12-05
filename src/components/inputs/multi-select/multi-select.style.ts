@@ -1,11 +1,14 @@
 import { CSSObjectWithLabel } from 'react-select'
+import { TailwindColorPalette, TailwindFontSize } from '~/types'
+import { convertColorToHex, convertFontSizeToCSSSize } from '~/utils/helpers'
 
 interface StyleProps {
   width?: string | number
-  fontSize?: string | number
+  fontSize?: TailwindFontSize
+  fontColor?: TailwindColorPalette
 }
 
-const InputMultiSelectStyle = ({ width, fontSize }: StyleProps) => ({
+const InputMultiSelectStyle = ({ width, fontSize, fontColor }: StyleProps) => ({
   container: (provided: CSSObjectWithLabel) => ({
     ...provided,
     width,
@@ -19,12 +22,14 @@ const InputMultiSelectStyle = ({ width, fontSize }: StyleProps) => ({
   }),
   singleValue: (provided: CSSObjectWithLabel) => ({
     ...provided,
-    fontSize,
+    fontSize: convertFontSizeToCSSSize(fontSize),
+    fontColor: convertColorToHex(fontColor),
     fontWeight: 700,
   }),
   option: (provided: CSSObjectWithLabel) => ({
     ...provided,
-    fontSize,
+    fontSize: convertFontSizeToCSSSize(fontSize),
+    fontColor: convertColorToHex(fontColor),
     borderRadius: '99999px',
     cursor: 'pointer',
   }),

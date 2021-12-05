@@ -10,7 +10,7 @@ import { ModalDatePickerOption } from '~/components/modals/date-picker-option'
 import { CHART_DATE_PICKER_OPTION } from '~/enums'
 import deviceGlobalStates from '~/states/device'
 import { ChartDatePickerOptionType } from '~/types'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 import SearchChartDateStyle from './chart-date.style'
 
 const getPrevNextSequel = (

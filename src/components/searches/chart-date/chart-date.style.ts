@@ -1,5 +1,5 @@
 import { ScreenOptionType, TailwindColorPalette } from '~/types'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 
 interface StyleProps {
   device?: ScreenOptionType

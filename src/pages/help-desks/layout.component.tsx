@@ -7,7 +7,7 @@ import { ROUTER_PATH, ROUTER_TITLE } from '~/constants/etc'
 import AppPageStyle from '~/pages/app.style'
 import deviceGlobalStates from '~/states/device'
 import etcGlobalStates from '~/states/etc'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 import customHooks from '~/utils/hooks'
 
 export interface PageHelpDeskLayoutProps {

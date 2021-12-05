@@ -1,13 +1,24 @@
 import { CSSObjectWithLabel } from 'react-select'
-import { ScreenOptionType } from '~/types'
+import {
+  ScreenOptionType,
+  TailwindColorPalette,
+  TailwindFontSize,
+} from '~/types'
+import { convertColorToHex, convertFontSizeToCSSSize } from '~/utils/helpers'
 
 interface StyleProps {
   width?: string | number
-  fontSize?: string | number
+  fontSize?: TailwindFontSize
+  fontColor?: TailwindColorPalette
   device?: ScreenOptionType
 }
 
-const InputSingleSelectStyle = ({ width, fontSize, device }: StyleProps) => ({
+const InputSingleSelectStyle = ({
+  width,
+  fontSize,
+  fontColor,
+  device,
+}: StyleProps) => ({
   container: (provided: CSSObjectWithLabel) => ({
     ...provided,
     width,
@@ -22,12 +33,14 @@ const InputSingleSelectStyle = ({ width, fontSize, device }: StyleProps) => ({
   }),
   singleValue: (provided: CSSObjectWithLabel) => ({
     ...provided,
-    fontSize,
+    fontSize: convertFontSizeToCSSSize(fontSize),
+    fontColor: convertColorToHex(fontColor),
     fontWeight: 700,
   }),
   option: (provided: CSSObjectWithLabel) => ({
     ...provided,
-    fontSize,
+    fontSize: convertFontSizeToCSSSize(fontSize),
+    fontColor: convertColorToHex(fontColor),
     cursor: 'pointer',
     borderRadius: '99999px',
   }),

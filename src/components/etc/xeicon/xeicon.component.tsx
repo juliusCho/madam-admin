@@ -1,6 +1,6 @@
 import React from 'react'
 import { TailwindColorPalette } from '~/types'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 
 export interface XEIconProps {
   name: string

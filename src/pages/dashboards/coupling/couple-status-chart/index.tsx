@@ -5,7 +5,7 @@ import { ChartDonut } from '~/components/charts/donut'
 import { COUPLE_ACTION_LABEL } from '~/constants/app'
 import { COUPLE_ACTION } from '~/enums'
 import adminGlobalStates from '~/states/admin'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 
 interface Props {
   className: string

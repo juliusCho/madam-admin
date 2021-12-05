@@ -1,21 +1,26 @@
 import React from 'react'
 import Select, { ActionMeta, SingleValue } from 'react-select'
 import makeAnimated from 'react-select/animated'
-import { SelectOptionType } from '~/types'
+import {
+  SelectOptionType,
+  TailwindColorPalette,
+  TailwindFontSize,
+} from '~/types'
 import customHooks from '~/utils/hooks'
 import InputMultiSelectStyle from './multi-select.style'
 
 const animatedComponents = makeAnimated()
 
 export interface InputMultiSelectProps {
-  options: SelectOptionType<string | number>[]
-  onChange: (value?: Array<string | number>) => void
+  options: SelectOptionType<string | number | null>[]
+  onChange: (value?: Array<string | number | null>) => void
   value?: Array<string | number>
   disabled?: boolean
   placeholder?: string
   isClearable?: boolean
   width?: string | number
-  fontSize?: string | number
+  fontSize?: TailwindFontSize
+  fontColor?: TailwindColorPalette
 }
 
 function InputMultiSelect({
@@ -27,9 +32,10 @@ function InputMultiSelect({
   isClearable,
   width,
   fontSize,
+  fontColor,
 }: InputMultiSelectProps) {
   const [selected, setSelected] = React.useState<
-    SelectOptionType<string | number>[] | undefined
+    SelectOptionType<string | number | null>[] | undefined
   >(options.filter((option) => value?.some((val) => val === option.value)))
 
   const isMounted = customHooks.useIsMounted()
@@ -43,8 +49,8 @@ function InputMultiSelect({
   }, [isMounted, selected, onChange, value])
 
   const onChangeOption = (
-    selectedOption: SingleValue<SelectOptionType<string | number>>,
-    actionMeta: ActionMeta<SelectOptionType<string | number>>,
+    selectedOption: SingleValue<SelectOptionType<string | number | null>>,
+    actionMeta: ActionMeta<SelectOptionType<string | number | null>>,
   ) => {
     switch (actionMeta.action) {
       case 'select-option':
@@ -63,7 +69,7 @@ function InputMultiSelect({
   }
 
   return (
-    <Select<SelectOptionType<string | number>>
+    <Select<SelectOptionType<string | number | null>>
       value={selected}
       options={options}
       onChange={onChangeOption}
@@ -72,7 +78,7 @@ function InputMultiSelect({
       isClearable={isClearable}
       isSearchable
       components={animatedComponents}
-      styles={InputMultiSelectStyle({ width, fontSize })}
+      styles={InputMultiSelectStyle({ width, fontSize, fontColor })}
     />
   )
 }
@@ -83,7 +89,8 @@ InputMultiSelect.defaultProps = {
   placeholder: undefined,
   isClearable: false,
   width: undefined,
-  fontSize: undefined,
+  fontSize: 'textMedium',
+  fontColor: 'mono-black',
 }
 
 export default React.memo(InputMultiSelect)

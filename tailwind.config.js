@@ -113,9 +113,9 @@ module.exports = {
         apple: '#222',
         appleHover: '#333',
         appleActive: '#4d4d4d',
-        phone: '#737373',
-        phoneHover: '#8c8c8c',
-        phoneActive: '#a6a6a6',
+        other: '#737373',
+        otherHover: '#8c8c8c',
+        otherActive: '#a6a6a6',
       },
     },
     fontSize: {

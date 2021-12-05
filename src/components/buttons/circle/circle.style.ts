@@ -1,5 +1,5 @@
 import { TailwindColorPalette, TailwindFontSize } from '~/types'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 
 interface ButtonStyleProps {
   padding?: number

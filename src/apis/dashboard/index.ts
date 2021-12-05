@@ -36,7 +36,7 @@ import {
 import { db } from '~/firebaseSetup'
 import { ProfileInterestItemType } from '~/models/profile-interest-item'
 import { ChartDatePickerOptionType, GeocodeResultType } from '~/types'
-import helpers from '~/utils/helpers'
+import * as helpers from '~/utils/helpers'
 
 const apiUserCountPerStatus$ = () =>
   collectionData(collection(db, 'users')).pipe(

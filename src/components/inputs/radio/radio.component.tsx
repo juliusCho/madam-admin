@@ -7,9 +7,9 @@ import {
 } from '~/types'
 import RadioStyle from './radio.style'
 
-export interface RadioProps {
-  options: SelectOptionType<string | number | boolean>[]
-  onSelect: (value?: string | number | boolean) => void
+export interface InputRadioProps {
+  options: SelectOptionType<string | number | boolean | null>[]
+  onSelect: (value?: string | number | boolean | null) => void
   value?: string | number | boolean
   width?: string | number
   backgroundColor?: TailwindColorPalette
@@ -21,7 +21,7 @@ export interface RadioProps {
   className?: string
 }
 
-function Radio({
+function InputRadio({
   options,
   onSelect,
   value,
@@ -33,9 +33,13 @@ function Radio({
   fontSize,
   style,
   className,
-}: RadioProps) {
+}: InputRadioProps) {
   const getItem = React.useCallback(
-    (label: string, index: number, inputValue?: string | number | boolean) => (
+    (
+      label: string,
+      index: number,
+      inputValue?: string | number | boolean | null,
+    ) => (
       <li
         key={`${label}-${String(index)}`}
         role="option"
@@ -87,7 +91,7 @@ function Radio({
   )
 }
 
-Radio.defaultProps = {
+InputRadio.defaultProps = {
   value: undefined,
   width: undefined,
   backgroundColor: undefined,
@@ -99,4 +103,4 @@ Radio.defaultProps = {
   className: undefined,
 }
 
-export default React.memo(Radio)
+export default React.memo(InputRadio)
