@@ -1,4 +1,4 @@
-import { collection } from 'firebase/firestore'
+import { collection, getDocs } from 'firebase/firestore'
 import { collection as rxCollection, collectionData } from 'rxfire/firestore'
 import { map } from 'rxjs'
 import { db } from '~/firebaseSetup'
@@ -45,21 +45,27 @@ const apiGetAllSystemVariableTypes$ = () =>
     }),
   )
 
-const apiGetSystemVariables$ = (
+const apiGetSystemVariables = async (
   grid: GridSearchQueryType<SystemVariableType, SystemVariableFilterType>,
-) =>
-  rxCollection(gridSearchQuery('system-variables', grid)).pipe(
-    map(
-      (systemVariables) =>
-        systemVariables.map((systemVariable) => ({
-          key: systemVariable.id,
-          ...systemVariable.data(),
-        })) as SystemVariableType[],
-    ),
-  )
+) => {
+  const res = await getDocs(gridSearchQuery('system-variables', grid))
+
+  const result: SystemVariableType[] = []
+
+  res.forEach((d) => {
+    const item = d.data() as Omit<SystemVariableType, 'key'>
+
+    result.push({
+      key: d.id,
+      ...item,
+    })
+  })
+
+  return result
+}
 
 export default {
   apiGetProfileExtraItems$,
   apiGetAllSystemVariableTypes$,
-  apiGetSystemVariables$,
+  apiGetSystemVariables,
 }

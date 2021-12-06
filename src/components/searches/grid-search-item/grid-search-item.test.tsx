@@ -11,6 +11,7 @@ describe('Component GridSearchItem', () => {
         type="single-select"
         label="유형"
         width="5rem"
+        value="1"
         options={[
           {
             value: '1',
@@ -26,7 +27,7 @@ describe('Component GridSearchItem', () => {
     )
 
     const label = screen.getByText('유형')
-    const select = screen.getByText('전체')
+    const select = screen.getByText('옵션1')
 
     expect(label).toBeInTheDocument()
     expect(select).toBeInTheDocument()
@@ -35,7 +36,7 @@ describe('Component GridSearchItem', () => {
 
     setTimeout(() => {
       const all = screen.getAllByText('전체')[1]
-      const option1 = screen.getByText('옵션1')
+      const option1 = screen.getAllByText('옵션1')[1]
       const option2 = screen.getByText('옵션2')
 
       expect(all).toBeInTheDocument()
@@ -77,10 +78,8 @@ describe('Component GridSearchItem', () => {
     )
 
     const select = screen.getByText('옵션1')
-    const axe = screen.getByTestId('components.inputs.grid-search-item.axe')
 
     expect(select).toBeInTheDocument()
-    expect(axe).toBeInTheDocument()
 
     fireEvent.click(select)
 
@@ -100,12 +99,6 @@ describe('Component GridSearchItem', () => {
 
       setTimeout(() => {
         expect(onSelect).toHaveBeenCalled()
-
-        fireEvent.click(axe)
-
-        setTimeout(() => {
-          expect(onSelect).toHaveBeenCalledTimes(2)
-        }, 100)
       }, 100)
     }, 100)
   })
@@ -210,15 +203,13 @@ describe('Component GridSearchItem', () => {
       />,
     )
 
-    const inputStart = screen.getByText(start.format('YYYY-MM-DD'))
-    const inputEnd = screen.getByText(end.format('YYYY-MM-DD'))
-    const wave = screen.getByText('~')
+    const inputText = screen.getByText(
+      `${start.format('YYYY-MM-DD')} ~ ${end.format('YYYY-MM-DD')}`,
+    )
 
-    expect(inputStart).toBeInTheDocument()
-    expect(inputEnd).toBeInTheDocument()
-    expect(wave).toBeInTheDocument()
+    expect(inputText).toBeInTheDocument()
 
-    fireEvent.click(inputStart)
+    fireEvent.click(inputText)
 
     setTimeout(() => {
       const calContainer = screen.getByTestId('calendarPeriod.container')
@@ -230,7 +221,7 @@ describe('Component GridSearchItem', () => {
       fireEvent.click(calExterior)
 
       setTimeout(() => {
-        fireEvent.click(inputEnd)
+        fireEvent.click(inputText)
 
         setTimeout(() => {
           const newCalContainer = screen.getByTestId('calendarPeriod.container')

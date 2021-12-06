@@ -74,28 +74,12 @@ function SearchGridSearchItem({
         return options ? (
           <InputSingleSelect
             options={(
-              [
-                {
-                  value: null,
-                  label: placeholder,
-                  isSelected: !value,
-                },
-              ] as Array<{
+              options as Array<{
                 value: string | number | null
                 label: string
-                isSelected?: boolean
               }>
-            ).concat(
-              (
-                options as Array<{
-                  value: string | number | null
-                  label: string
-                }>
-              ).map((option) =>
-                option.value === value
-                  ? { ...option, isSelected: true }
-                  : option,
-              ),
+            ).map((option) =>
+              option.value === value ? { ...option, isSelected: true } : option,
             )}
             onChange={(val) => onSelect(val)}
             value={value as string | number}
@@ -110,33 +94,16 @@ function SearchGridSearchItem({
         return options ? (
           <InputMultiSelect
             options={(
-              [
-                {
-                  value: null,
-                  label: placeholder,
-                  isSelected:
-                    !value ||
-                    (Array.isArray(value) &&
-                      (value as Array<string | number | null>).length === 0),
-                },
-              ] as Array<{
+              options as Array<{
                 value: string | number | null
                 label: string
-                isSelected?: boolean
               }>
-            ).concat(
-              (
-                options as Array<{
-                  value: string | number | null
-                  label: string
-                }>
-              ).map((option) =>
-                (value as Array<string | number | null>).some(
-                  (val) => val === option.value,
-                )
-                  ? { ...option, isSelected: true }
-                  : option,
-              ),
+            ).map((option) =>
+              (value as Array<string | number | null>).some(
+                (val) => val === option.value,
+              )
+                ? { ...option, isSelected: true }
+                : option,
             )}
             onChange={(val) => onSelect(val)}
             value={value as Array<string | number>}
@@ -151,28 +118,12 @@ function SearchGridSearchItem({
         return options ? (
           <InputRadio
             options={(
-              [
-                {
-                  value: null,
-                  label: placeholder,
-                  isSelected: !value,
-                },
-              ] as Array<{
+              options as Array<{
                 value: string | number | null | boolean
                 label: string
-                isSelected?: boolean
               }>
-            ).concat(
-              (
-                options as Array<{
-                  value: string | number | null | boolean
-                  label: string
-                }>
-              ).map((option) =>
-                option.value === value
-                  ? { ...option, isSelected: true }
-                  : option,
-              ),
+            ).map((option) =>
+              option.value === value ? { ...option, isSelected: true } : option,
             )}
             onSelect={onSelect}
             value={value as string | number | boolean}
@@ -185,33 +136,16 @@ function SearchGridSearchItem({
         return options ? (
           <InputCheckbox
             options={(
-              [
-                {
-                  value: null,
-                  label: placeholder,
-                  isSelected:
-                    !value ||
-                    (Array.isArray(value) &&
-                      (value as Array<string | number | null>).length === 0),
-                },
-              ] as Array<{
+              options as Array<{
                 value: string | number | null
                 label: string
-                isSelected?: boolean
               }>
-            ).concat(
-              (
-                options as Array<{
-                  value: string | number | null
-                  label: string
-                }>
-              ).map((option) =>
-                (value as Array<string | number | null>).some(
-                  (val) => val === option.value,
-                )
-                  ? { ...option, isSelected: true }
-                  : option,
-              ),
+            ).map((option) =>
+              (value as Array<string | number | null>).some(
+                (val) => val === option.value,
+              )
+                ? { ...option, isSelected: true }
+                : option,
             )}
             onSelect={onSelect}
             value={value as Array<string | number>}
@@ -244,6 +178,7 @@ function SearchGridSearchItem({
                 ? (value[1] as undefined | Date)
                 : undefined
             }
+            format="YYYY-MM-DD"
             textColor={valueFontColor}
             placeholderColor={placeholderColor}
           />
