@@ -2,8 +2,7 @@ import { startAfter } from 'firebase/firestore'
 import moment from 'moment'
 import React from 'react'
 import api from '~/apis/system-variables'
-import { ButtonBasic } from '~/components/buttons/basic'
-import { SearchGridSearchItem } from '~/components/searches/grid-search-item'
+import { GridTopSearch } from '~/components/grids/top-search'
 import {
   SystemVariableFilterType,
   SystemVariableType,
@@ -101,74 +100,58 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
   return (
     <PageSystemVariableLayout endpoint="CONFIG">
       <div {...PageSystemVariableStyle.layout}>
-        <div {...PageSystemVariableStyle.selectContainer}>
-          <SearchGridSearchItem
-            type="single-select"
-            label="유형"
-            onSelect={(value) =>
-              setSearchInput((old) => ({
-                ...old,
-                type: value as null | undefined | string,
-              }))
-            }
-            options={options}
-            value={searchInput.type}
-            placeholder="전체"
-            width="20rem"
-            contentHeight="3rem"
-          />
-          <SearchGridSearchItem
-            type="radio"
-            label="사용여부"
-            onSelect={(value) =>
-              setSearchInput((old) => ({
-                ...old,
-                use: value as null | undefined | boolean,
-              }))
-            }
-            options={[
-              { label: '사용', value: true },
-              { label: '미사용', value: false },
-            ]}
-            value={searchInput.use}
-            placeholder="전체"
-            width="15rem"
-            contentHeight="3rem"
-          />
-          <SearchGridSearchItem
-            type="single-select"
-            label="페이지당 표출 개수"
-            onSelect={(value) =>
-              setSearchInput((old) => ({
-                ...old,
-                pageCount: value as null | undefined | number,
-              }))
-            }
-            options={[
-              { label: '10', value: 10 },
-              { label: '100', value: 100 },
-              { label: '1000', value: 1000 },
-              { label: '10000', value: 10000 },
-            ]}
-            value={searchInput.pageCount}
-            placeholder="전체"
-            width="10rem"
-            contentHeight="3rem"
-          />
-          <ButtonBasic
-            onClick={onSearch}
-            backgroundColor="main-navy"
-            fontColor="mono-white"
-            icon={{
-              isRight: true,
-              name: 'search',
-              color: 'mono-white',
-            }}
-            buttonHeight="4.7rem"
-            buttonWidth="calc(calc(100% - 45rem) - 3px)">
-            검색
-          </ButtonBasic>
-        </div>
+        <GridTopSearch
+          onSearch={onSearch}
+          searchInputs={[
+            {
+              type: 'single-select',
+              label: '유형',
+              onSelect: (value) =>
+                setSearchInput((old) => ({
+                  ...old,
+                  type: value as null | undefined | string,
+                })),
+              options,
+              value: searchInput.type,
+              placeholder: '전체',
+              width: '20rem',
+            },
+            {
+              type: 'radio',
+              label: '사용여부',
+              onSelect: (value) =>
+                setSearchInput((old) => ({
+                  ...old,
+                  use: value as null | undefined | boolean,
+                })),
+              options: [
+                { label: '사용', value: true },
+                { label: '미사용', value: false },
+              ],
+              value: searchInput.use,
+              placeholder: '전체',
+              width: '15rem',
+            },
+            {
+              type: 'single-select',
+              label: '페이지당 표출 개수',
+              onSelect: (value) =>
+                setSearchInput((old) => ({
+                  ...old,
+                  pageCount: value as null | undefined | number,
+                })),
+              options: [
+                { label: '10', value: 10 },
+                { label: '100', value: 100 },
+                { label: '1000', value: 1000 },
+                { label: '10000', value: 10000 },
+              ],
+              value: searchInput.pageCount,
+              placeholder: '전체',
+              width: '10rem',
+            },
+          ]}
+        />
       </div>
     </PageSystemVariableLayout>
   )

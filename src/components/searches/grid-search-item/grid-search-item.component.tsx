@@ -17,17 +17,17 @@ export interface SearchGridSearchItemProps {
       | null
       | boolean
       | Array<string | number | null | boolean>
-      | [Date | Date]
-      | [Date | undefined]
-      | [undefined | Date]
-      | [undefined | undefined],
+      | [Date, Date]
+      | [Date, undefined]
+      | [undefined, Date]
+      | [undefined, undefined],
   ) => void
   options?:
     | Array<{ value: string | number | null | boolean; label: string }>
-    | [Date | Date]
-    | [undefined | Date]
-    | [Date | undefined]
-    | [undefined | undefined]
+    | [Date, Date]
+    | [undefined, Date]
+    | [Date, undefined]
+    | [undefined, undefined]
   value?:
     | string
     | number
@@ -99,6 +99,7 @@ function SearchGridSearchItem({
                 label: string
               }>
             ).map((option) =>
+              value &&
               (value as Array<string | number | null>).some(
                 (val) => val === option.value,
               )
@@ -141,6 +142,7 @@ function SearchGridSearchItem({
                 label: string
               }>
             ).map((option) =>
+              value &&
               (value as Array<string | number | null>).some(
                 (val) => val === option.value,
               )
@@ -160,22 +162,22 @@ function SearchGridSearchItem({
             onChange={(date) =>
               onSelect(
                 date as
-                  | [Date | Date]
-                  | [Date | undefined]
-                  | [undefined | Date]
-                  | [undefined | undefined],
+                  | [Date, Date]
+                  | [Date, undefined]
+                  | [undefined, Date]
+                  | [undefined, undefined],
               )
             }
             date={value as undefined | Date | Array<Date | undefined>}
             range
             minDate={
-              value && Array.isArray(value)
-                ? (value[0] as undefined | Date)
+              options && Array.isArray(options)
+                ? (options[0] as undefined | Date)
                 : undefined
             }
             maxDate={
-              value && Array.isArray(value)
-                ? (value[1] as undefined | Date)
+              options && Array.isArray(options)
+                ? (options[1] as undefined | Date)
                 : undefined
             }
             format="YYYY-MM-DD"
@@ -224,7 +226,7 @@ SearchGridSearchItem.defaultProps = {
   value: undefined,
   placeholder: undefined,
   width: '5rem',
-  contentHeight: '1.5rem',
+  contentHeight: '3rem',
   backgroundColor: 'mono-pale',
   borderCSS: {
     borderStyle: 'solid',

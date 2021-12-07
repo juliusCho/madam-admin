@@ -116,7 +116,7 @@ function ButtonBasic({
 ButtonBasic.defaultProps = {
   padding: 4,
   buttonWidth: '5rem',
-  buttonHeight: '3rem',
+  buttonHeight: '4.7rem',
   fontSize: 'textMedium',
   fontColor: 'mono-black',
   backgroundColor: 'mono-white',

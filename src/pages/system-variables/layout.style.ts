@@ -11,14 +11,6 @@ const PageSystemVariableStyle = {
       pb-4
     `,
   },
-  selectContainer: {
-    className: `
-      w-full
-      flex
-      justify-between
-      items-center
-    `,
-  },
 }
 
 export default PageSystemVariableStyle
