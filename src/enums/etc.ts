@@ -6,3 +6,10 @@ export enum CHART_DATE_PICKER_OPTION {
   '6-months' = '6달',
   year = '일년',
 }
+
+export enum CRUD {
+  CREATE = 'C',
+  READ = 'R',
+  MODIFY = 'U',
+  DELETE = 'D',
+}

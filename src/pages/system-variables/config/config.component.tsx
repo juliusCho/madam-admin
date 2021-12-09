@@ -2,6 +2,7 @@ import { startAfter } from 'firebase/firestore'
 import moment from 'moment'
 import React from 'react'
 import api from '~/apis/system-variables'
+import { GridCudButtons } from '~/components/grids/cud-buttons'
 import { GridTopSearch } from '~/components/grids/top-search'
 import {
   SystemVariableFilterType,
@@ -94,6 +95,14 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
     onSearch()
   }, [])
 
+  const onSave = () => {}
+
+  const onCancel = () => {}
+
+  const onAdd = () => {}
+
+  const onDelete = () => {}
+
   console.log('list', pageList)
   console.log('list', pageCount)
 
@@ -151,6 +160,13 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
               width: '10rem',
             },
           ]}
+        />
+        <GridCudButtons
+          onSave={onSave}
+          onCancel={onCancel}
+          onAdd={onAdd}
+          onDelete={onDelete}
+          className="mt-10 mb-2"
         />
       </div>
     </PageSystemVariableLayout>
