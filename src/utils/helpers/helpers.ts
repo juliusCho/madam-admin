@@ -955,6 +955,6 @@ export const convertBorderCSSToTailwind = ({
   return `
     ${convertBorderStyleToTailwindClass(borderStyle, borderBold)}
     ${convertBorderRadiusToTailwindClass(borderRadius)}
-    ${convertColorToTailwind('border', borderColor)}
+    ${convertColorToTailwind('border', borderColor, true)}
   `
 }
