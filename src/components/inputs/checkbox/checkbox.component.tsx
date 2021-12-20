@@ -67,6 +67,7 @@ function InputCheckbox({
               color: fontColor,
               colorSelected: fontColorSelected,
             })}
+            onClick={() => onSelect(inputValue)}
           />
           {label}
         </li>

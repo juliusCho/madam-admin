@@ -110,7 +110,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
     <PageSystemVariableLayout endpoint="CONFIG">
       <div {...PageSystemVariableStyle.layout}>
         <GridTopSearch
-          onSearch={onSearch}
+          onSearch={() => onSearch()}
           searchInputs={[
             {
               type: 'single-select',

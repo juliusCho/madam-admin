@@ -74,7 +74,7 @@ GridHeader.defaultProps = {
   width: '4rem',
   backgroundColor: 'mono-lightGray',
   fontColor: 'mono-black',
-  fontSize: 'textMedium',
+  fontSize: 'textBig',
   borderCSS: {
     borderStyle: 'solid',
     borderBold: false,

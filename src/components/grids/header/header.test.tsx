@@ -13,6 +13,8 @@ describe('Components GridHeader 테스트', () => {
       expect(label).toBeInTheDocument()
       expect(label.classList.contains('bg-mono-lightGray')).toBeTruthy()
       expect(label.classList.contains('text-mono-black')).toBeTruthy()
+      expect(label.classList.contains('text-textBig')).toBeTruthy()
+      expect(label.classList.contains('font-textBig')).toBeTruthy()
       expect(label.classList.contains('border')).toBeTruthy()
       expect(label.classList.contains('border-solid')).toBeTruthy()
       expect(label.classList.contains('border-mono-black')).toBeTruthy()

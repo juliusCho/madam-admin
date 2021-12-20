@@ -61,6 +61,7 @@ function InputRadio({
             color: fontColor,
             colorSelected: fontColorSelected,
           })}
+          onClick={() => onSelect(inputValue)}
         />
         {label}
       </li>
