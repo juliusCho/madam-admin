@@ -44,8 +44,10 @@ const GridHeaderStyle = {
     return {
       className: `
         p-2
+        h-12
         flex
         items-center
+        ${clickable ? '' : 'cursor-default'}
         ${oneItemExists ? 'justify-center' : 'justify-between'}
         ${convertColorToTailwind('bg', backgroundColor, !clickable)}
         ${convertBorderCSSToTailwind(borderCSS ?? {})}

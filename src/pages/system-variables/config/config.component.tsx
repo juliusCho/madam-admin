@@ -2,6 +2,7 @@ import { startAfter } from 'firebase/firestore'
 import moment from 'moment'
 import React from 'react'
 import api from '~/apis/system-variables'
+import { GridBody } from '~/components/grids/body'
 import { GridCudButtons } from '~/components/grids/cud-buttons'
 import { GridTopSearch } from '~/components/grids/top-search'
 import {
@@ -167,6 +168,111 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
           onAdd={onAdd}
           onDelete={onDelete}
           className="mt-10 mb-2"
+        />
+        <GridBody
+          onCheck={(idx: number, newState: boolean) => {
+            console.log(
+              '🚀 ~ file: config.component.tsx ~ line 177 ~ PageSystemVariableConfig ~ idx',
+              idx,
+            )
+            console.log(
+              '🚀 ~ file: config.component.tsx ~ line 178 ~ PageSystemVariableConfig ~ newState',
+              newState,
+            )
+          }}
+          onCheckAll={() => {
+            console.log('onCheckAll')
+          }}
+          properties={[
+            {
+              key: 'type',
+              type: 'single-select',
+              label: '유형',
+              options: [
+                { value: 'POINT', label: '포인트 설정' },
+                { value: 'SYSTEM', label: '시스템 설정' },
+              ],
+              onChange: (input: string) => {
+                console.log(
+                  '🚀 ~ file: config.component.tsx ~ line 191 ~ PageSystemVariableConfig ~ input',
+                  input,
+                )
+              },
+              width: '8rem',
+              justify: 'center',
+            },
+            {
+              key: 'name',
+              type: 'text',
+              label: '변수명',
+              onChange: (input: string) => {
+                console.log(
+                  '🚀 ~ file: config.component.tsx ~ line 201 ~ PageSystemVariableConfig ~ input',
+                  input,
+                )
+              },
+              width: '8rem',
+              justify: 'start',
+            },
+            {
+              key: 'createdAt',
+              type: 'date',
+              label: '생성일시',
+              onChange: (input: Date) => {
+                console.log(
+                  '🚀 ~ file: config.component.tsx ~ line 219 ~ PageSystemVariableConfig ~ input',
+                  input,
+                )
+              },
+              format: 'YYYY-MM-DD',
+              nullable: true,
+              onSort: (sort?: 'asc' | 'desc') => {
+                console.log(
+                  '🚀 ~ file: config.component.tsx ~ line 237 ~ PageSystemVariableConfig ~ sort',
+                  sort,
+                )
+              },
+              sort: 'asc',
+              width: '8rem',
+              justify: 'center',
+            },
+          ]}
+          data={[
+            {
+              checked: true,
+              crud: 'r',
+              no: 1,
+              type: 'POINT',
+              name: 'USE_POINT_1',
+              createdAt: new Date(),
+            },
+            {
+              checked: false,
+              crud: 'd',
+              no: 2,
+              type: 'POINT',
+              name: 'USE_POINT_2',
+              createdAt: new Date(),
+            },
+            {
+              checked: false,
+              crud: 'u',
+              no: 3,
+              type: 'SYSTEM',
+              name: 'SSE',
+              createdAt: new Date(),
+            },
+            {
+              checked: false,
+              crud: 'c',
+              no: 4,
+              type: 'POINT',
+              name: 'USE_POINT_4',
+              createdAt: new Date(),
+            },
+          ]}
+          fixedColumnIndex={0}
+          className="mt-4"
         />
       </div>
     </PageSystemVariableLayout>

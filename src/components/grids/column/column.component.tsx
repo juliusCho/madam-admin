@@ -15,7 +15,14 @@ export interface GridColumnProps<
     | ((input: string[]) => void)
     | ((input: Date) => void),
 > {
-  type?: 'check' | 'text' | 'number' | 'single-select' | 'multi-select' | 'date'
+  type?:
+    | 'check'
+    | 'text'
+    | 'number'
+    | 'single-select'
+    | 'multi-select'
+    | 'date'
+    | 'crud'
   children?: ChildrenType
   options?: Array<{ value: string | number; label: string }>
   onChange?: OnChangeArgType
@@ -23,6 +30,7 @@ export interface GridColumnProps<
   format?: string
   width?: string | number
   justify?: 'center' | 'start' | 'end'
+  editable?: boolean
   backgroundColor?: TailwindColorPalette
   borderCSS?: BorderCSS
   fontSize?: TailwindFontSize
@@ -48,6 +56,7 @@ function GridColumn<
   format,
   width,
   justify,
+  editable,
   backgroundColor,
   borderCSS,
   fontSize,
@@ -150,13 +159,16 @@ function GridColumn<
           ;(onChange as (input: boolean) => void)(!value)
         }
         break
+      case 'crud':
+        break
       default:
         setEditMode(() => true)
         break
     }
   }, [type, onChange, value, editMode])
 
-  const label = React.useCallback(() => {
+  const label = React.useMemo(() => {
+    console.log('type???', type)
     switch (type) {
       case 'check':
         return (
@@ -232,6 +244,16 @@ function GridColumn<
             fontColor={fontColor}
           />
         )
+      case 'crud':
+        if (value !== 'c' && value !== 'r' && value !== 'u' && value !== 'd') {
+          return ''
+        }
+
+        return (
+          <span {...GridColumnStyle.crud(value, { fontSize, fontColor })}>
+            {value.toUpperCase()}
+          </span>
+        )
       default:
         return value as string | number
     }
@@ -286,13 +308,14 @@ function GridColumn<
       <button
         ref={containerRef}
         type="button"
-        disabled={!!onChange && (type !== 'date' || !!format)}
+        disabled={!editable}
         onClick={onClickContainer}
         {...GridColumnStyle.container({
           width,
           backgroundColor,
           borderCSS,
           clickable: !!onChange && (type !== 'date' || !!format),
+          editable,
           fontSize,
           fontColor,
           justify,
@@ -316,6 +339,7 @@ GridColumn.defaultProps = {
   checked: false,
   width: '4rem',
   justify: 'start',
+  editable: false,
   backgroundColor: 'mono-white',
   fontColor: 'mono-black',
   fontSize: 'textMedium',

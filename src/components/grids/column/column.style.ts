@@ -13,6 +13,7 @@ interface FontStyle {
 
 interface ContainerStyle extends FontStyle {
   backgroundColor?: TailwindColorPalette
+  editable?: boolean
   borderCSS?: BorderCSS
   clickable?: boolean
   justify?: 'center' | 'start' | 'end'
@@ -35,6 +36,7 @@ const GridColumnStyle = {
     backgroundColor,
     borderCSS,
     clickable,
+    editable,
     justify,
     width,
     fontSize,
@@ -45,9 +47,12 @@ const GridColumnStyle = {
     return {
       className: `
         p-0.5
+        h-12
         flex
         items-center
+        border border-solid border-mono-darkGray
         justify-${justify}
+        ${editable ? '' : 'cursor-default'}
         ${convertColorToTailwind('bg', backgroundColor, !clickable)}
         ${convertBorderCSSToTailwind(borderCSS ?? {})}
         ${convertColorToTailwind('text', fontColor, !clickable)}
@@ -84,7 +89,22 @@ const GridColumnStyle = {
       className: `
         bg-mono-white
         ${checked ? 'xi-check-square-o' : 'xi-checkbox-blank'}
-        ${convertColorToTailwind('bg', fontColor, true)}
+        ${convertColorToTailwind('text', fontColor)}
+        ${convertFontToTailwindClass(fontSize)}
+      `,
+    }
+  },
+  crud(type: 'c' | 'r' | 'u' | 'd', font: FontStyle) {
+    const { fontSize } = font
+
+    return {
+      className: `
+        rounded-full
+        flex
+        justify-center
+        items-center
+        p-1
+        ${type === 'r' ? '' : `crud-${type}`}
         ${convertFontToTailwindClass(fontSize)}
       `,
     }

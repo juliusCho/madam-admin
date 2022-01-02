@@ -49,14 +49,14 @@ function GridHeader({
       onClick={onClick}
       data-testid="components.grids.header.container">
       {!!children && !!sort && <span />}
-      {children || (
-        <span
+      {children ?? (
+        <i
           {...GridHeaderStyle.checkbox({ fontSize, fontColor, checked })}
           data-testid="components.grids.header.checkbox"
         />
       )}
       {!!children && !!sort && (
-        <span
+        <i
           {...GridHeaderStyle.sort({ fontSize, type: sort })}
           data-testid="components.grids.header.sort-arrow"
         />

@@ -111,3 +111,44 @@ body {
 .fade-out-half {
   animation: fadeOutEighty 0.5s ease;
 }
+
+@keyframes crudC {
+  0% {
+    border: 1px solid #333;
+    color: #fce8b6;
+    background-color: #3067a8;
+  }
+  100$ {
+    color: #333;
+  }
+}
+@keyframes crudU {
+  0% {
+    border: 1px solid #333;
+    color: #fce8b6;
+    background-color: #52c777;
+  }
+  100$ {
+    color: #333;
+  }
+}
+@keyframes crudD {
+  0% {
+    border: 1px solid #333;
+    color: #fce8b6;
+    background-color: #f85a5e;
+  }
+  100$ {
+    color: #333;
+  }
+}
+
+.crud-c {
+  animation: crudC 1s linear infinite;
+}
+.crud-u {
+  animation: crudU 1s linear infinite;
+}
+.crud-d {
+  animation: crudD 1s linear infinite;
+}
