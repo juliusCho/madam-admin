@@ -86,6 +86,10 @@ function InputDateTime({
       return
     }
 
+    if (inputDate === dateValue) {
+      return
+    }
+
     setDateValue(inputDate)
     onChange(inputDate)
   }

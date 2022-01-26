@@ -1,15 +1,19 @@
 import { startAfter } from 'firebase/firestore'
 import moment from 'moment'
 import React from 'react'
+import Recoil from 'recoil'
 import api from '~/apis/system-variables'
 import { GridBody } from '~/components/grids/body'
 import { GridCudButtons } from '~/components/grids/cud-buttons'
 import { GridTopSearch } from '~/components/grids/top-search'
+import { CRUD } from '~/enums'
 import {
   SystemVariableFilterType,
   SystemVariableType,
 } from '~/models/system-variable'
 import PageSystemVariableLayout from '~/pages/system-variables/layout.component'
+import adminGlobalStates from '~/states/admin'
+import { GridData } from '~/types'
 import { WhereFilterType } from '~/types/firestore'
 import PageSystemVariableStyle from '../layout.style'
 
@@ -17,6 +21,7 @@ export interface PageSystemVariableConfigProps {}
 
 export default function PageSystemVariableConfig({}: PageSystemVariableConfigProps) {
   const [searchInput, setSearchInput] = React.useState<{
+    adminKey?: string | null
     type?: string | null
     use?: boolean | null
     page: number
@@ -25,7 +30,12 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
   const [options, setOptions] = React.useState<
     Array<{ label: string; value: string }>
   >([])
-  const [list, setList] = React.useState<SystemVariableType[]>([])
+  const [list, setList] = React.useState<
+    GridData<SystemVariableType & { adminName?: string }>[]
+  >([])
+  const [loading, setLoading] = React.useState(false)
+
+  const adminList = Recoil.useRecoilValue(adminGlobalStates.adminListState)
 
   React.useLayoutEffect(() => {
     const subscription = api.apiGetAllSystemVariableTypes$().subscribe({
@@ -65,10 +75,16 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
       column: keyof SystemVariableType
       type: 'asc' | 'desc'
     }) => {
+      setLoading(() => true)
+
       const filter: WhereFilterType<SystemVariableFilterType>[] = []
 
       if (typeof searchInput.type === 'string') {
         filter.push(['type', '==', searchInput.type])
+      }
+
+      if (typeof searchInput.adminKey === 'string') {
+        filter.push(['adminKey', '==', searchInput.adminKey])
       }
 
       if (typeof searchInput.use === 'boolean') {
@@ -87,9 +103,20 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
 
       setSearchInput((old) => ({ ...old, page: 1 }))
 
-      setList(() => result)
+      setList(() =>
+        result.map((item, idx) => ({
+          ...item,
+          check: false,
+          crud: CRUD.READ,
+          no: idx + 1 + Number(searchInput.pageCount) * (searchInput.page - 1),
+          adminName: adminList.find((admin) => admin.key === item.adminKey)
+            ?.name,
+        })),
+      )
+
+      setLoading(() => false)
     },
-    [],
+    [searchInput],
   )
 
   React.useEffect(() => {
@@ -111,7 +138,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
     <PageSystemVariableLayout endpoint="CONFIG">
       <div {...PageSystemVariableStyle.layout}>
         <GridTopSearch
-          onSearch={() => onSearch()}
+          onSearch={onSearch}
           searchInputs={[
             {
               type: 'single-select',
@@ -125,6 +152,22 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
               value: searchInput.type,
               placeholder: '전체',
               width: '20rem',
+            },
+            {
+              type: 'single-select',
+              label: '최종 수정자',
+              onSelect: (value) =>
+                setSearchInput((old) => ({
+                  ...old,
+                  adminKey: value as null | undefined | string,
+                })),
+              options: adminList.map((admin) => ({
+                value: admin.key,
+                label: admin.name ?? admin.email,
+              })),
+              value: searchInput.adminKey,
+              placeholder: '전체',
+              width: '15rem',
             },
             {
               type: 'radio',
@@ -161,6 +204,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
               width: '10rem',
             },
           ]}
+          className="z-20"
         />
         <GridCudButtons
           onSave={onSave}
@@ -170,6 +214,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
           className="mt-10 mb-2"
         />
         <GridBody
+          loading={loading}
           onCheck={(idx: number, newState: boolean) => {
             console.log(
               '🚀 ~ file: config.component.tsx ~ line 177 ~ PageSystemVariableConfig ~ idx',
@@ -188,10 +233,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
               key: 'type',
               type: 'single-select',
               label: '유형',
-              options: [
-                { value: 'POINT', label: '포인트 설정' },
-                { value: 'SYSTEM', label: '시스템 설정' },
-              ],
+              options,
               onChange: (input: string) => {
                 console.log(
                   '🚀 ~ file: config.component.tsx ~ line 191 ~ PageSystemVariableConfig ~ input',
@@ -215,17 +257,28 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
               justify: 'start',
             },
             {
-              key: 'createdAt',
-              type: 'date',
-              label: '생성일시',
-              onChange: (input: Date) => {
+              key: 'value',
+              type: 'text',
+              label: '값',
+              onChange: (input: number) => {
                 console.log(
-                  '🚀 ~ file: config.component.tsx ~ line 219 ~ PageSystemVariableConfig ~ input',
+                  '🚀 ~ file: config.component.tsx ~ line 201 ~ PageSystemVariableConfig ~ input',
                   input,
                 )
               },
-              format: 'YYYY-MM-DD',
-              nullable: true,
+              width: '8rem',
+              justify: 'start',
+            },
+            {
+              key: 'use',
+              type: 'check',
+              label: '사용여부',
+              onChange: (input: boolean) => {
+                console.log(
+                  '🚀 ~ file: config.component.tsx ~ line 201 ~ PageSystemVariableConfig ~ input',
+                  input,
+                )
+              },
               onSort: (sort?: 'asc' | 'desc') => {
                 console.log(
                   '🚀 ~ file: config.component.tsx ~ line 237 ~ PageSystemVariableConfig ~ sort',
@@ -236,43 +289,51 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
               width: '8rem',
               justify: 'center',
             },
+            {
+              key: 'adminName',
+              type: 'text',
+              label: '최종 수정자',
+              width: '8rem',
+              justify: 'center',
+              uneditable: true,
+            },
+            {
+              key: 'createdAt',
+              type: 'date',
+              label: '생성일시',
+              format: 'YYYY-MM-DD HH:mm:ss',
+              onSort: (sort?: 'asc' | 'desc') => {
+                console.log(
+                  '🚀 ~ file: config.component.tsx ~ line 237 ~ PageSystemVariableConfig ~ sort',
+                  sort,
+                )
+              },
+              sort: 'asc',
+              width: '8rem',
+              justify: 'center',
+              uneditable: true,
+            },
+            {
+              key: 'modifiedAt',
+              type: 'date',
+              label: '수정일시',
+              format: 'YYYY-MM-DD HH:mm:ss',
+              onSort: (sort?: 'asc' | 'desc') => {
+                console.log(
+                  '🚀 ~ file: config.component.tsx ~ line 237 ~ PageSystemVariableConfig ~ sort',
+                  sort,
+                )
+              },
+              sort: 'asc',
+              width: '8rem',
+              justify: 'center',
+              uneditable: true,
+            },
           ]}
-          data={[
-            {
-              checked: true,
-              crud: 'r',
-              no: 1,
-              type: 'POINT',
-              name: 'USE_POINT_1',
-              createdAt: new Date(),
-            },
-            {
-              checked: false,
-              crud: 'd',
-              no: 2,
-              type: 'POINT',
-              name: 'USE_POINT_2',
-              createdAt: new Date(),
-            },
-            {
-              checked: false,
-              crud: 'u',
-              no: 3,
-              type: 'SYSTEM',
-              name: 'SSE',
-              createdAt: new Date(),
-            },
-            {
-              checked: false,
-              crud: 'c',
-              no: 4,
-              type: 'POINT',
-              name: 'USE_POINT_4',
-              createdAt: new Date(),
-            },
-          ]}
+          data={pageList}
           fixedColumnIndex={0}
           className="mt-4"
+          height="calc(100% - 10.699rem)"
         />
       </div>
     </PageSystemVariableLayout>

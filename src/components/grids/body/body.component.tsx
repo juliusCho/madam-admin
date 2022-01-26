@@ -1,4 +1,6 @@
 import React from 'react'
+import { Loading } from '~/components/etc/loading'
+import { CRUD } from '~/enums'
 import { GridColumn } from '../column'
 import { GridHeader } from '../header'
 import GridBodyStyle from './body.style'
@@ -25,29 +27,27 @@ type Properties = {
   onSort?: (newState?: 'asc' | 'desc') => void
   nullable?: boolean
   sort?: 'asc' | 'desc'
-  sortable?: boolean
   format?: string
   justify?: 'center' | 'start' | 'end'
   uneditable?: boolean
-  checked?: boolean
 }
 
+type Value = boolean | CRUD | number | string | Date | undefined
+
 interface Cell extends Properties {
-  value: boolean | 'c' | 'r' | 'u' | 'd' | number | string | Date
+  value: Value
 }
 
 export interface GridBodyProps {
   onCheck: (idx: number, newState: boolean) => void
   onCheckAll: () => void
   properties: Properties[]
-  data: Record<
-    string,
-    boolean | 'c' | 'r' | 'u' | 'd' | number | string | Date
-  >[]
+  data: Record<string, Value>[]
   checkedAll?: boolean
   fixedColumnIndex?: number
   editable?: boolean
   height?: string | number
+  loading?: boolean
   style?: React.CSSProperties
   className?: string
 }
@@ -61,46 +61,39 @@ function GridBody({
   fixedColumnIndex,
   editable,
   height,
+  loading,
   style,
   className,
 }: GridBodyProps) {
   const props = React.useMemo(() => {
+    const numColumn = {
+      key: 'no',
+      type: 'number',
+      label: 'No',
+      width: '4rem',
+      justify: 'center',
+      uneditable: true,
+    }
+
     return editable
       ? ([
           {
             key: 'check',
             type: 'check',
             justify: 'center',
-            width: '4rem',
+            width: '3rem',
           },
           {
             key: 'crud',
             type: 'crud',
             justify: 'center',
-            width: '4rem',
+            width: '3.5rem',
             uneditable: true,
           },
-          {
-            key: 'number',
-            type: 'number',
-            label: 'No',
-            width: '4rem',
-            justify: 'center',
-            uneditable: true,
-          },
+          numColumn,
           ...properties,
         ] as Properties[])
-      : ([
-          {
-            key: 'number',
-            type: 'number',
-            label: 'No',
-            width: '4rem',
-            justify: 'center',
-            uneditable: true,
-          },
-          ...properties,
-        ] as Properties[])
+      : ([numColumn] as Properties[])
   }, [properties, editable])
 
   const swapSort = React.useCallback((sort?: 'asc' | 'desc') => {
@@ -121,10 +114,20 @@ function GridBody({
       switch (prop.type) {
         case 'check':
           return (
-            <GridHeader key={key} checked={checkedAll} onClick={onCheckAll} />
+            <GridHeader
+              key={key}
+              checked={checkedAll}
+              onClick={prop.key === 'check' ? onCheckAll : undefined}
+              width={prop.width}>
+              {prop.label}
+            </GridHeader>
           )
         case 'crud':
-          return <GridHeader key={key}>CRUD</GridHeader>
+          return (
+            <GridHeader key={key} width="3.5rem">
+              CRUD
+            </GridHeader>
+          )
         case 'number':
         case 'date':
           if (prop.onSort) {
@@ -133,7 +136,6 @@ function GridBody({
                 key={key}
                 width={prop.width}
                 sort={prop.sort}
-                sortable={prop.sortable}
                 onClick={() => {
                   if (prop.onSort) {
                     prop.onSort(swapSort(prop.sort))
@@ -144,7 +146,11 @@ function GridBody({
             )
           }
 
-          return <GridHeader key={key}>{prop.label}</GridHeader>
+          return (
+            <GridHeader key={key} width={prop.width}>
+              {prop.label}
+            </GridHeader>
+          )
         default:
           return (
             <GridHeader key={key} width={prop.width}>
@@ -157,52 +163,83 @@ function GridBody({
   )
 
   const fixedLength = React.useMemo(() => {
-    return `calc(${props
+    return `${props
       .filter((_, idx) => idx <= Number(fixedColumnIndex))
-      .map((property) => property.width)
-      .join('+')})`
+      .map((property) =>
+        Number(String(property.width).replace('px', '').replace('rem', '')),
+      )
+      .reduce((a, b) => a + b)}rem`
   }, [props, fixedColumnIndex])
 
   const unfixedLength = React.useMemo(() => {
-    return `calc(${props
+    return `${props
       .filter((_, idx) => idx > Number(fixedColumnIndex))
-      .map((property) => property.width)
-      .join('+')})`
+      .map((property) =>
+        Number(String(property.width).replace('px', '').replace('rem', '')),
+      )
+      .reduce((a, b) => a + b)}rem`
   }, [props, fixedColumnIndex])
 
-  const fixedCells = React.useMemo(() => {
-    return data.map((datum, rowIdx) =>
-      Object.values(datum)
-        .filter((_, idx) => idx <= Number(fixedColumnIndex))
-        .map((value, idx) => {
-          if (idx === 0) {
-            return {
-              ...props[idx],
-              checked: value,
-              onChange: (newValue?: boolean) => onCheck(rowIdx, !!newValue),
+  const constructedData = React.useMemo(
+    () =>
+      data.map((datum) => {
+        const result: Record<string, Value> = {}
+
+        props.forEach((property) => {
+          result[property.key] = datum[property.key]
+        })
+
+        return result
+      }),
+    [data, props],
+  )
+
+  const fixedCells = React.useMemo(
+    () =>
+      constructedData.map((datum, rowIdx) =>
+        Object.values(datum)
+          .filter((_, idx) => idx <= Number(fixedColumnIndex))
+          .map((value, idx) => {
+            if (idx === 0) {
+              return {
+                ...props[idx],
+                value,
+                onChange: (newValue?: boolean) => onCheck(rowIdx, !!newValue),
+              }
             }
-          }
 
-          return {
-            value,
-            ...props[idx],
-          }
-        }),
-    ) as Array<Cell[]>
-  }, [data, props, fixedColumnIndex, onCheck])
+            return {
+              value,
+              ...props[idx],
+            }
+          }),
+      ) as Array<Cell[]>,
+    [constructedData, props, fixedColumnIndex, onCheck],
+  )
 
-  const unfixedCells = React.useMemo(() => {
-    return data.map((datum) =>
-      Object.values(datum)
-        .filter((_, idx) => idx > Number(fixedColumnIndex))
-        .map((value, idx) => {
-          return {
-            value,
-            ...props[idx + Number(fixedColumnIndex) + (editable ? 1 : 0)],
-          }
-        }),
-    ) as Array<Cell[]>
-  }, [data, props, fixedColumnIndex, editable])
+  const unfixedCells = React.useMemo(
+    () =>
+      constructedData.map((datum) =>
+        Object.values(datum)
+          .filter((_, idx) => idx > Number(fixedColumnIndex))
+          .map((value, idx) => {
+            return {
+              value,
+              ...props[idx + Number(fixedColumnIndex) + (editable ? 1 : 0)],
+            }
+          }),
+      ) as Array<Cell[]>,
+    [constructedData, props, fixedColumnIndex, editable],
+  )
+
+  const fixedHeaders = React.useMemo(
+    () => props.filter((_, idx) => idx <= Number(fixedColumnIndex)),
+    [props, fixedColumnIndex],
+  )
+  const unfixedHeaders = React.useMemo(
+    () => props.filter((_, idx) => idx > Number(fixedColumnIndex)),
+    [props, fixedColumnIndex],
+  )
 
   const getOptionValue = React.useCallback((cell: Cell) => {
     if (cell.type === 'single-select') {
@@ -247,15 +284,20 @@ function GridBody({
             <GridColumn
               key={key}
               type="check"
-              checked={cell.checked}
-              onChange={cell.onChange}
+              onChange={
+                cell.key === 'check'
+                  ? (newState: boolean) => onCheck(idx, newState)
+                  : cell.onChange
+              }
               justify="center"
               editable
-            />
+              width={cell.width}>
+              {cell.value}
+            </GridColumn>
           )
         case 'crud':
           return (
-            <GridColumn key={key} type="crud" justify="center">
+            <GridColumn key={key} type="crud" justify="center" width="3.5rem">
               {cell.value}
             </GridColumn>
           )
@@ -270,17 +312,21 @@ function GridBody({
           return <GridColumn key={key}>{cell.value}</GridColumn>
       }
     },
-    [getOptionValue],
+    [getOptionValue, onCheck],
   )
-
-  console.log('unfixedCells', unfixedCells)
 
   return (
     <div
       {...GridBodyStyle.container({ height, style, className })}
       data-testid="components.grids.body.container">
+      <Loading loading={!!loading} style={{ height: '100%', bottom: 0 }} />
       <div {...GridBodyStyle.headerContainer}>
-        {props.map((prop, idx) => gridHeader(prop, idx))}
+        <div {...GridBodyStyle.fixedArea(fixedLength, true)}>
+          {fixedHeaders.map((prop, idx) => gridHeader(prop, idx))}
+        </div>
+        <div {...GridBodyStyle.unfixedArea(unfixedLength, true)}>
+          {unfixedHeaders.map((prop, idx) => gridHeader(prop, idx))}
+        </div>
       </div>
       <div {...GridBodyStyle.columnContainer}>
         <div {...GridBodyStyle.fixedArea(fixedLength)}>
@@ -315,6 +361,7 @@ GridBody.defaultProps = {
   fixedColumnIndex: 0,
   editable: true,
   height: '100%',
+  loading: false,
   style: undefined,
   className: undefined,
 }

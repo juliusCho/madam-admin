@@ -3,6 +3,7 @@ import React from 'react'
 import { InputMultiSelect } from '~/components/inputs/multi-select'
 import { InputSingleSelect } from '~/components/inputs/single-select'
 import { ModalDateTimePicker } from '~/components/modals/date-picker'
+import { CRUD } from '~/enums'
 import { BorderCSS, TailwindColorPalette, TailwindFontSize } from '~/types'
 import GridColumnStyle from './column.style'
 
@@ -65,7 +66,7 @@ function GridColumn<
   className,
 }: GridColumnProps<ChildrenType, OnChangeArgType>) {
   const [editMode, setEditMode] = React.useState(false)
-  const [value, setValue] = React.useState<string | boolean | number>('')
+  const [value, setValue] = React.useState<string | boolean | number | CRUD>('')
 
   const containerRef = React.createRef<HTMLButtonElement>()
 
@@ -155,6 +156,14 @@ function GridColumn<
 
     switch (type) {
       case 'check':
+        console.log(
+          '🚀 ~ file: column.component.tsx ~ line 160 ~ onClickContainer ~ value',
+          typeof value,
+        )
+        console.log(
+          '🚀 ~ file: column.component.tsx ~ line 160 ~ onClickContainer ~ onChange',
+          onChange,
+        )
         if (onChange && typeof value === 'boolean') {
           ;(onChange as (input: boolean) => void)(!value)
         }
@@ -168,13 +177,11 @@ function GridColumn<
   }, [type, onChange, value, editMode])
 
   const label = React.useMemo(() => {
-    console.log('type???', type)
     switch (type) {
       case 'check':
         return (
           <i
             {...GridColumnStyle.checkbox({
-              fontSize,
               fontColor,
               checked: typeof value === 'boolean' ? value : false,
             })}
@@ -245,17 +252,29 @@ function GridColumn<
           />
         )
       case 'crud':
-        if (value !== 'c' && value !== 'r' && value !== 'u' && value !== 'd') {
+        if (
+          typeof value !== 'string' ||
+          !Object.values(CRUD).includes(value as CRUD)
+        ) {
           return ''
         }
 
         return (
-          <span {...GridColumnStyle.crud(value, { fontSize, fontColor })}>
+          <span
+            {...GridColumnStyle.crud(value as CRUD, { fontSize, fontColor })}>
             {value.toUpperCase()}
           </span>
         )
       default:
         return value as string | number
+
+      // if (!editMode) {
+      //   return value as string | number
+      // }
+
+      // return (
+
+      // )
     }
   }, [
     value,
@@ -267,6 +286,7 @@ function GridColumn<
     options,
     nullable,
     convertChildrenToValue,
+    editMode,
   ])
 
   const changeDate = (date?: Date | Array<Date | undefined>) => {
@@ -336,7 +356,6 @@ GridColumn.defaultProps = {
   onChange: undefined,
   nullable: false,
   format: 'YYYY-MM-DD HH:mm:ss',
-  checked: false,
   width: '4rem',
   justify: 'start',
   editable: false,

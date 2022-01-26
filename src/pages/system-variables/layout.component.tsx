@@ -64,7 +64,7 @@ function PageSystemVariableLayout({
           }
           height={AppPageStyle.tabSecondHeight}
           {...AppPageStyle.layoutTabSecondDepthProps}>
-          <div className="fade-in">{children}</div>
+          <div className="fade-in h-full">{children}</div>
         </LayoutTab>
       </LayoutTab>
     </>

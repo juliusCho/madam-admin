@@ -1,6 +1,7 @@
 import React from 'react'
 import { Route, Switch, useHistory } from 'react-router-dom'
 import Recoil from 'recoil'
+import apiAdmin from '~/apis/admin'
 import { ButtonToTop } from '~/components/buttons/to-top'
 import { Loading } from '~/components/etc/loading'
 import { Alert } from '~/components/modals/alert'
@@ -35,6 +36,9 @@ import customHooks from '~/utils/hooks'
 export default function App() {
   const isMobile = Recoil.useRecoilValue(deviceGlobalStates.isMobile)
   const admin = Recoil.useRecoilValue(adminGlobalStates.adminState)
+  const setAdminList = Recoil.useSetRecoilState(
+    adminGlobalStates.adminListState,
+  )
   const loading = Recoil.useRecoilValue(etcGlobalStates.loadingState)
   const { show, msg, type, time } = Recoil.useRecoilValue(
     etcGlobalStates.alertState,
@@ -50,7 +54,7 @@ export default function App() {
   const history = useHistory()
 
   React.useEffect(() => {
-    if (!isMounted()) return
+    if (!isMounted()) return () => {}
 
     if (admin === null) {
       if (auth?.signOut) {
@@ -58,9 +62,17 @@ export default function App() {
       }
 
       history.push(ROUTER_PATH.LOGIN)
-    } else {
-      history.push(ROUTER_PATH.DASHBOARD.APP_USE)
+
+      return () => {}
     }
+    history.push(ROUTER_PATH.DASHBOARD.APP_USE)
+
+    const subscription = apiAdmin.apiAdminList$().subscribe({
+      next: (list) => setAdminList(() => list),
+      error: () => setAdminList(() => []),
+    })
+
+    return () => subscription.unsubscribe()
   }, [isMounted, admin, auth?.signOut, history.push, ROUTER_PATH])
 
   return (

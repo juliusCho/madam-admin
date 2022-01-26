@@ -26,17 +26,17 @@ describe('API apiSession', () => {
 
   xit('apiAuthState$', (done) => {
     api.apiAuthState$().subscribe((data) => {
-      expect(data).toBe(endpoints.test.uid)
+      expect(data?.key).toBe(endpoints.test.key)
       done()
     })
   })
 
   xit('apiChangeName$', (done) => {
-    const { uid, name, email } = endpoints.test
+    const { key, name, email } = endpoints.test
 
     api
       .apiChangeName$({
-        uid,
+        key,
         name,
         email,
       })
@@ -57,7 +57,7 @@ describe('API apiSession', () => {
       .add(done)
   })
 
-  it('should trigger an authenticated state', (done) => {
+  xit('should trigger an authenticated state', (done) => {
     authState(auth)
       .pipe(skip(1), take(1))
       .subscribe((state) => {
@@ -70,13 +70,13 @@ describe('API apiSession', () => {
   })
 
   xit('get admin', (done) => {
-    docData(doc(db, `admins/${endpoints.test.uid}`))
+    docData(doc(db, `admins/${endpoints.test.key}`))
       .pipe(
         map((docUser) => {
           if (!docUser) return null
 
           const { email, name } = docUser
-          return { uid: endpoints.test.uid, email, name }
+          return { key: endpoints.test.key, email, name }
         }),
       )
       .subscribe((user) => {

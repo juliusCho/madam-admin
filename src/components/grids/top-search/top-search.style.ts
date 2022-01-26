@@ -14,7 +14,7 @@ const GridTopSearchStyle = {
       style,
     }
   },
-  button(searchInputCount: number) {
+  button(inputWidths: Array<string | number>) {
     return {
       backgroundColor: 'main-navy' as TailwindColorPalette,
       fontColor: 'mono-white' as TailwindColorPalette,
@@ -24,7 +24,7 @@ const GridTopSearchStyle = {
         color: 'mono-white' as TailwindColorPalette,
       },
       buttonHeight: '4.7rem',
-      buttonWidth: `calc(calc(100% - 45rem) - ${searchInputCount}px)`,
+      buttonWidth: `calc(100% - ${inputWidths.join(' - 1px - ')})`,
     }
   },
 }

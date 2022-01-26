@@ -1,4 +1,5 @@
 import { CSSProperties } from 'react'
+import { CRUD } from '~/enums'
 import { BorderCSS, TailwindColorPalette, TailwindFontSize } from '~/types'
 import {
   convertBorderCSSToTailwind,
@@ -84,17 +85,17 @@ const GridColumnStyle = {
       `,
     }
   },
-  checkbox({ fontSize, fontColor, checked }: CheckStyle) {
+  checkbox({ fontColor, checked }: CheckStyle) {
     return {
       className: `
         bg-mono-white
         ${checked ? 'xi-check-square-o' : 'xi-checkbox-blank'}
         ${convertColorToTailwind('text', fontColor)}
-        ${convertFontToTailwindClass(fontSize)}
+        text-titleMedium
       `,
     }
   },
-  crud(type: 'c' | 'r' | 'u' | 'd', font: FontStyle) {
+  crud(type: CRUD, font: FontStyle) {
     const { fontSize } = font
 
     return {
@@ -104,9 +105,13 @@ const GridColumnStyle = {
         justify-center
         items-center
         p-1
-        ${type === 'r' ? '' : `crud-${type}`}
+        ${type === CRUD.READ ? '' : `crud-${type}`}
         ${convertFontToTailwindClass(fontSize)}
       `,
+      style: {
+        paddingLeft: '0.35rem',
+        paddingRight: '0.35rem',
+      },
     }
   },
 }

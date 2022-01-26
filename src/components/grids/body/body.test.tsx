@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react'
+import { CRUD } from '~/enums'
 import GridBody from './body.component'
 
 describe('Component GridBody testing', () => {
@@ -47,7 +48,7 @@ describe('Component GridBody testing', () => {
       data={[
         {
           checked: true,
-          crud: 'r',
+          crud: CRUD.READ,
           no: 1,
           type: 'POINT',
           name: 'USE_POINT_1',
@@ -55,7 +56,7 @@ describe('Component GridBody testing', () => {
         },
         {
           checked: false,
-          crud: 'd',
+          crud: CRUD.DELETE,
           no: 2,
           type: 'POINT',
           name: 'USE_POINT_2',
@@ -63,7 +64,7 @@ describe('Component GridBody testing', () => {
         },
         {
           checked: false,
-          crud: 'u',
+          crud: CRUD.MODIFY,
           no: 3,
           type: 'SYSTEM',
           name: 'SSE',
@@ -71,7 +72,7 @@ describe('Component GridBody testing', () => {
         },
         {
           checked: false,
-          crud: 'c',
+          crud: CRUD.CREATE,
           no: 4,
           type: 'POINT',
           name: 'USE_POINT_4',

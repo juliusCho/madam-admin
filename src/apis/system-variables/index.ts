@@ -11,6 +11,7 @@ import {
   SystemVariableType,
 } from '~/models/system-variable'
 import { GridSearchQueryType } from '~/types/firestore'
+import { convertFirestoreDataToModel } from '~/utils/helpers'
 import { gridSearchQuery } from '..'
 
 const apiGetProfileExtraItems$ = (
@@ -53,11 +54,13 @@ const apiGetSystemVariables = async (
   const result: SystemVariableType[] = []
 
   res.forEach((d) => {
-    const item = d.data() as Omit<SystemVariableType, 'key'>
+    const item = convertFirestoreDataToModel(
+      d.data() as Omit<SystemVariableType, 'key'>,
+    )
 
     result.push({
-      key: d.id,
       ...item,
+      key: d.id,
     })
   })
 

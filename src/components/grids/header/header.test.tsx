@@ -35,7 +35,7 @@ describe('Components GridHeader 테스트', () => {
     })
 
     const { getByText, unmount } = render(
-      <GridHeader sort={sort} sortable onClick={onClick}>
+      <GridHeader sort={sort} onClick={onClick}>
         유형
       </GridHeader>,
     )

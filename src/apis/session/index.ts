@@ -6,14 +6,14 @@ import { first, map, switchMap } from 'rxjs'
 import auth, { db } from '~/firebaseSetup'
 import { AdminType } from '~/models/admin'
 
-const mapDocUser = (uid: string, docUser: DocumentData) => {
+const mapDocUser = (key: string, docUser: DocumentData) => {
   if (!docUser) {
     return null
   }
 
   const { email, name } = docUser
 
-  return { uid, email, name }
+  return { key, email, name }
 }
 
 const apiAuthState$ = () =>
@@ -32,12 +32,12 @@ const apiAuthState$ = () =>
   )
 
 const apiChangeName$ = (user: AdminType) => {
-  const adminsDocRef = doc(db, `admins/${user.uid}`)
+  const adminsDocRef = doc(db, `admins/${user.key}`)
   updateDoc(adminsDocRef, { name: user.name ?? '' })
 
   return docData(adminsDocRef).pipe(
     first(),
-    map((docUser) => mapDocUser(user.uid, docUser)),
+    map((docUser) => mapDocUser(user.key, docUser)),
   )
 }
 

@@ -11,4 +11,5 @@ export type SystemVariableType = {
 export type SystemVariableFilterType = {
   type?: null | string
   use?: null | boolean
+  adminKey?: null | string
 }

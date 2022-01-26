@@ -10,6 +10,12 @@ const adminState = Recoil.atom<AdminType | null>({
   effects_UNSTABLE: [persistAtom],
 })
 
+const adminListState = Recoil.atom<AdminType[]>({
+  key: 'adminListState',
+  default: [],
+})
+
 export default {
   adminState,
+  adminListState,
 }

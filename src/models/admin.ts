@@ -1,5 +1,5 @@
 export type AdminType = {
   email: string
-  uid: string
+  key: string
   name?: string
 }

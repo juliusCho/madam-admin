@@ -11,7 +11,7 @@ export default {
   },
   snsKeySecret: process.env.REACT_APP_SNS_KEY_SECRET ?? '',
   test: {
-    uid: process.env.REACT_APP_TEST_UID ?? '',
+    key: process.env.REACT_APP_TEST_KEY ?? '',
     email: process.env.REACT_APP_TEST_EMAIL ?? '',
     name: process.env.REACT_APP_TEST_NAME ?? '',
     password: process.env.REACT_APP_TEST_PW ?? '',

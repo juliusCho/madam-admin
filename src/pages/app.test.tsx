@@ -29,7 +29,7 @@ describe('app 테스트', () => {
     default: false,
   })
 
-  const testUser = { email: 'test', uid: 'test', name: 'test' }
+  const testUser = { email: 'test', key: 'test', name: 'test' }
 
   it('recoil state', () => {
     const initialSnapshot = Recoil.snapshot_UNSTABLE()

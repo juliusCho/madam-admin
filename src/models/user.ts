@@ -1,7 +1,7 @@
 import { USER_STATUS } from '~/enums'
 
 export type UserType = {
-  uid: string
+  key: string
   email?: string
   phone?: string
   password?: string

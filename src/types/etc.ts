@@ -1,3 +1,5 @@
+import { CRUD } from '~/enums'
+
 export type ScreenOptionType =
   | 'mobile'
   | 'smallScreen'
@@ -106,4 +108,10 @@ export type BorderCSS = {
   borderBold?: boolean
   borderRadius?: BorderRadius
   borderColor?: TailwindColorPalette
+}
+
+export type GridData<T> = T & {
+  check: boolean
+  crud: CRUD
+  no: number
 }

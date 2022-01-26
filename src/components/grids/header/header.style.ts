@@ -61,13 +61,13 @@ const GridHeaderStyle = {
       },
     }
   },
-  checkbox({ fontSize, fontColor, checked }: CheckStyle) {
+  checkbox({ fontColor, checked }: CheckStyle) {
     return {
       className: `
         bg-mono-white
         ${checked ? 'xi-check-square-o' : 'xi-checkbox-blank'}
         ${convertColorToTailwind('bg', fontColor, true)}
-        ${convertFontToTailwindClass(fontSize)}
+        text-titleMedium
       `,
     }
   },

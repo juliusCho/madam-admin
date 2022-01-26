@@ -285,6 +285,8 @@ function SearchChartDate({
     (optionType: ChartDatePickerOptionType) => {
       setShowPickerOption(() => false)
 
+      if (type === optionType) return
+
       let newDate: Date | undefined | Array<Date | undefined>
 
       switch (optionType) {
@@ -345,6 +347,10 @@ function SearchChartDate({
           date={date}
           changeDate={(inputDate?: Date | Array<Date | undefined>) => {
             setShowPicker(false)
+            if (date === inputDate) {
+              return
+            }
+
             onChange(inputDate)
           }}
           isOpen={showPicker}

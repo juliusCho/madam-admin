@@ -28,7 +28,9 @@ function GridTopSearch({
       ))}
       <ButtonBasic
         onClick={onSearch}
-        {...GridTopSearchStyle.button(searchInputs.length)}>
+        {...GridTopSearchStyle.button(
+          searchInputs.map((searchInput) => searchInput.width ?? '0rem'),
+        )}>
         검색
       </ButtonBasic>
     </div>

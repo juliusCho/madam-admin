@@ -5,7 +5,6 @@ import GridHeaderStyle from './header.style'
 export interface GridHeaderProps {
   children?: string
   sort?: 'asc' | 'desc'
-  sortable?: boolean
   onClick?: () => void
   checked?: boolean
   width?: string | number
@@ -20,7 +19,6 @@ export interface GridHeaderProps {
 function GridHeader({
   children,
   sort,
-  sortable,
   onClick,
   checked,
   width,
@@ -34,7 +32,7 @@ function GridHeader({
   return (
     <button
       type="button"
-      disabled={!onClick || !sortable}
+      disabled={!onClick}
       {...GridHeaderStyle.container({
         backgroundColor,
         borderCSS,
@@ -51,7 +49,7 @@ function GridHeader({
       {!!children && !!sort && <span />}
       {children ?? (
         <i
-          {...GridHeaderStyle.checkbox({ fontSize, fontColor, checked })}
+          {...GridHeaderStyle.checkbox({ fontColor, checked })}
           data-testid="components.grids.header.checkbox"
         />
       )}
@@ -68,7 +66,6 @@ function GridHeader({
 GridHeader.defaultProps = {
   children: undefined,
   sort: undefined,
-  sortable: false,
   onClick: undefined,
   checked: false,
   width: '4rem',

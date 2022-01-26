@@ -13,6 +13,7 @@ const GridBodyStyle = {
   container({ height, style, className }: ContainerStyle) {
     return {
       className: `
+        relative
         w-full
         overflow-auto
         flex
@@ -47,30 +48,30 @@ const GridBodyStyle = {
       items-start
     `,
   },
-  fixedArea(width?: string | number) {
+  fixedArea(width?: string | number, isHeader?: boolean) {
     return {
       className: `
         sticky
         left-0
         z-10
         flex
-        flex-col
         justify-start
         items-start
+        ${isHeader ? '' : 'flex-col'}
       `,
       style: {
         width,
       },
     }
   },
-  unfixedArea(width?: string | number) {
+  unfixedArea(width?: string | number, isHeader?: boolean) {
     return {
       className: `
         z-0
         flex
-        flex-col
         justify-start
         items-start
+        ${isHeader ? '' : 'flex-col'}
       `,
       style: {
         width,
