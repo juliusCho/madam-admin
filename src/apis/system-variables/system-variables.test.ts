@@ -29,7 +29,7 @@ describe('API SystemVariables', () => {
       api
         .apiGetProfileExtraItems$({
           limit: 1,
-          offset: startAfter(moment('9999-12-31').toDate()),
+          offset: startAfter(moment('9999-12-31T00:00:00.000Z').toDate()),
           sort: {
             column: 'modifiedAt',
             type: 'desc',

@@ -11,6 +11,7 @@ import ButtonBasicStyle from './basic.style'
 export interface ButtonBasicProps {
   children: string
   onClick: () => void
+  disabled?: boolean
   padding?: number
   buttonWidth?: string | number
   buttonHeight?: string | number
@@ -39,6 +40,7 @@ export interface ButtonBasicProps {
 function ButtonBasic({
   children,
   onClick,
+  disabled,
   buttonHeight,
   buttonWidth,
   fontSize,
@@ -57,8 +59,10 @@ function ButtonBasic({
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       style={{ ...style, width: buttonWidth, height: buttonHeight }}
       className={`${ButtonBasicStyle.button({
+        disabled,
         padding,
         backgroundColor,
         borderStyle,
@@ -86,6 +90,7 @@ function ButtonBasic({
       )}
       <p
         className={ButtonBasicStyle.text({
+          disabled,
           fontSize,
           color: fontColor,
         })}
@@ -95,6 +100,7 @@ function ButtonBasic({
       {icon && icon.isRight && (
         <XEIcon
           {...ButtonBasicStyle.icon({
+            disabled,
             icon: icon.name,
             padding: icon.padding,
             backgroundColor: icon.backgroundColor,
@@ -114,6 +120,7 @@ function ButtonBasic({
 }
 
 ButtonBasic.defaultProps = {
+  disabled: false,
   padding: 4,
   buttonWidth: '5rem',
   buttonHeight: '4.7rem',

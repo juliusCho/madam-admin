@@ -1,6 +1,14 @@
-import { collection, getDocs } from 'firebase/firestore'
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore'
 import { collection as rxCollection, collectionData } from 'rxfire/firestore'
 import { map } from 'rxjs'
+import { CRUD } from '~/enums'
 import { db } from '~/firebaseSetup'
 import {
   ProfileExtraItemFilterType,
@@ -67,8 +75,49 @@ const apiGetSystemVariables = async (
   return result
 }
 
+const apiSaveSystemVariables = async (
+  list: Array<SystemVariableType & { crud: CRUD }>,
+) => {
+  const getUpdateData = (item: SystemVariableType) => ({
+    type: item.type,
+    name: item.name ?? '',
+    value: item.value ?? '',
+    use: item.use,
+    adminKey: item.adminKey,
+    modifiedAt: new Date(),
+  })
+  const promises: Promise<void>[] = []
+
+  list.forEach((item) => {
+    switch (item.crud) {
+      case CRUD.CREATE:
+        promises.push(
+          setDoc(doc(collection(db, 'system-variables')), {
+            ...getUpdateData(item),
+            createdAt: new Date(),
+          }),
+        )
+        break
+      case CRUD.DELETE:
+        promises.push(deleteDoc(doc(db, 'system-variables', item.key ?? '')))
+        break
+      default:
+        promises.push(
+          updateDoc(
+            doc(db, 'system-variables', item.key ?? ''),
+            getUpdateData(item),
+          ),
+        )
+        break
+    }
+  })
+
+  await Promise.all(promises)
+}
+
 export default {
   apiGetProfileExtraItems$,
   apiGetAllSystemVariableTypes$,
   apiGetSystemVariables,
+  apiSaveSystemVariables,
 }

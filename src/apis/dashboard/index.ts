@@ -289,7 +289,7 @@ const apiPointsPerMadam$ = (count: number, offset?: QueryConstraint) =>
     query(
       collection(db, 'madams'),
       orderBy('startDate', 'desc'),
-      offset ?? startAfter(moment('9999-12-31').toDate()),
+      offset ?? startAfter(moment('9999-12-31T00:00:00.000Z').toDate()),
       limit(count),
     ),
   ).pipe(

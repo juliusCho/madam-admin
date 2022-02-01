@@ -7,6 +7,7 @@ import {
 import * as helpers from '~/utils/helpers'
 
 interface ButtonStyleProps {
+  disabled?: boolean
   padding?: number
   backgroundColor?: TailwindColorPalette
   borderStyle?: BorderStyle
@@ -16,6 +17,7 @@ interface ButtonStyleProps {
 }
 
 interface TextStyleProps {
+  disabled?: boolean
   fontSize?: TailwindFontSize
   color?: TailwindColorPalette
 }
@@ -26,6 +28,7 @@ interface IconStyleProps extends ButtonStyleProps, TextStyleProps {
 
 const ButtonBasicStyle = {
   button({
+    disabled,
     padding,
     backgroundColor,
     borderStyle,
@@ -38,21 +41,35 @@ const ButtonBasicStyle = {
       justify-center
       items-center
       p-${padding || 0}
-      ${helpers.convertColorToTailwind('border', 'mono-black')}
-      ${helpers.convertColorToTailwind('bg', backgroundColor)}
-      ${helpers.convertBorderStyleToTailwindClass(borderStyle, borderBold)}
+      ${disabled ? 'cursor-not-allowed' : ''}
+      ${helpers.convertColorToTailwind('border', 'mono-black', disabled)}
+      ${helpers.convertColorToTailwind(
+        'bg',
+        disabled ? 'mono-darkGray' : backgroundColor,
+        disabled,
+      )}
+      ${
+        disabled
+          ? ''
+          : helpers.convertBorderStyleToTailwindClass(borderStyle, borderBold)
+      }
       ${helpers.convertBorderRadiusToTailwindClass(borderRadius)}
-      ${helpers.convertColorToTailwind('border', borderColor)}
+      ${helpers.convertColorToTailwind('border', borderColor, disabled)}
     `
   },
-  text({ fontSize, color }: TextStyleProps) {
+  text({ fontSize, color, disabled }: TextStyleProps) {
     return `
       m-1
       ${helpers.convertFontToTailwindClass(fontSize)}
-      ${helpers.convertColorToTailwind('text', color)}
+      ${helpers.convertColorToTailwind(
+        'text',
+        disabled ? 'mono-white' : color,
+        disabled,
+      )}
     `
   },
   icon({
+    disabled,
     icon,
     padding,
     backgroundColor,
@@ -69,11 +86,15 @@ const ButtonBasicStyle = {
       color,
       className: `
         p-${padding || 0}
-        ${helpers.convertColorToTailwind('border', 'mono-black')}
-        ${helpers.convertColorToTailwind('bg', backgroundColor)}
+        ${helpers.convertColorToTailwind(
+          'text',
+          disabled ? 'mono-white' : 'mono-black',
+          disabled,
+        )}
+        ${helpers.convertColorToTailwind('bg', backgroundColor, disabled)}
         ${helpers.convertBorderStyleToTailwindClass(borderStyle, borderBold)}
         ${helpers.convertBorderRadiusToTailwindClass(borderRadius)}
-        ${helpers.convertColorToTailwind('border', borderColor)}
+        ${helpers.convertColorToTailwind('border', borderColor, disabled)}
       `,
     }
   },

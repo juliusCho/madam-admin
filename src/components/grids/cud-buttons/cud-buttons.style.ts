@@ -7,6 +7,7 @@ interface StyleProps {
 }
 
 interface ButtonStyle extends StyleProps {
+  disabled?: boolean
   borderStyle?: BorderStyle
   borderBold?: boolean
   borderRadius?: BorderRadius
@@ -38,6 +39,7 @@ const GridCudButtonsStyle = {
     `,
   },
   button({
+    disabled,
     borderStyle,
     borderBold,
     borderRadius,
@@ -57,7 +59,7 @@ const GridCudButtonsStyle = {
       icon: {
         isRight: true,
         name: icon,
-        color: 'mono-black' as TailwindColorPalette,
+        color: disabled ? 'mono-white' : ('mono-black' as TailwindColorPalette),
       },
       className,
     }

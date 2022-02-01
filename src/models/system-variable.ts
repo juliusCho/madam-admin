@@ -1,10 +1,11 @@
 export type SystemVariableType = {
-  key: string
-  type: string
-  value: string | number
+  key?: string
+  type?: string
+  value?: string | number
   use: boolean
-  createdAt: Date
-  modifiedAt: Date
+  name?: string
+  createdAt?: Date
+  modifiedAt?: Date
   adminKey: string
 }
 

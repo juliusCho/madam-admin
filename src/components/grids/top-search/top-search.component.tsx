@@ -27,7 +27,7 @@ function GridTopSearch({
         <SearchGridSearchItem key={`${String(idx)}`} {...searchInput} />
       ))}
       <ButtonBasic
-        onClick={onSearch}
+        onClick={() => onSearch()}
         {...GridTopSearchStyle.button(
           searchInputs.map((searchInput) => searchInput.width ?? '0rem'),
         )}>

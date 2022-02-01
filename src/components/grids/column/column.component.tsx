@@ -2,6 +2,7 @@ import moment from 'moment'
 import React from 'react'
 import { InputMultiSelect } from '~/components/inputs/multi-select'
 import { InputSingleSelect } from '~/components/inputs/single-select'
+import { InputTextLine } from '~/components/inputs/text-line'
 import { ModalDateTimePicker } from '~/components/modals/date-picker'
 import { CRUD } from '~/enums'
 import { BorderCSS, TailwindColorPalette, TailwindFontSize } from '~/types'
@@ -85,13 +86,16 @@ function GridColumn<
         break
       case 'date':
         if (
+          !children ||
           Array.isArray(children) ||
           typeof children === 'boolean' ||
           !moment(children).isValid()
         ) {
           setValue(() => '')
         } else {
-          setValue(() => moment(children).format(format))
+          setValue(() =>
+            moment((children as Date).toISOString()).format(format),
+          )
         }
         break
       default:
@@ -117,6 +121,7 @@ function GridColumn<
       if (!containerRef?.current) return
 
       const { clientX, clientY } = e
+
       const {
         x,
         y,
@@ -125,10 +130,10 @@ function GridColumn<
       } = containerRef.current.getBoundingClientRect()
 
       if (
-        clientX >= x &&
-        containerWidth + x >= clientX &&
-        clientY >= y &&
-        height + y >= clientY
+        clientX < x ||
+        containerWidth + x < clientX ||
+        clientY < y ||
+        height + y < clientY
       ) {
         setEditMode(() => false)
       }
@@ -152,18 +157,9 @@ function GridColumn<
 
   const onClickContainer = React.useCallback(() => {
     if (editMode) return
-    if (type === 'single-select' || type === 'multi-select') return
 
     switch (type) {
       case 'check':
-        console.log(
-          '🚀 ~ file: column.component.tsx ~ line 160 ~ onClickContainer ~ value',
-          typeof value,
-        )
-        console.log(
-          '🚀 ~ file: column.component.tsx ~ line 160 ~ onClickContainer ~ onChange',
-          onChange,
-        )
         if (onChange && typeof value === 'boolean') {
           ;(onChange as (input: boolean) => void)(!value)
         }
@@ -188,6 +184,10 @@ function GridColumn<
           />
         )
       case 'single-select':
+        if (!editMode) {
+          return value as string | number
+        }
+
         return (
           <InputSingleSelect
             options={
@@ -203,6 +203,8 @@ function GridColumn<
                 : undefined
             }
             onChange={(val) => {
+              if (String(val) === String(value)) return
+
               if (onChange) {
                 if (!val) {
                   if (nullable) {
@@ -215,13 +217,17 @@ function GridColumn<
                 }
               }
             }}
-            placeholder=""
+            placeholder="선택"
             width="100%"
             fontSize={fontSize}
             fontColor={fontColor}
           />
         )
       case 'multi-select':
+        if (!editMode) {
+          return value as string
+        }
+
         return (
           <InputMultiSelect
             options={
@@ -233,19 +239,20 @@ function GridColumn<
             }
             value={Array.isArray(children) ? children : undefined}
             onChange={(val) => {
-              if (onChange) {
-                if (!val) {
-                  if (nullable) {
-                    ;(onChange as (input: string[]) => void)([])
+              if ((val as string[]).length === value)
+                if (onChange) {
+                  if (!val) {
+                    if (nullable) {
+                      ;(onChange as (input: string[]) => void)([])
+                    } else {
+                      convertChildrenToValue()
+                    }
                   } else {
-                    convertChildrenToValue()
+                    onChange(val as never)
                   }
-                } else {
-                  onChange(val as never)
                 }
-              }
             }}
-            placeholder=""
+            placeholder="선택"
             width="100%"
             fontSize={fontSize}
             fontColor={fontColor}
@@ -266,15 +273,30 @@ function GridColumn<
           </span>
         )
       default:
-        return value as string | number
+        if (!editMode) {
+          return value as string | number
+        }
 
-      // if (!editMode) {
-      //   return value as string | number
-      // }
-
-      // return (
-
-      // )
+        return (
+          <InputTextLine
+            value={String(value)}
+            onSubmit={() => {
+              if (onChange) {
+                onChange(value as never)
+              }
+              setEditMode(() => false)
+            }}
+            onChange={(text) => setValue(text)}
+            onBlur={() => {
+              if (onChange) {
+                onChange(value as never)
+              }
+              setEditMode(() => false)
+            }}
+            type={type === 'date' ? undefined : type}
+            maxLength={100}
+          />
+        )
     }
   }, [
     value,

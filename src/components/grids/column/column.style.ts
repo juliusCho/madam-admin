@@ -47,7 +47,7 @@ const GridColumnStyle = {
   }: ContainerStyle) {
     return {
       className: `
-        p-0.5
+        p-1
         h-12
         flex
         items-center
@@ -105,7 +105,7 @@ const GridColumnStyle = {
         justify-center
         items-center
         p-1
-        ${type === CRUD.READ ? '' : `crud-${type}`}
+        ${type === CRUD.READ ? '' : `crud-${type.toLowerCase()}`}
         ${convertFontToTailwindClass(fontSize)}
       `,
       style: {

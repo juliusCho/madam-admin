@@ -1,4 +1,8 @@
 import { CSSProperties } from 'react'
+import {
+  convertColorToTailwind,
+  convertFontToTailwindClass,
+} from '~/utils/helpers'
 
 interface StyleProps {
   height?: string | number
@@ -20,6 +24,9 @@ const GridBodyStyle = {
         flex-col
         justify-start
         items-start
+        border
+        border-solid
+        border-mono-gray
         ${className ?? ''}
       `,
       style: {
@@ -47,6 +54,9 @@ const GridBodyStyle = {
       justify-start
       items-start
     `,
+    style: {
+      height: 'calc(100% - 3rem)',
+    },
   },
   fixedArea(width?: string | number, isHeader?: boolean) {
     return {
@@ -84,6 +94,17 @@ const GridBodyStyle = {
       flex
       justify-start
       items-start
+    `,
+  },
+  noData: {
+    className: `
+      w-full
+      h-full
+      flex
+      justify-center
+      items-center
+      ${convertFontToTailwindClass('subTitleBig')}
+      ${convertColorToTailwind('text', 'mono-gray', true)}
     `,
   },
 }

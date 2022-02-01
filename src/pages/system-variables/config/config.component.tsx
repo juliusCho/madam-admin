@@ -1,10 +1,12 @@
-import { startAfter } from 'firebase/firestore'
+import { QueryConstraint, startAfter, startAt } from 'firebase/firestore'
 import moment from 'moment'
 import React from 'react'
 import Recoil from 'recoil'
 import api from '~/apis/system-variables'
 import { GridBody } from '~/components/grids/body'
+import { Properties } from '~/components/grids/body/body.component'
 import { GridCudButtons } from '~/components/grids/cud-buttons'
+import { GridPaging } from '~/components/grids/paging'
 import { GridTopSearch } from '~/components/grids/top-search'
 import { CRUD } from '~/enums'
 import {
@@ -17,7 +19,19 @@ import { GridData } from '~/types'
 import { WhereFilterType } from '~/types/firestore'
 import PageSystemVariableStyle from '../layout.style'
 
+const initSort: { column: keyof SystemVariableType; type: 'asc' | 'desc' } = {
+  column: 'modifiedAt',
+  type: 'desc',
+}
+
 export interface PageSystemVariableConfigProps {}
+
+type ItemType = SystemVariableType & {
+  crud: CRUD
+  no: number
+  check: boolean
+  adminName?: string
+}
 
 export default function PageSystemVariableConfig({}: PageSystemVariableConfigProps) {
   const [searchInput, setSearchInput] = React.useState<{
@@ -30,12 +44,16 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
   const [options, setOptions] = React.useState<
     Array<{ label: string; value: string }>
   >([])
-  const [list, setList] = React.useState<
-    GridData<SystemVariableType & { adminName?: string }>[]
-  >([])
+  const [sort, setSort] =
+    React.useState<{ column: keyof SystemVariableType; type: 'asc' | 'desc' }>(
+      initSort,
+    )
+  const [orgList, setOrgList] = React.useState<GridData<ItemType>[]>([])
+  const [list, setList] = React.useState<GridData<ItemType>[]>([])
   const [loading, setLoading] = React.useState(false)
 
   const adminList = Recoil.useRecoilValue(adminGlobalStates.adminListState)
+  const me = Recoil.useRecoilValue(adminGlobalStates.adminState)
 
   React.useLayoutEffect(() => {
     const subscription = api.apiGetAllSystemVariableTypes$().subscribe({
@@ -58,7 +76,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
     const { page, pageCount: pageCnt } = searchInput
     let offset = (page - 1) * (pageCnt ?? list.length)
 
-    const items: SystemVariableType[] = []
+    const items: ItemType[] = []
 
     for (offset; offset < page * (pageCnt ?? list.length); offset += 1) {
       if (offset === list.length) {
@@ -71,10 +89,21 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
   }, [list, searchInput.page, searchInput.pageCount])
 
   const onSearch = React.useCallback(
-    async (sort?: {
-      column: keyof SystemVariableType
-      type: 'asc' | 'desc'
-    }) => {
+    async (
+      inputSort?: {
+        column: keyof SystemVariableType
+        type: 'asc' | 'desc'
+      },
+      queryOffset?: QueryConstraint,
+    ) => {
+      if (inputSort) {
+        if (inputSort.column === sort.column && inputSort.type === sort.type) {
+          return
+        }
+
+        setSort(() => inputSort)
+      }
+
       setLoading(() => true)
 
       const filter: WhereFilterType<SystemVariableFilterType>[] = []
@@ -93,46 +122,249 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
 
       const result = await api.apiGetSystemVariables({
         limit: searchInput.pageCount ?? 10000,
-        offset: startAfter(moment('9999-12-31').toDate()),
-        sort: sort ?? {
-          column: 'modifiedAt',
-          type: 'desc',
-        },
+        offset:
+          queryOffset ??
+          startAfter(moment('9999-12-31T00:00:00.000Z').toDate()),
+        sort: inputSort ?? sort,
         filter,
       })
 
       setSearchInput((old) => ({ ...old, page: 1 }))
 
-      setList(() =>
-        result.map((item, idx) => ({
-          ...item,
-          check: false,
-          crud: CRUD.READ,
-          no: idx + 1 + Number(searchInput.pageCount) * (searchInput.page - 1),
-          adminName: adminList.find((admin) => admin.key === item.adminKey)
-            ?.name,
-        })),
-      )
+      const newList = result.map((item, idx) => ({
+        ...item,
+        check: false,
+        crud: CRUD.READ,
+        no: idx + 1 + Number(searchInput.pageCount) * (searchInput.page - 1),
+        adminName: adminList.find((admin) => admin.key === item.adminKey)?.name,
+      }))
+
+      setOrgList(() => newList)
+      setList(() => newList)
 
       setLoading(() => false)
     },
-    [searchInput],
+    [searchInput, sort],
   )
 
   React.useEffect(() => {
     onSearch()
   }, [])
 
-  const onSave = () => {}
+  const onSave = React.useCallback(async () => {
+    setLoading(() => true)
 
-  const onCancel = () => {}
+    await api.apiSaveSystemVariables(
+      pageList.filter((item) => item.crud !== CRUD.READ),
+    )
 
-  const onAdd = () => {}
+    onSearch()
+  }, [pageList, onSearch])
 
-  const onDelete = () => {}
+  const onCancel = React.useCallback(() => {
+    setList((oldList) =>
+      oldList
+        .filter((item) => item.crud !== CRUD.CREATE || !item.check)
+        .map((item, idx) => {
+          if (item.check) {
+            const found = orgList.find((org) => org.key === item.key)
+            if (found) {
+              return { ...found, check: false, crud: CRUD.READ, no: idx + 1 }
+            }
 
-  console.log('list', pageList)
-  console.log('list', pageCount)
+            return { ...item, check: false, crud: CRUD.READ, no: idx + 1 }
+          }
+
+          return { ...item, no: idx + 1 }
+        }),
+    )
+  }, [orgList])
+
+  const onAdd = React.useCallback(() => {
+    if (!me) return
+
+    setList((oldList) => [
+      {
+        no: 1,
+        crud: CRUD.CREATE,
+        check: false,
+        adminKey: me.key,
+        adminName: me.name,
+        use: true,
+      },
+      ...oldList.map((item) => ({ ...item, no: item.no + 1 })),
+    ])
+  }, [me])
+
+  const onDelete = React.useCallback(() => {
+    setList((oldList) =>
+      oldList
+        .filter((item) => item.crud !== CRUD.CREATE || !item.check)
+        .map((item) =>
+          item.check ? { ...item, check: false, crud: CRUD.DELETE } : item,
+        ),
+    )
+  }, [])
+
+  const updateCrud = React.useCallback((crud: CRUD) => {
+    if (crud === CRUD.READ) {
+      return CRUD.MODIFY
+    }
+
+    return crud
+  }, [])
+
+  const constructQueryOffset = React.useCallback(
+    (key: keyof SystemVariableType, type?: 'asc' | 'desc') => {
+      switch (key) {
+        case 'use':
+          switch (type) {
+            case 'asc':
+              return startAt(false)
+            case 'desc':
+              return startAt(true)
+            default:
+              return startAfter(moment('9999-12-31T00:00:00.000Z').toDate())
+          }
+        case 'createdAt':
+          if (type === 'asc') {
+            return startAfter(moment('1000-01-01T00:00:00.000Z').toDate())
+          }
+
+          return startAfter(moment('9999-12-31T00:00:00.000Z').toDate())
+        default:
+          if (type === 'desc') {
+            return startAfter(moment('9999-12-31T00:00:00.000Z').toDate())
+          }
+
+          return startAfter(moment('1000-01-01T00:00:00.000Z').toDate())
+      }
+    },
+    [],
+  )
+
+  const onChange = React.useCallback(
+    (idx: number, input: string | number | boolean, key: keyof ItemType) => {
+      setList((oldList) =>
+        oldList.map((item, index) =>
+          index === idx
+            ? { ...item, [key]: input, crud: updateCrud(item.crud) }
+            : item,
+        ),
+      )
+    },
+    [updateCrud],
+  )
+
+  const properties = React.useMemo(
+    () =>
+      [
+        {
+          key: 'type',
+          type: 'text',
+          label: '유형',
+          onChange: (idx: number, input: string) =>
+            onChange(idx, input, 'type'),
+          width: '15rem',
+          justify: 'center',
+        },
+        {
+          key: 'name',
+          type: 'text',
+          label: '변수명',
+          onChange: (idx: number, input: string) =>
+            onChange(idx, input, 'name'),
+          width: '*',
+          justify: 'start',
+        },
+        {
+          key: 'value',
+          type: 'text',
+          label: '값',
+          onChange: (idx: number, input: number) =>
+            onChange(idx, input, 'value'),
+          width: '7rem',
+          justify: 'start',
+        },
+        {
+          key: 'use',
+          type: 'check',
+          label: '사용여부',
+          onChange: (idx: number, input: boolean) =>
+            onChange(idx, input, 'use'),
+          onSort: (type?: 'asc' | 'desc') =>
+            onSearch(
+              !type
+                ? initSort
+                : {
+                    column: 'use',
+                    type,
+                  },
+              constructQueryOffset('use', type),
+            ),
+          sort: sort.column === 'use' ? sort.type : undefined,
+          width: '7rem',
+        },
+        {
+          key: 'adminName',
+          type: 'text',
+          label: '최종 수정자',
+          width: '8rem',
+          justify: 'center',
+          uneditable: true,
+        },
+        {
+          key: 'createdAt',
+          type: 'date',
+          label: '생성일시',
+          format: 'YYYY-MM-DD HH:mm:ss',
+          onSort: (type?: 'asc' | 'desc') =>
+            onSearch(
+              !type
+                ? initSort
+                : {
+                    column: 'createdAt',
+                    type,
+                  },
+              constructQueryOffset('createdAt', type),
+            ),
+          sort: sort.column === 'createdAt' ? sort.type : undefined,
+          width: '14rem',
+          justify: 'center',
+          uneditable: true,
+        },
+        {
+          key: 'modifiedAt',
+          type: 'date',
+          label: '수정일시',
+          format: 'YYYY-MM-DD HH:mm:ss',
+          onSort: (type?: 'asc' | 'desc') =>
+            onSearch(
+              {
+                column: 'modifiedAt',
+                type: type ?? 'asc',
+              },
+              constructQueryOffset('modifiedAt', type),
+            ),
+          sort: sort.column === 'modifiedAt' ? sort.type : undefined,
+          width: '14rem',
+          justify: 'center',
+          uneditable: true,
+        },
+      ] as Properties[],
+    [onSearch, constructQueryOffset, onChange],
+  )
+
+  const savable = React.useMemo(
+    () =>
+      pageList.some((item) => item.crud !== CRUD.READ) &&
+      !pageList.some(
+        (item) =>
+          item.crud === CRUD.CREATE &&
+          (!item.type || (item.value !== null && item.value !== undefined)),
+      ),
+    [pageList],
+  )
 
   return (
     <PageSystemVariableLayout endpoint="CONFIG">
@@ -207,6 +439,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
           className="z-20"
         />
         <GridCudButtons
+          savable={savable}
           onSave={onSave}
           onCancel={onCancel}
           onAdd={onAdd}
@@ -215,125 +448,46 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
         />
         <GridBody
           loading={loading}
+          checkedAll={!pageList.some((item) => !item.check)}
           onCheck={(idx: number, newState: boolean) => {
-            console.log(
-              '🚀 ~ file: config.component.tsx ~ line 177 ~ PageSystemVariableConfig ~ idx',
-              idx,
-            )
-            console.log(
-              '🚀 ~ file: config.component.tsx ~ line 178 ~ PageSystemVariableConfig ~ newState',
-              newState,
+            setList((oldList) =>
+              oldList.map((item, index) =>
+                index === idx ? { ...item, check: newState } : item,
+              ),
             )
           }}
           onCheckAll={() => {
-            console.log('onCheckAll')
+            const check = pageList.some((item) => !item.check)
+
+            setList((oldList) =>
+              oldList.map((item) => {
+                const found = pageList.find(
+                  (pageItem) => pageItem.no === item.no,
+                )
+                if (found) {
+                  return { ...found, check }
+                }
+
+                return item
+              }),
+            )
           }}
-          properties={[
-            {
-              key: 'type',
-              type: 'single-select',
-              label: '유형',
-              options,
-              onChange: (input: string) => {
-                console.log(
-                  '🚀 ~ file: config.component.tsx ~ line 191 ~ PageSystemVariableConfig ~ input',
-                  input,
-                )
-              },
-              width: '8rem',
-              justify: 'center',
-            },
-            {
-              key: 'name',
-              type: 'text',
-              label: '변수명',
-              onChange: (input: string) => {
-                console.log(
-                  '🚀 ~ file: config.component.tsx ~ line 201 ~ PageSystemVariableConfig ~ input',
-                  input,
-                )
-              },
-              width: '8rem',
-              justify: 'start',
-            },
-            {
-              key: 'value',
-              type: 'text',
-              label: '값',
-              onChange: (input: number) => {
-                console.log(
-                  '🚀 ~ file: config.component.tsx ~ line 201 ~ PageSystemVariableConfig ~ input',
-                  input,
-                )
-              },
-              width: '8rem',
-              justify: 'start',
-            },
-            {
-              key: 'use',
-              type: 'check',
-              label: '사용여부',
-              onChange: (input: boolean) => {
-                console.log(
-                  '🚀 ~ file: config.component.tsx ~ line 201 ~ PageSystemVariableConfig ~ input',
-                  input,
-                )
-              },
-              onSort: (sort?: 'asc' | 'desc') => {
-                console.log(
-                  '🚀 ~ file: config.component.tsx ~ line 237 ~ PageSystemVariableConfig ~ sort',
-                  sort,
-                )
-              },
-              sort: 'asc',
-              width: '8rem',
-              justify: 'center',
-            },
-            {
-              key: 'adminName',
-              type: 'text',
-              label: '최종 수정자',
-              width: '8rem',
-              justify: 'center',
-              uneditable: true,
-            },
-            {
-              key: 'createdAt',
-              type: 'date',
-              label: '생성일시',
-              format: 'YYYY-MM-DD HH:mm:ss',
-              onSort: (sort?: 'asc' | 'desc') => {
-                console.log(
-                  '🚀 ~ file: config.component.tsx ~ line 237 ~ PageSystemVariableConfig ~ sort',
-                  sort,
-                )
-              },
-              sort: 'asc',
-              width: '8rem',
-              justify: 'center',
-              uneditable: true,
-            },
-            {
-              key: 'modifiedAt',
-              type: 'date',
-              label: '수정일시',
-              format: 'YYYY-MM-DD HH:mm:ss',
-              onSort: (sort?: 'asc' | 'desc') => {
-                console.log(
-                  '🚀 ~ file: config.component.tsx ~ line 237 ~ PageSystemVariableConfig ~ sort',
-                  sort,
-                )
-              },
-              sort: 'asc',
-              width: '8rem',
-              justify: 'center',
-              uneditable: true,
-            },
-          ]}
+          properties={properties}
           data={pageList}
-          fixedColumnIndex={0}
+          fixedColumnIndex={2}
           className="mt-4"
           height="calc(100% - 10.699rem)"
+        />
+        <GridPaging
+          page={searchInput.page}
+          totalPage={pageCount}
+          onChange={(type) =>
+            setSearchInput((old) => ({
+              ...old,
+              page: type === 'prev' ? old.page - 1 : old.page + 1,
+            }))
+          }
+          className="self-center"
         />
       </div>
     </PageSystemVariableLayout>

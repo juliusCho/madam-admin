@@ -28,7 +28,7 @@ function GridPaging({
   style,
   className,
 }: GridPagingProps) {
-  return (
+  return totalPage === 0 ? null : (
     <div {...GridPagingStyle.container({ style, className })}>
       {page > 1 ? (
         <XEIcon

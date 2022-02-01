@@ -24,6 +24,7 @@ export interface InputTextLineProps {
   value?: string
   onSubmit?: (text: string) => void
   onChange?: (text: string) => void
+  onCancel?: () => void
   onFocus?: () => void
   onBlur?: () => void
   style?: React.CSSProperties
@@ -48,6 +49,7 @@ function InputTextLine({
   value,
   onSubmit,
   onChange,
+  onCancel,
   onFocus,
   onBlur,
   style,
@@ -176,11 +178,11 @@ function InputTextLine({
     }
   }
 
-  const onCancel = () => {
+  const onClickCancel = () => {
     setText('')
 
-    if (onChange) {
-      onChange('')
+    if (onCancel) {
+      onCancel()
     }
   }
 
@@ -226,7 +228,7 @@ function InputTextLine({
             color={inputResetColor ?? 'mono-black'}
             style={{ backgroundColor: 'transparent' }}
             className={InputTextLineStyle.axe}
-            onClick={onCancel}
+            onClick={onClickCancel}
             testID="input.textLine.close"
           />
         )}
@@ -239,6 +241,7 @@ InputTextLine.defaultProps = {
   value: '',
   onSubmit: undefined,
   onChange: undefined,
+  onCancel: undefined,
   onFocus: undefined,
   onBlur: undefined,
   style: {},

@@ -94,9 +94,7 @@ describe('Components GridColumn 테스트', () => {
       checked = !checked
     })
 
-    const { getByTestId } = render(
-      <GridColumn checked={checked} onChange={onChange} />,
-    )
+    const { getByTestId } = render(<GridColumn onChange={onChange} />)
 
     setTimeout(() => {
       const container = getByTestId('components.grids.columns.container')

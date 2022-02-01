@@ -33,7 +33,7 @@ export default function PageDashboardUser({}: PageDashboardUserProps) {
     const subscription = apiSystemVariable
       .apiGetProfileExtraItems$({
         limit: 10000,
-        offset: startAfter(moment('9999-12-31').toDate()),
+        offset: startAfter(moment('9999-12-31T00:00:00.000Z').toDate()),
         sort: {
           column: 'modifiedAt',
           type: 'desc',
