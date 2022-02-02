@@ -295,6 +295,7 @@ function GridColumn<
             }}
             type={type === 'date' ? undefined : type}
             maxLength={100}
+            className="w-full"
           />
         )
     }

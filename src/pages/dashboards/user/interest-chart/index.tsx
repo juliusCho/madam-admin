@@ -27,7 +27,7 @@ function InterestChart({ isLike, className }: Props) {
     })
 
     return () => subscription.unsubscribe()
-  }, [admin, apiDashboard.apiInterestsCount$, isLike])
+  }, [admin, isLike])
 
   return (
     <ChartDonut

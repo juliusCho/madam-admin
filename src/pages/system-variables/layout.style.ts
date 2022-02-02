@@ -11,6 +11,13 @@ const PageSystemVariableStyle = {
       pb-4
     `,
   },
+  gridTopSearchClassName: 'z-20',
+  gridCudButtonsClassName: 'mt-10 mb-2',
+  gridBody: {
+    className: 'mt-4',
+    height: 'calc(100% - 10.699rem)',
+  },
+  gridPagingClassName: 'self-center',
 }
 
 export default PageSystemVariableStyle

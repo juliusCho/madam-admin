@@ -1,4 +1,4 @@
-import { QueryConstraint, startAfter, startAt } from 'firebase/firestore'
+import { startAfter, startAt } from 'firebase/firestore'
 import moment from 'moment'
 import React from 'react'
 import Recoil from 'recoil'
@@ -17,6 +17,7 @@ import PageSystemVariableLayout from '~/pages/system-variables/layout.component'
 import adminGlobalStates from '~/states/admin'
 import { GridData } from '~/types'
 import { WhereFilterType } from '~/types/firestore'
+import customHooks from '~/utils/hooks'
 import PageSystemVariableStyle from '../layout.style'
 
 const initSort: { column: keyof SystemVariableType; type: 'asc' | 'desc' } = {
@@ -26,12 +27,7 @@ const initSort: { column: keyof SystemVariableType; type: 'asc' | 'desc' } = {
 
 export interface PageSystemVariableConfigProps {}
 
-type ItemType = SystemVariableType & {
-  crud: CRUD
-  no: number
-  check: boolean
-  adminName?: string
-}
+type ItemType = GridData<SystemVariableType>
 
 export default function PageSystemVariableConfig({}: PageSystemVariableConfigProps) {
   const [searchInput, setSearchInput] = React.useState<{
@@ -48,8 +44,8 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
     React.useState<{ column: keyof SystemVariableType; type: 'asc' | 'desc' }>(
       initSort,
     )
-  const [orgList, setOrgList] = React.useState<GridData<ItemType>[]>([])
-  const [list, setList] = React.useState<GridData<ItemType>[]>([])
+  const [orgList, setOrgList] = React.useState<ItemType[]>([])
+  const [list, setList] = React.useState<ItemType[]>([])
   const [loading, setLoading] = React.useState(false)
 
   const adminList = Recoil.useRecoilValue(adminGlobalStates.adminListState)
@@ -65,37 +61,50 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
     return () => subscription.unsubscribe()
   }, [])
 
-  const pageCount = React.useMemo(() => {
-    const pages = Math.floor(list.length / (searchInput.pageCount ?? 999999))
-    const leftOversExist = list.length - pages > 0
+  const { pageCount, pageList } = customHooks.useGridPageData(
+    list,
+    searchInput.page,
+    searchInput.pageCount,
+  )
 
-    return pages + (leftOversExist ? 1 : 0)
-  }, [list, searchInput.pageCount])
-
-  const pageList = React.useMemo(() => {
-    const { page, pageCount: pageCnt } = searchInput
-    let offset = (page - 1) * (pageCnt ?? list.length)
-
-    const items: ItemType[] = []
-
-    for (offset; offset < page * (pageCnt ?? list.length); offset += 1) {
-      if (offset === list.length) {
-        break
+  const constructQueryOffset = React.useCallback(
+    (key: keyof SystemVariableType, type?: 'asc' | 'desc') => {
+      switch (key) {
+        case 'use':
+          switch (type) {
+            case 'asc':
+              return startAt(false)
+            case 'desc':
+              return startAt(true)
+            default:
+              return startAfter(moment('9999-12-31T00:00:00.000Z').toDate())
+          }
+        case 'createdAt':
+          return startAfter(
+            moment(
+              type === 'asc'
+                ? '1000-01-01T00:00:00.000Z'
+                : '9999-12-31T00:00:00.000Z',
+            ).toDate(),
+          )
+        default:
+          return startAfter(
+            moment(
+              type === 'desc'
+                ? '9999-12-31T00:00:00.000Z'
+                : '1000-01-01T00:00:00.000Z',
+            ).toDate(),
+          )
       }
-      items.push(list[offset])
-    }
-
-    return items
-  }, [list, searchInput.page, searchInput.pageCount])
+    },
+    [],
+  )
 
   const onSearch = React.useCallback(
-    async (
-      inputSort?: {
-        column: keyof SystemVariableType
-        type: 'asc' | 'desc'
-      },
-      queryOffset?: QueryConstraint,
-    ) => {
+    async (inputSort?: {
+      column: keyof SystemVariableType
+      type: 'asc' | 'desc'
+    }) => {
       if (inputSort) {
         if (inputSort.column === sort.column && inputSort.type === sort.type) {
           return
@@ -122,9 +131,9 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
 
       const result = await api.apiGetSystemVariables({
         limit: searchInput.pageCount ?? 10000,
-        offset:
-          queryOffset ??
-          startAfter(moment('9999-12-31T00:00:00.000Z').toDate()),
+        offset: inputSort
+          ? constructQueryOffset(inputSort.column, inputSort.type)
+          : constructQueryOffset(sort.column, sort.type),
         sort: inputSort ?? sort,
         filter,
       })
@@ -144,7 +153,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
 
       setLoading(() => false)
     },
-    [searchInput, sort],
+    [searchInput, sort, adminList, constructQueryOffset],
   )
 
   React.useEffect(() => {
@@ -159,26 +168,12 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
     )
 
     onSearch()
-  }, [pageList, onSearch])
+  }, [pageList, onSearch, constructQueryOffset])
 
-  const onCancel = React.useCallback(() => {
-    setList((oldList) =>
-      oldList
-        .filter((item) => item.crud !== CRUD.CREATE || !item.check)
-        .map((item, idx) => {
-          if (item.check) {
-            const found = orgList.find((org) => org.key === item.key)
-            if (found) {
-              return { ...found, check: false, crud: CRUD.READ, no: idx + 1 }
-            }
-
-            return { ...item, check: false, crud: CRUD.READ, no: idx + 1 }
-          }
-
-          return { ...item, no: idx + 1 }
-        }),
-    )
-  }, [orgList])
+  const { onCancel, onDelete } = customHooks.useGridCancelDelete(
+    setList,
+    orgList,
+  )
 
   const onAdd = React.useCallback(() => {
     if (!me) return
@@ -187,7 +182,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
       {
         no: 1,
         crud: CRUD.CREATE,
-        check: false,
+        check: true,
         adminKey: me.key,
         adminName: me.name,
         use: true,
@@ -196,16 +191,6 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
     ])
   }, [me])
 
-  const onDelete = React.useCallback(() => {
-    setList((oldList) =>
-      oldList
-        .filter((item) => item.crud !== CRUD.CREATE || !item.check)
-        .map((item) =>
-          item.check ? { ...item, check: false, crud: CRUD.DELETE } : item,
-        ),
-    )
-  }, [])
-
   const updateCrud = React.useCallback((crud: CRUD) => {
     if (crud === CRUD.READ) {
       return CRUD.MODIFY
@@ -213,35 +198,6 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
 
     return crud
   }, [])
-
-  const constructQueryOffset = React.useCallback(
-    (key: keyof SystemVariableType, type?: 'asc' | 'desc') => {
-      switch (key) {
-        case 'use':
-          switch (type) {
-            case 'asc':
-              return startAt(false)
-            case 'desc':
-              return startAt(true)
-            default:
-              return startAfter(moment('9999-12-31T00:00:00.000Z').toDate())
-          }
-        case 'createdAt':
-          if (type === 'asc') {
-            return startAfter(moment('1000-01-01T00:00:00.000Z').toDate())
-          }
-
-          return startAfter(moment('9999-12-31T00:00:00.000Z').toDate())
-        default:
-          if (type === 'desc') {
-            return startAfter(moment('9999-12-31T00:00:00.000Z').toDate())
-          }
-
-          return startAfter(moment('1000-01-01T00:00:00.000Z').toDate())
-      }
-    },
-    [],
-  )
 
   const onChange = React.useCallback(
     (idx: number, input: string | number | boolean, key: keyof ItemType) => {
@@ -300,7 +256,6 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
                     column: 'use',
                     type,
                   },
-              constructQueryOffset('use', type),
             ),
           sort: sort.column === 'use' ? sort.type : undefined,
           width: '7rem',
@@ -326,7 +281,6 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
                     column: 'createdAt',
                     type,
                   },
-              constructQueryOffset('createdAt', type),
             ),
           sort: sort.column === 'createdAt' ? sort.type : undefined,
           width: '14rem',
@@ -339,20 +293,17 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
           label: '수정일시',
           format: 'YYYY-MM-DD HH:mm:ss',
           onSort: (type?: 'asc' | 'desc') =>
-            onSearch(
-              {
-                column: 'modifiedAt',
-                type: type ?? 'asc',
-              },
-              constructQueryOffset('modifiedAt', type),
-            ),
+            onSearch({
+              column: 'modifiedAt',
+              type: type ?? 'asc',
+            }),
           sort: sort.column === 'modifiedAt' ? sort.type : undefined,
           width: '14rem',
           justify: 'center',
           uneditable: true,
         },
       ] as Properties[],
-    [onSearch, constructQueryOffset, onChange],
+    [onSearch, onChange],
   )
 
   const savable = React.useMemo(
@@ -361,8 +312,13 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
       !pageList.some(
         (item) =>
           item.crud === CRUD.CREATE &&
-          (!item.type || (item.value !== null && item.value !== undefined)),
+          (!item.type || item.value === null || item.value === undefined),
       ),
+    [pageList],
+  )
+
+  const modifiable = React.useMemo(
+    () => pageList.some((item) => item.check),
     [pageList],
   )
 
@@ -436,15 +392,16 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
               width: '10rem',
             },
           ]}
-          className="z-20"
+          className={PageSystemVariableStyle.gridTopSearchClassName}
         />
         <GridCudButtons
+          modifiable={modifiable}
           savable={savable}
           onSave={onSave}
           onCancel={onCancel}
           onAdd={onAdd}
           onDelete={onDelete}
-          className="mt-10 mb-2"
+          className={PageSystemVariableStyle.gridCudButtonsClassName}
         />
         <GridBody
           loading={loading}
@@ -475,8 +432,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
           properties={properties}
           data={pageList}
           fixedColumnIndex={2}
-          className="mt-4"
-          height="calc(100% - 10.699rem)"
+          {...PageSystemVariableStyle.gridBody}
         />
         <GridPaging
           page={searchInput.page}
@@ -487,7 +443,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
               page: type === 'prev' ? old.page - 1 : old.page + 1,
             }))
           }
-          className="self-center"
+          className={PageSystemVariableStyle.gridPagingClassName}
         />
       </div>
     </PageSystemVariableLayout>

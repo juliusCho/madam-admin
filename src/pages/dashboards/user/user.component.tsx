@@ -87,8 +87,8 @@ export default function PageDashboardUser({}: PageDashboardUserProps) {
           {profileExtraItems.map((item) => (
             <DynamicChart
               key={item.key}
-              id={item.key}
-              title={item.titleKr}
+              id={item.key ?? ''}
+              title={item.titleKr ?? ''}
               className={`${PageDashboardStyle.chart({ device })} mt-5`}
             />
           ))}

@@ -114,4 +114,5 @@ export type GridData<T> = T & {
   check: boolean
   crud: CRUD
   no: number
+  adminName?: string
 }

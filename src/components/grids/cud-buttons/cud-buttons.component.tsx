@@ -5,6 +5,7 @@ import { BorderCSS, TailwindColorPalette } from '~/types'
 import GridCudButtonsStyle from './cud-buttons.style'
 
 export interface GridCudButtonsProps {
+  modifiable?: boolean
   savable?: boolean
   onSave?: () => void
   onCancel?: () => void
@@ -16,6 +17,7 @@ export interface GridCudButtonsProps {
 }
 
 function GridCudButtons({
+  modifiable,
   savable,
   onSave,
   onCancel,
@@ -27,10 +29,24 @@ function GridCudButtons({
 }: GridCudButtonsProps) {
   const [confirm, setConfirm] = React.useState(false)
 
+  const getDisable = React.useCallback(
+    (icon: 'renew' | 'plus' | 'trash-o' | 'save') => {
+      switch (icon) {
+        case 'plus':
+          return false
+        case 'save':
+          return !savable
+        default:
+          return !modifiable
+      }
+    },
+    [savable, modifiable],
+  )
+
   const getButton = React.useCallback(
     (
       label: string,
-      icon: string,
+      icon: 'renew' | 'plus' | 'trash-o' | 'save',
       color: TailwindColorPalette,
       onClick: () => void,
       classNameButton?: string,
@@ -38,17 +54,17 @@ function GridCudButtons({
       <ButtonBasic
         {...GridCudButtonsStyle.button({
           ...borderCSS,
-          disabled: icon === 'save' && !savable,
+          disabled: getDisable(icon),
           icon,
           color,
           className: classNameButton,
         })}
-        disabled={icon === 'save' && !savable}
+        disabled={getDisable(icon)}
         onClick={onClick}>
         {label}
       </ButtonBasic>
     ),
-    [borderCSS, savable],
+    [borderCSS, getDisable],
   )
 
   return (
@@ -83,6 +99,7 @@ function GridCudButtons({
 }
 
 GridCudButtons.defaultProps = {
+  modifiable: false,
   savable: false,
   onSave: undefined,
   onCancel: undefined,

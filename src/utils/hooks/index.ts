@@ -8,6 +8,7 @@ import {
   MAX_SMALL_SCREEN,
   ROUTER_PATH,
 } from '~/constants/etc'
+import { CRUD } from '~/enums'
 import adminGlobalStates from '~/states/admin'
 import deviceGlobalStates from '~/states/device'
 import etcGlobalStates from '~/states/etc'
@@ -143,10 +144,76 @@ function useObservable<T>(observable: Observable<T>) {
   return state
 }
 
+function useGridPageData<T>(
+  list: T[],
+  page: number,
+  pageCount?: number | null,
+) {
+  return React.useMemo(
+    () => ({
+      pageCount: (() => {
+        const pages = Math.floor(list.length / (pageCount ?? 999999))
+        const leftOversExist = list.length - pages > 0
+
+        return pages + (leftOversExist ? 1 : 0)
+      })(),
+      pageList: (() => {
+        let offset = (page - 1) * (pageCount ?? list.length)
+
+        const items: T[] = []
+
+        for (offset; offset < page * (pageCount ?? list.length); offset += 1) {
+          if (offset === list.length) {
+            break
+          }
+          items.push(list[offset])
+        }
+
+        return items
+      })(),
+    }),
+    [list, page, pageCount],
+  )
+}
+
+function useGridCancelDelete<
+  T extends { crud: CRUD; check: boolean; key?: string },
+>(setList: React.Dispatch<React.SetStateAction<T[]>>, orgList: T[]) {
+  return {
+    onCancel: React.useCallback(() => {
+      setList((oldList) =>
+        oldList
+          .filter((item) => item.crud !== CRUD.CREATE || !item.check)
+          .map((item, idx) => {
+            if (item.check) {
+              const found = orgList.find((org) => org.key === item.key)
+              if (found) {
+                return { ...found, check: false, crud: CRUD.READ, no: idx + 1 }
+              }
+
+              return { ...item, check: false, crud: CRUD.READ, no: idx + 1 }
+            }
+
+            return { ...item, no: idx + 1 }
+          }),
+      )
+    }, [orgList]),
+    onDelete: React.useCallback(() => {
+      setList((oldList) =>
+        oldList
+          .filter((item) => item.crud !== CRUD.CREATE || !item.check)
+          .map((item) => (item.check ? { ...item, crud: CRUD.DELETE } : item)),
+      )
+    }, []),
+  }
+}
+
 export default {
   useIsMounted,
   useCheckMobile,
   usePage,
   useForceUpdate,
   useObservable,
+  useGridPageData,
+  useGridCancelDelete,
 }
