@@ -2,43 +2,10 @@ import React from 'react'
 import { Loading } from '~/components/etc/loading'
 import { Confirm } from '~/components/modals/confirm'
 import { CRUD } from '~/enums'
-import { GridColumn } from '../column'
 import { GridHeader } from '../header'
 import GridBodyStyle from './body.style'
-
-export type Properties = {
-  key: string
-  width: string | number | '*'
-  label?: string
-  type?:
-    | 'check'
-    | 'crud'
-    | 'text'
-    | 'number'
-    | 'single-select'
-    | 'multi-select'
-    | 'date'
-  options?: Array<{ value: string; label: string }>
-  onChange?:
-    | ((idx: number, input: string) => void)
-    | ((idx: number, input: number) => void)
-    | ((idx: number, input: boolean) => void)
-    | ((idx: number, input: string[]) => void)
-    | ((idx: number, input: Date) => void)
-  onSort?: (newState?: 'asc' | 'desc') => void
-  nullable?: boolean
-  sort?: 'asc' | 'desc'
-  sortable?: boolean
-  format?: string
-  justify?: 'center' | 'start' | 'end'
-  uneditable?: boolean
-}
-
-type Value = boolean | CRUD | number | string | Date | undefined
-
-interface Cell extends Properties {
-  value: Value
-}
+import { GridRow } from './row'
+import { Cell, Properties, Value } from './row/row.component'
 
 export interface GridBodyProps {
   onCheck: (idx: number, newState: boolean) => void
@@ -69,6 +36,7 @@ function GridBody({
   style,
   className,
 }: GridBodyProps) {
+  const [draggingIdx, setDragginIdx] = React.useState(-1)
   const [confirm, setConfirm] = React.useState<{
     show: boolean
     onSort?: (newState?: 'desc' | 'asc') => void
@@ -88,8 +56,8 @@ function GridBody({
       uneditable: true,
     }
 
-    return editable
-      ? ([
+    const result = editable
+      ? [
           {
             key: 'check',
             type: 'check',
@@ -105,9 +73,25 @@ function GridBody({
           },
           numColumn,
           ...properties,
-        ] as Properties[])
-      : ([numColumn] as Properties[])
-  }, [properties, editable])
+        ]
+      : [numColumn]
+
+    return (
+      onDrag
+        ? [
+            ...result,
+            {
+              key: 'drag',
+              type: 'drag',
+              label: '순서 변경',
+              width: '6rem',
+              justify: 'center',
+              uneditable: true,
+            },
+          ]
+        : result
+    ) as Properties[]
+  }, [properties, editable, onDrag])
 
   const layoutReload = React.useCallback(() => {
     if (!containerRef.current) return
@@ -313,129 +297,6 @@ function GridBody({
     [props, fixedColumnIndex],
   )
 
-  const getOptionValue = React.useCallback((cell: Cell) => {
-    if (cell.type === 'single-select') {
-      return cell.options?.find((option) => option.value === cell.value)?.label
-    }
-
-    if (cell.type === 'multi-select') {
-      const list = String(cell.value).split(',')
-      return list
-        .map((item) => {
-          const found = cell.options?.find(
-            (option) => option.value === item,
-          )?.label
-          return found ?? ' '
-        })
-        .join(',')
-        .replaceAll(' ,', '')
-    }
-
-    return undefined
-  }, [])
-
-  const gridCell = React.useCallback(
-    (rowKey: string, rowIdx: number, cell: Cell, idx: number) => {
-      const key = `${rowKey}-${cell.key}-${idx}`
-
-      const cellProps = {
-        key,
-        type: cell.type,
-        options: cell.options,
-        nullable: cell.nullable,
-        format: cell.format,
-        width: astaCalculate(cell.width),
-        justify: cell.justify,
-        editable: !cell.uneditable,
-      }
-
-      switch (cell.type) {
-        case 'check':
-          return (
-            <GridColumn
-              key={key}
-              type="check"
-              onChange={(newState: boolean) => {
-                if (!!cell.value === newState) return
-
-                if (cell.key === 'check') {
-                  onCheck(rowIdx, newState)
-                } else if (cell.onChange) {
-                  cell.onChange(rowIdx, newState as never)
-                }
-              }}
-              justify="center"
-              editable
-              width={astaCalculate(cell.width)}>
-              {cell.value}
-            </GridColumn>
-          )
-        case 'crud':
-          return (
-            <GridColumn key={key} type="crud" justify="center" width="3.5rem">
-              {cell.value}
-            </GridColumn>
-          )
-        case 'number':
-        case 'date':
-        case 'text':
-          return (
-            <GridColumn
-              {...cellProps}
-              onChange={(newState: number | Date | string) => {
-                if (Number(cell.value) === newState) return
-                if (cell.onChange) {
-                  cell.onChange(rowIdx, newState as never)
-                }
-              }}>
-              {cell.value}
-            </GridColumn>
-          )
-        case 'single-select':
-          return (
-            <GridColumn
-              {...cellProps}
-              onChange={(newState: string) => {
-                if (String(cell.value) === newState) return
-                if (cell.onChange) {
-                  cell.onChange(rowIdx, newState as never)
-                }
-              }}>
-              {getOptionValue(cell)}
-            </GridColumn>
-          )
-        case 'multi-select':
-          return (
-            <GridColumn
-              {...cellProps}
-              onChange={(newState: string[]) => {
-                if (
-                  cell.onChange &&
-                  ((cell.value as undefined | string[])?.length !==
-                    newState.length ||
-                    (cell.value as undefined | string[])?.some(
-                      (val) => !newState.some((i) => i === val),
-                    ) ||
-                    newState.some(
-                      (val) =>
-                        !(cell.value as undefined | string[])?.some(
-                          (i) => i === val,
-                        ),
-                    ))
-                ) {
-                  cell.onChange(rowIdx, newState as never)
-                }
-              }}>
-              {getOptionValue(cell)}
-            </GridColumn>
-          )
-        default:
-          return <GridColumn key={key}>{cell.value}</GridColumn>
-      }
-    },
-    [getOptionValue, onCheck, astaCalculate],
-  )
-
   return (
     <>
       <Confirm
@@ -480,35 +341,30 @@ function GridBody({
             <>
               <div {...GridBodyStyle.fixedArea(fixedLength)}>
                 {fixedCells.map((fixedRow, rowIdx) => (
-                  <ul
+                  <GridRow
                     key={`${String(fixedRow.length)}-${String(rowIdx)}`}
-                    {...GridBodyStyle.row}>
-                    {fixedRow.map((cell, idx) =>
-                      gridCell(
-                        `${fixedRow.length}-${rowIdx}`,
-                        rowIdx,
-                        cell,
-                        idx,
-                      ),
-                    )}
-                  </ul>
+                    rowIdx={rowIdx}
+                    cells={fixedRow}
+                    onCheck={onCheck}
+                    astaCalculate={astaCalculate}
+                  />
                 ))}
               </div>
               <div {...GridBodyStyle.unfixedArea(unfixedLength)}>
                 {unfixedCells.map((unfixedRow, rowIdx) => (
-                  <ul
+                  <GridRow
                     key={`${String(unfixedRow.length)}-${String(rowIdx)}`}
-                    {...GridBodyStyle.row}
-                    draggable={!!onDrag}>
-                    {unfixedRow.map((cell, idx) =>
-                      gridCell(
-                        `${unfixedRow.length}-${rowIdx}`,
-                        rowIdx,
-                        cell,
-                        idx,
-                      ),
-                    )}
-                  </ul>
+                    rowIdx={rowIdx}
+                    cells={unfixedRow}
+                    onCheck={onCheck}
+                    astaCalculate={astaCalculate}
+                    onDrag={(idx) => setDragginIdx(idx)}
+                    onDrop={(idx) => {
+                      if (onDrag) {
+                        onDrag(draggingIdx, idx)
+                      }
+                    }}
+                  />
                 ))}
               </div>
             </>

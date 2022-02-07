@@ -5,7 +5,12 @@ import { InputSingleSelect } from '~/components/inputs/single-select'
 import { InputTextLine } from '~/components/inputs/text-line'
 import { ModalDateTimePicker } from '~/components/modals/date-picker'
 import { CRUD } from '~/enums'
-import { BorderCSS, TailwindColorPalette, TailwindFontSize } from '~/types'
+import {
+  BorderCSS,
+  GridColumnType as GridColType,
+  TailwindColorPalette,
+  TailwindFontSize,
+} from '~/types'
 import GridColumnStyle from './column.style'
 
 export interface GridColumnProps<
@@ -17,14 +22,7 @@ export interface GridColumnProps<
     | ((input: string[]) => void)
     | ((input: Date) => void),
 > {
-  type?:
-    | 'check'
-    | 'text'
-    | 'number'
-    | 'single-select'
-    | 'multi-select'
-    | 'date'
-    | 'crud'
+  type?: GridColType
   children?: ChildrenType
   options?: Array<{ value: string | number; label: string }>
   onChange?: OnChangeArgType
@@ -165,6 +163,7 @@ function GridColumn<
         }
         break
       case 'crud':
+      case 'drag':
         break
       default:
         setEditMode(() => true)
@@ -272,9 +271,13 @@ function GridColumn<
             {value.toUpperCase()}
           </span>
         )
+      case 'drag':
+        return <i {...GridColumnStyle.drag} />
       default:
         if (!editMode) {
-          return value as string | number
+          return type === 'dollar'
+            ? `$${String(value)}`
+            : (value as string | number)
         }
 
         return (
@@ -286,14 +289,14 @@ function GridColumn<
               }
               setEditMode(() => false)
             }}
-            onChange={(text) => setValue(text)}
+            onChange={(text) => setValue(text.replace('$', ''))}
             onBlur={() => {
               if (onChange) {
                 onChange(value as never)
               }
               setEditMode(() => false)
             }}
-            type={type === 'date' ? undefined : type}
+            type={type === 'dollar' || type === 'date' ? undefined : type}
             maxLength={100}
             className="w-full"
           />

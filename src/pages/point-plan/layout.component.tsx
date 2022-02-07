@@ -36,7 +36,7 @@ function PagePointPlanLayout({ children }: PagePointPlanLayoutProps) {
           />
         }
         height={AppPageStyle.tabFirstHeight}>
-        <div className="fade-in">{children}</div>
+        <div className="fade-in h-full">{children}</div>
       </LayoutTab>
     </>
   )

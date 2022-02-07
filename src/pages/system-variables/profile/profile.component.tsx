@@ -2,9 +2,9 @@ import { startAfter } from 'firebase/firestore'
 import moment from 'moment'
 import React from 'react'
 import Recoil from 'recoil'
-import api from '~/apis/system-variables'
+import api from '~/apis/system-variable'
 import { GridBody } from '~/components/grids/body'
-import { Properties } from '~/components/grids/body/body.component'
+import { Properties } from '~/components/grids/body/row/row.component'
 import { GridCudButtons } from '~/components/grids/cud-buttons'
 import { GridPaging } from '~/components/grids/paging'
 import { GridTopSearch } from '~/components/grids/top-search'
@@ -176,7 +176,7 @@ export default function PageSystemVariableProfile({}: PageSystemVariableProfileP
     )
 
     onSearch()
-  }, [pageList, onSearch, constructQueryOffset])
+  }, [pageList, onSearch])
 
   const { onCancel, onDelete } = customHooks.useGridCancelDelete(
     setList,

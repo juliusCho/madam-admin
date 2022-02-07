@@ -116,3 +116,14 @@ export type GridData<T> = T & {
   no: number
   adminName?: string
 }
+
+export type GridColumnType =
+  | 'check'
+  | 'crud'
+  | 'text'
+  | 'number'
+  | 'dollar'
+  | 'single-select'
+  | 'multi-select'
+  | 'date'
+  | 'drag'

@@ -114,6 +114,15 @@ const GridColumnStyle = {
       },
     }
   },
+  drag: {
+    className: `
+      xi-arrows
+      bg-mono-white
+      text-mono-paleBlack
+      cursor-pointer
+      text-titleMedium
+    `,
+  },
 }
 
 export default GridColumnStyle

@@ -10,7 +10,7 @@ import { db } from '~/firebaseSetup'
 import { GridSearchQueryType } from '~/types/firestore'
 import apiDashboard from './dashboard'
 import apiSession from './session'
-import apiSystemVariable from './system-variables'
+import apiSystemVariable from './system-variable'
 
 export { apiDashboard, apiSession, apiSystemVariable }
 
