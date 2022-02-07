@@ -5,6 +5,7 @@ import GridHeaderStyle from './header.style'
 export interface GridHeaderProps {
   children?: string
   sort?: 'asc' | 'desc'
+  sortable?: boolean
   onClick?: () => void
   checked?: boolean
   width?: string | number
@@ -19,6 +20,7 @@ export interface GridHeaderProps {
 function GridHeader({
   children,
   sort,
+  sortable,
   onClick,
   checked,
   width,
@@ -29,6 +31,28 @@ function GridHeader({
   style,
   className,
 }: GridHeaderProps) {
+  const sortingSign = React.useMemo(() => {
+    if (!children || !sort) {
+      if (sortable) {
+        return (
+          <i
+            {...GridHeaderStyle.sort({ fontSize, type: sort })}
+            data-testid="components.grids.header.sort-arrow"
+          />
+        )
+      }
+
+      return null
+    }
+
+    return (
+      <i
+        {...GridHeaderStyle.sort({ fontSize, type: sort })}
+        data-testid="components.grids.header.sort-arrow"
+      />
+    )
+  }, [children, sort, sortable, fontSize])
+
   return (
     <button
       type="button"
@@ -46,19 +70,14 @@ function GridHeader({
       })}
       onClick={onClick}
       data-testid="components.grids.header.container">
-      {!!children && !!sort && <span />}
+      {((!!children && !!sort) || sortable) && <span />}
       {children ?? (
         <i
           {...GridHeaderStyle.checkbox({ fontColor, checked })}
           data-testid="components.grids.header.checkbox"
         />
       )}
-      {!!children && !!sort && (
-        <i
-          {...GridHeaderStyle.sort({ fontSize, type: sort })}
-          data-testid="components.grids.header.sort-arrow"
-        />
-      )}
+      {sortingSign}
     </button>
   )
 }
@@ -66,6 +85,7 @@ function GridHeader({
 GridHeader.defaultProps = {
   children: undefined,
   sort: undefined,
+  sortable: false,
   onClick: undefined,
   checked: false,
   width: '4rem',

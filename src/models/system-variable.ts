@@ -13,4 +13,12 @@ export type SystemVariableFilterType = {
   type?: null | string
   use?: null | boolean
   adminKey?: null | string
+  createdAt?: {
+    start?: Date
+    end?: Date
+  }
+  modifiedAt?: {
+    start?: Date
+    end?: Date
+  }
 }

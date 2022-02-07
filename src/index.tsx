@@ -1,4 +1,6 @@
 import React from 'react'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 import ReactDOM from 'react-dom'
 import Modal from 'react-modal'
 import { BrowserRouter } from 'react-router-dom'
@@ -15,7 +17,9 @@ ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
       <BrowserRouter>
-        <App />
+        <DndProvider backend={HTML5Backend}>
+          <App />
+        </DndProvider>
       </BrowserRouter>
     </RecoilRoot>
   </React.StrictMode>,

@@ -72,15 +72,17 @@ const GridHeaderStyle = {
     }
   },
   sort({ fontSize, type }: SortStyle) {
-    if (!type) return {}
+    let icon = 'xi-arrows-v text-sub-greenActive'
+    if (type) {
+      icon =
+        type === 'asc'
+          ? 'xi-arrow-up text-main-blue'
+          : 'xi-arrow-down text-main-red'
+    }
 
     return {
       className: `
-        ${
-          type === 'asc'
-            ? 'xi-arrow-up text-main-blue'
-            : 'xi-arrow-down text-main-red'
-        }
+        ${icon}
         ${convertFontToTailwindClass(fontSize)}
       `,
     }

@@ -28,6 +28,7 @@ export type Properties = {
   onSort?: (newState?: 'asc' | 'desc') => void
   nullable?: boolean
   sort?: 'asc' | 'desc'
+  sortable?: boolean
   format?: string
   justify?: 'center' | 'start' | 'end'
   uneditable?: boolean
@@ -49,6 +50,7 @@ export interface GridBodyProps {
   editable?: boolean
   height?: string | number
   loading?: boolean
+  onDrag?: (oldNo: number, newNo: number) => void
   style?: React.CSSProperties
   className?: string
 }
@@ -63,6 +65,7 @@ function GridBody({
   editable,
   height,
   loading,
+  onDrag,
   style,
   className,
 }: GridBodyProps) {
@@ -190,6 +193,7 @@ function GridBody({
               {...common}
               checked={checkedAll}
               sort={prop.sort}
+              sortable={prop.sortable}
               onClick={prop.key === 'check' ? onCheckAll : () => onSort(prop)}>
               {prop.label}
             </GridHeader>
@@ -207,6 +211,7 @@ function GridBody({
               <GridHeader
                 {...common}
                 sort={prop.sort}
+                sortable={prop.sortable}
                 onClick={() => onSort(prop)}>
                 {prop.label}
               </GridHeader>
@@ -493,7 +498,8 @@ function GridBody({
                 {unfixedCells.map((unfixedRow, rowIdx) => (
                   <ul
                     key={`${String(unfixedRow.length)}-${String(rowIdx)}`}
-                    {...GridBodyStyle.row}>
+                    {...GridBodyStyle.row}
+                    draggable={!!onDrag}>
                     {unfixedRow.map((cell, idx) =>
                       gridCell(
                         `${unfixedRow.length}-${rowIdx}`,
@@ -519,6 +525,7 @@ GridBody.defaultProps = {
   editable: true,
   height: '100%',
   loading: false,
+  onDrag: undefined,
   style: undefined,
   className: undefined,
 }

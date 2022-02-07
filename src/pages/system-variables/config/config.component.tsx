@@ -34,6 +34,14 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
     adminKey?: string | null
     type?: string | null
     use?: boolean | null
+    createdAt?: null | {
+      start?: Date
+      end?: Date
+    }
+    modifiedAt?: null | {
+      start?: Date
+      end?: Date
+    }
     page: number
     pageCount?: number | null
   }>({ page: 1, pageCount: 10 })
@@ -125,8 +133,30 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
         filter.push(['adminKey', '==', searchInput.adminKey])
       }
 
-      if (typeof searchInput.use === 'boolean') {
+      if (
+        typeof searchInput.use === 'boolean' &&
+        inputSort?.column !== 'use' &&
+        sort.column !== 'use'
+      ) {
         filter.push(['use', '==', searchInput.use])
+      }
+
+      if (
+        searchInput.createdAt &&
+        searchInput.createdAt.start &&
+        searchInput.createdAt.end
+      ) {
+        filter.push(['createdAt', '>=', searchInput.createdAt.start])
+        filter.push(['createdAt', '<=', searchInput.createdAt.end])
+      }
+
+      if (
+        searchInput.modifiedAt &&
+        searchInput.modifiedAt.start &&
+        searchInput.modifiedAt.end
+      ) {
+        filter.push(['modifiedAt', '>=', searchInput.modifiedAt.start])
+        filter.push(['modifiedAt', '<=', searchInput.modifiedAt.end])
       }
 
       const result = await api.apiGetSystemVariables({
@@ -258,6 +288,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
                   },
             ),
           sort: sort.column === 'use' ? sort.type : undefined,
+          sortable: true,
           width: '7rem',
         },
         {
@@ -283,6 +314,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
                   },
             ),
           sort: sort.column === 'createdAt' ? sort.type : undefined,
+          sortable: true,
           width: '14rem',
           justify: 'center',
           uneditable: true,
@@ -298,6 +330,7 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
               type: type ?? 'asc',
             }),
           sort: sort.column === 'modifiedAt' ? sort.type : undefined,
+          sortable: true,
           width: '14rem',
           justify: 'center',
           uneditable: true,
@@ -372,6 +405,62 @@ export default function PageSystemVariableConfig({}: PageSystemVariableConfigPro
               value: searchInput.use,
               placeholder: '전체',
               width: '15rem',
+            },
+            {
+              type: 'date',
+              label: '생성일시',
+              onSelect: (value) => {
+                if (Array.isArray(value) && value.length > 1) {
+                  setSearchInput((old) => ({
+                    ...old,
+                    modifiedAt: undefined,
+                    createdAt: {
+                      start: value[0] as undefined | Date,
+                      end: value[1] as undefined | Date,
+                    },
+                  }))
+                  setSort((old) =>
+                    old.column === 'createdAt'
+                      ? old
+                      : { column: 'createdAt', type: 'asc' },
+                  )
+                }
+              },
+              value: searchInput.createdAt
+                ? ([searchInput.createdAt.start, searchInput.createdAt.end] as [
+                    Date | undefined,
+                    Date | undefined,
+                  ])
+                : undefined,
+              width: '20rem',
+            },
+            {
+              type: 'date',
+              label: '수정일시',
+              onSelect: (value) => {
+                if (Array.isArray(value) && value.length > 1) {
+                  setSearchInput((old) => ({
+                    ...old,
+                    createdAt: undefined,
+                    modifiedAt: {
+                      start: value[0] as undefined | Date,
+                      end: value[1] as undefined | Date,
+                    },
+                  }))
+                  setSort((old) =>
+                    old.column === 'modifiedAt'
+                      ? old
+                      : { column: 'modifiedAt', type: 'asc' },
+                  )
+                }
+              },
+              value: searchInput.modifiedAt
+                ? ([
+                    searchInput.modifiedAt.start,
+                    searchInput.modifiedAt.end,
+                  ] as [Date | undefined, Date | undefined])
+                : undefined,
+              width: '20rem',
             },
             {
               type: 'single-select',

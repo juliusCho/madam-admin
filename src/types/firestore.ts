@@ -5,6 +5,7 @@ export type QueryOperator =
   | '<='
   | '=='
   | '>'
+  | '>='
   | '!='
   | 'array-contains'
   | 'array-contains-any'

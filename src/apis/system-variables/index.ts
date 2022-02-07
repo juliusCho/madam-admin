@@ -15,6 +15,10 @@ import {
   ProfileExtraItemType,
 } from '~/models/profile-extra-item'
 import {
+  ProfileSelectItemFilterType,
+  ProfileSelectItemType,
+} from '~/models/profile-select-item'
+import {
   SystemVariableFilterType,
   SystemVariableType,
 } from '~/models/system-variable'
@@ -30,6 +34,24 @@ const apiGetAllProfileExtraItems$ = () =>
       profileExtraItems.forEach((profileExtraItem) => {
         if (!result.some((res) => res === profileExtraItem.type)) {
           result.push(profileExtraItem.type)
+        }
+      })
+
+      return result
+    }),
+  )
+
+const apiGetAllProfileExtraItemKeys$ = () =>
+  rxCollection(collection(db, 'profile-extra-items')).pipe(
+    map((profileExtraItems) => {
+      const result: Array<{ label: string; value: string }> = []
+
+      profileExtraItems.forEach((profileExtraItem) => {
+        if (!result.some((res) => res.value === profileExtraItem.id)) {
+          result.push({
+            label: profileExtraItem.data().titleKr,
+            value: profileExtraItem.id,
+          })
         }
       })
 
@@ -191,12 +213,79 @@ const apiSaveSystemVariables = async (
   await Promise.all(promises)
 }
 
+const apiGetProfileSelectItems = async (
+  grid: GridSearchQueryType<ProfileSelectItemType, ProfileSelectItemFilterType>,
+) => {
+  const res = await getDocs(gridSearchQuery('profile-select-items', grid))
+
+  const result: ProfileSelectItemType[] = []
+
+  res.forEach((d) => {
+    const item = convertFirestoreDataToModel(
+      d.data() as Omit<ProfileSelectItemType, 'key'>,
+    )
+
+    result.push({
+      ...item,
+      key: d.id,
+    })
+  })
+
+  return result
+}
+
+const apiSaveProfileSelectItems = async (
+  list: Array<ProfileSelectItemType & { crud: CRUD }>,
+) => {
+  const getUpdateData = (item: ProfileSelectItemType) => ({
+    value: item.value ?? '',
+    use: item.use,
+    adminKey: item.adminKey,
+    modifiedAt: new Date(),
+    profileExtraItemKey: item.profileExtraItemKey ?? '',
+    labelEn: item.labelEn ?? '',
+    labelKr: item.labelKr ?? '',
+  })
+  const promises: Promise<void>[] = []
+
+  list.forEach((item) => {
+    switch (item.crud) {
+      case CRUD.CREATE:
+        promises.push(
+          setDoc(doc(collection(db, 'profile-select-items')), {
+            ...getUpdateData(item),
+            createdAt: new Date(),
+          }),
+        )
+        break
+      case CRUD.DELETE:
+        promises.push(
+          deleteDoc(doc(db, 'profile-select-items', item.key ?? '')),
+        )
+        break
+      default:
+        promises.push(
+          updateDoc(
+            doc(db, 'profile-select-items', item.key ?? ''),
+            getUpdateData(item),
+          ),
+        )
+        break
+    }
+  })
+
+  await Promise.all(promises)
+}
+
 export default {
   apiGetAllProfileExtraItems$,
+  apiGetAllProfileExtraItemKeys$,
   apiGetProfileExtraItems$,
   apiGetProfileExtraItems,
   apiSaveProfileExtraItems,
   apiGetAllSystemVariableTypes$,
   apiGetSystemVariables,
   apiSaveSystemVariables,
+  apiGetProfileSelectItems,
+  apiSaveProfileSelectItems,
 }

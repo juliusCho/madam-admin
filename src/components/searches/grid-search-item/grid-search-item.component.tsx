@@ -34,7 +34,7 @@ export interface SearchGridSearchItemProps {
     | null
     | boolean
     | Array<string | number | null | boolean>
-    | [Date, Date]
+    | [Date | undefined, Date | undefined]
   placeholder?: string
   width?: string | number
   contentHeight?: string | number
